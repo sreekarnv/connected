@@ -1,0 +1,24 @@
+@import './../../../../scss/variables';
+
+.navbar {
+	&__brand {
+		position: relative;
+		cursor: pointer;
+		font-family: $font-brand;
+
+		&::before {
+			content: '';
+			position: absolute;
+			bottom: 0rem;
+			left: 0;
+			height: 3px;
+			width: 3.75rem;
+			background-color: rgba($color-primary, 0.85);
+		}
+	}
+
+	&--active {
+		background-color: 'transparent';
+		color: $color-primary;
+	}
+}

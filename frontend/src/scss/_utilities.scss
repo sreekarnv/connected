@@ -1,0 +1,11 @@
+.hide-scrollbar {
+	&::-webkit-scrollbar {
+		display: none;
+	}
+	-ms-overflow-style: none;
+	scrollbar-width: none;
+}
+
+.placeholder::-webkit-input-placeholder {
+	color: rgba($color-grey-dark, 0.75);
+}
