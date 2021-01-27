@@ -56,7 +56,11 @@ const Navigation: React.FC<any> = () => {
 			boxShadow='light'
 			alignItems='center'
 			className='navbar'>
-			<Text className='navbar__brand' fontSize={'2rem'} as={NavLink} to='/'>
+			<Text
+				className='navbar__brand'
+				fontSize={'2rem'}
+				as={NavLink}
+				to={user ? '/' : '/app/public'}>
 				Connected
 			</Text>
 

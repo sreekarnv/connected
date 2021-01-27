@@ -27,6 +27,7 @@ const PostNotification: React.FC<Props> = ({ notification }) => {
 	const { removeNotification } = useContext(NotificationContext);
 
 	const closeNotification = async () => {
+		removeNotification(notification._id);
 		try {
 			await axios({
 				method: 'PATCH',
@@ -35,8 +36,6 @@ const PostNotification: React.FC<Props> = ({ notification }) => {
 					notificationId: notification._id,
 				},
 			});
-
-			removeNotification(notification._id);
 		} catch (_) {}
 	};
 

@@ -1,10 +1,12 @@
 import React, { Suspense, useContext, useEffect, useState } from 'react';
-import { Route, Switch } from 'react-router-dom';
+import { Redirect, Route, Switch } from 'react-router-dom';
 
 import { NotificationContext } from '../../store/context/NotificationContext';
 
 import Loader from '../../components/Spinner/Spinner';
 import NotificationAlert from '../../pages/notifications/NotificationAlert';
+import { AuthContext } from '../../store/context/AuthContext';
+import Error from '../../pages/error/Error';
 
 const HomeApp = React.lazy(() => import('../../pages/app/HomeApp'));
 const Login = React.lazy(() => import('../../pages/auth/Login'));
@@ -18,6 +20,8 @@ const Body: React.FC = () => {
 	const [newNotification, setNewNotification] = useState<Notification | null>(
 		null
 	);
+
+	const { user, userInit } = useContext(AuthContext);
 
 	useEffect(() => {
 		if (notifications && notifications.length > 0) {
@@ -35,33 +39,55 @@ const Body: React.FC = () => {
 		}
 	}, [newNotification]);
 
+	if (!user && userInit) {
+		return <Loader />;
+	}
+
 	return (
 		<>
 			<Suspense fallback={<Loader />}>
 				<Switch>
-					<Route path='/' exact>
-						<Home />
+					{!user && (
+						<Route path='/' exact>
+							<Home />
+						</Route>
+					)}
+
+					{!user && (
+						<Route exact path='/auth/login'>
+							<Login />
+						</Route>
+					)}
+
+					{!user && (
+						<Route exact path='/auth/register'>
+							<Register />
+						</Route>
+					)}
+
+					{user && (
+						<Route exact path='/auth/logout'>
+							<Logout />
+						</Route>
+					)}
+
+					{user && (
+						<Route exact path='/profile'>
+							<Profile />
+						</Route>
+					)}
+
+					{user && (
+						<Route path='/app'>
+							<HomeApp />
+						</Route>
+					)}
+
+					<Route exact path='/error'>
+						<Error />
 					</Route>
 
-					<Route exact path='/auth/login'>
-						<Login />
-					</Route>
-
-					<Route exact path='/auth/register'>
-						<Register />
-					</Route>
-
-					<Route exact path='/auth/logout'>
-						<Logout />
-					</Route>
-
-					<Route exact path='/profile'>
-						<Profile />
-					</Route>
-
-					<Route path='/app'>
-						<HomeApp />
-					</Route>
+					<Redirect to='/error' />
 				</Switch>
 				{newNotification && (
 					<NotificationAlert notification={notifications.reverse()[0]} />

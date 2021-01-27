@@ -4,10 +4,11 @@ import {
 	CloseButton,
 	HStack,
 	IconButton,
+	Spinner,
 	Tooltip,
 } from '@chakra-ui/react';
 import axios from 'axios';
-import React, { useContext } from 'react';
+import React, { useContext, useState } from 'react';
 import { Notification } from '../../../config/types';
 
 import { CloseIcon, CheckIcon } from '@chakra-ui/icons';
@@ -23,8 +24,11 @@ interface Props {
 const FriendReqNotification: React.FC<Props> = ({ notification }) => {
 	const { removeNotification } = useContext(NotificationContext);
 	const { updateUser } = useContext(AuthContext);
+	const [loadingAfr, setLoadingAfr] = useState(false);
+	const [loadingRfr, setLoadingRfr] = useState(false);
 
 	const closeNotification = async () => {
+		removeNotification(notification._id);
 		try {
 			await axios({
 				method: 'PATCH',
@@ -33,12 +37,11 @@ const FriendReqNotification: React.FC<Props> = ({ notification }) => {
 					notificationId: notification._id,
 				},
 			});
-
-			removeNotification(notification._id);
 		} catch (_) {}
 	};
 
 	const acceptFriendRequest = async () => {
+		setLoadingAfr(true);
 		try {
 			const res = await axios({
 				url: '/api/v1/users/acceptFriendRequest',
@@ -56,9 +59,11 @@ const FriendReqNotification: React.FC<Props> = ({ notification }) => {
 			updateUser(user);
 			removeNotification(notification._id);
 		} catch (err) {}
+		setLoadingAfr(false);
 	};
 
 	const rejectFriendRequest = async () => {
+		setLoadingRfr(true);
 		try {
 			await axios({
 				url: '/api/v1/users/rejectFriendRequest',
@@ -71,6 +76,7 @@ const FriendReqNotification: React.FC<Props> = ({ notification }) => {
 
 			removeNotification(notification._id);
 		} catch (err) {}
+		setLoadingRfr(false);
 	};
 
 	return (
@@ -97,13 +103,22 @@ const FriendReqNotification: React.FC<Props> = ({ notification }) => {
 						label='Accept Friend Request'
 						aria-label='Accept Friend Request tooltip'
 						hasArrow>
-						<IconButton
-							onClick={acceptFriendRequest}
-							color='green.600'
-							{...styles.iconbtn}
-							aria-label='accept friend request'
-							icon={<CheckIcon />}
-						/>
+						{!loadingAfr ? (
+							<IconButton
+								onClick={acceptFriendRequest}
+								color='green.600'
+								{...styles.iconbtn}
+								aria-label='accept friend request'
+								icon={<CheckIcon />}
+							/>
+						) : (
+							<IconButton
+								color='green.600'
+								{...styles.iconbtn}
+								aria-label='accept friend request loading'
+								icon={<Spinner />}
+							/>
+						)}
 					</Tooltip>
 				)}
 				{notification.type === 'friendRequestSent' && (
@@ -113,12 +128,21 @@ const FriendReqNotification: React.FC<Props> = ({ notification }) => {
 						label='Reject Friend Request'
 						aria-label='Reject Friend Request tooltip'
 						hasArrow>
-						<IconButton
-							color='red.600'
-							{...styles.iconbtn}
-							aria-label='reject friend request'
-							icon={<CloseIcon />}
-						/>
+						{!loadingRfr ? (
+							<IconButton
+								color='red.600'
+								{...styles.iconbtn}
+								aria-label='reject friend request'
+								icon={<CloseIcon />}
+							/>
+						) : (
+							<IconButton
+								color='green.600'
+								{...styles.iconbtn}
+								aria-label='accept friend request loading'
+								icon={<Spinner />}
+							/>
+						)}
 					</Tooltip>
 				)}
 			</HStack>

@@ -98,7 +98,10 @@ const CreatePost = () => {
 				return history.push({ pathname: '/app/public' });
 			}
 		} catch (err) {
-			let message = err.response.data.message || 'Something went wrong';
+			let message = 'Something went wrong';
+			if (err.response) {
+				message = err.response.data.message;
+			}
 			setAlert('error', message);
 		}
 	};
@@ -149,7 +152,7 @@ const CreatePost = () => {
 								onSubmit={(values: { content: string; group?: string }) => {
 									onFormSubmit(values);
 								}}>
-								{() => {
+								{({ isSubmitting }) => {
 									return (
 										<Form autoComplete='off'>
 											<FormControl mb={5}>
@@ -205,6 +208,7 @@ const CreatePost = () => {
 											)}
 											<ModalFooter>
 												<Button
+													isLoading={isSubmitting}
 													type='submit'
 													colorScheme='green'
 													mr={4}

@@ -1,3 +1,8 @@
+import React, { Suspense, useContext } from 'react';
+import * as Yup from 'yup';
+import axios from 'axios';
+import { Form, Formik } from 'formik';
+import { useHistory } from 'react-router-dom';
 import {
 	Box,
 	IconButton,
@@ -14,23 +19,23 @@ import {
 	TabPanel,
 	Avatar,
 } from '@chakra-ui/react';
-import React from 'react';
-import { useContext } from 'react';
-import { AuthContext } from '../../store/context/AuthContext';
 
 import { SmallAddIcon, EditIcon, CheckIcon } from '@chakra-ui/icons';
-import InputField from '../../components/Form/InputField';
-import { Form, Formik } from 'formik';
 
-import * as Yup from 'yup';
 import useCroppedImage from '../../hooks/useCroppedImage';
-import ImageCropper from '../../components/ImageCropper/ImageCropper';
-import axios from 'axios';
 import useAlert from '../../hooks/useAlert';
-import { useHistory } from 'react-router-dom';
-import BaseAlert from '../../components/Alert/BaseAlert';
+
+import { AuthContext } from '../../store/context/AuthContext';
+
+import Loader from '../../components/Spinner/Spinner';
 
 import styles from './profileStyles';
+
+const InputField = React.lazy(() => import('../../components/Form/InputField'));
+const ImageCropper = React.lazy(
+	() => import('../../components/ImageCropper/ImageCropper')
+);
+const BaseAlert = React.lazy(() => import('../../components/Alert/BaseAlert'));
 
 const detailsSchema = Yup.object().shape({
 	firstName: Yup.string().required('Please provide your firstname'),
@@ -105,7 +110,7 @@ const Profile = () => {
 	const history = useHistory();
 
 	return (
-		<>
+		<Suspense fallback={<Loader />}>
 			{isAlertOpen && <BaseAlert alertDetails={alertDetails} />}
 			{image && imageUrl && (
 				<ImageCropper
@@ -309,7 +314,7 @@ const Profile = () => {
 					</Box>
 				</SimpleGrid>
 			</Box>
-		</>
+		</Suspense>
 	);
 };
 

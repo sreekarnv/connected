@@ -100,7 +100,10 @@ const CreateGroup = () => {
 
 			onCreateGroupClose();
 		} catch (err) {
-			let message = err.response.data.message || 'Something went wrong';
+			let message = 'Something went wrong';
+			if (err.response) {
+				message = err.response.data.message;
+			}
 			setAlert('error', message);
 		}
 	};
@@ -149,7 +152,7 @@ const CreateGroup = () => {
 								onSubmit={(values: { name: string; description?: string }) => {
 									onFormSubmit(values);
 								}}>
-								{() => {
+								{({ isSubmitting }) => {
 									return (
 										<Form autoComplete='off'>
 											<InputField name='name' label='Group Name' />
@@ -190,6 +193,7 @@ const CreateGroup = () => {
 											)}
 											<ModalFooter>
 												<Button
+													loading={isSubmitting}
 													type='submit'
 													colorScheme='green'
 													mr={4}

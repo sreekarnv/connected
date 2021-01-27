@@ -5,6 +5,7 @@ import { SocketContext } from './SocketContext';
 import { AuthContext } from './AuthContext';
 import { Group, Notification, User } from '../../config/types';
 import axios from 'axios';
+import { useLocation } from 'react-router-dom';
 
 export const SearchContext = React.createContext<Partial<any>>({});
 
@@ -25,35 +26,41 @@ const SearchContextProvider = ({ children }: any) => {
 		[groups]
 	);
 
-	useEffect(() => {
-		const findGroups = async () => {
-			try {
-				const res = await axios({
-					method: 'GET',
-					url: '/api/v1/groups/new',
-				});
-
-				setGroups(res.data.groups);
-			} catch (err) {}
-		};
-
-		findGroups();
-	}, []);
+	const { pathname } = useLocation();
 
 	useEffect(() => {
-		const findFriends = async () => {
-			try {
-				const res = await axios({
-					method: 'GET',
-					url: '/api/v1/users/find-friends',
-				});
+		if (pathname.startsWith('/app') || pathname.startsWith('/profile')) {
+			const findGroups = async () => {
+				try {
+					const res = await axios({
+						method: 'GET',
+						url: '/api/v1/groups/new',
+					});
 
-				setPeople(res.data.users);
-			} catch (err) {}
-		};
+					setGroups(res.data.groups);
+				} catch (err) {}
+			};
 
-		findFriends();
-	}, []);
+			findGroups();
+		}
+	}, [pathname]);
+
+	useEffect(() => {
+		if (pathname.startsWith('/app') || pathname.startsWith('/profile')) {
+			const findFriends = async () => {
+				try {
+					const res = await axios({
+						method: 'GET',
+						url: '/api/v1/users/find-friends',
+					});
+
+					setPeople(res.data.users);
+				} catch (err) {}
+			};
+
+			findFriends();
+		}
+	}, [pathname]);
 
 	useEffect(() => {
 		if (user && to) {

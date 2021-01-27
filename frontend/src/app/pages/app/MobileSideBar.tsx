@@ -9,7 +9,6 @@ import {
 	Grid,
 	VStack,
 } from '@chakra-ui/react';
-import SidebarItem from './components/Nav/SidebarNavItem';
 
 import GroupImage from './../../../assets/images/sidebar/group.svg';
 import FriendImage from './../../../assets/images/sidebar/friends.svg';
@@ -19,6 +18,8 @@ import { AuthContext } from '../../store/context/AuthContext';
 
 import { User as UserType } from './../../config/types';
 import UserAvatar from '../../components/UserAvatar/UserAvatar';
+
+import SidebarItem from './components/Nav/SidebarNavItem';
 import Hidden from '../../components/Hidden/Hidden';
 
 const MobileSideBar: React.FC<any> = ({ isOpen, onClose }) => {

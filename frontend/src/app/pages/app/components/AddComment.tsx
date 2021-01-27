@@ -81,27 +81,34 @@ const AddComment: React.FC<Props> = ({
 
 									onClose();
 								} catch (err) {
-									setAlert(
-										'error',
-										err.response.data.message || 'something went wrong'
-									);
+									let message = 'Something went wrong';
+									if (err.response) {
+										message = err.response.data.message;
+									}
+									setAlert('error', message);
 								}
 							}}>
-							<Form>
-								<TextAreaField
-									placeholder='Write your comment here...'
-									label='Your Comment'
-									name='content'
-									className='placeholder'
-									{...styles.textarea}
-								/>
-
-								<ModalFooter>
-									<Button type='submit' {...styles.cta}>
-										Submit
-									</Button>
-								</ModalFooter>
-							</Form>
+							{({ isSubmitting }) => {
+								return (
+									<Form autoComplete='off'>
+										<TextAreaField
+											placeholder='Write your comment here...'
+											label='Your Comment'
+											name='content'
+											className='placeholder'
+											{...styles.textarea}
+										/>
+										<ModalFooter>
+											<Button
+												isLoading={isSubmitting}
+												type='submit'
+												{...styles.cta}>
+												Submit
+											</Button>
+										</ModalFooter>
+									</Form>
+								);
+							}}
 						</Formik>
 					</ModalBody>
 				</ModalContent>

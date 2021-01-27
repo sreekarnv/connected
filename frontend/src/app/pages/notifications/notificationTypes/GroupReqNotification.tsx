@@ -4,10 +4,11 @@ import {
 	CloseButton,
 	HStack,
 	IconButton,
+	Spinner,
 	Tooltip,
 } from '@chakra-ui/react';
 import axios from 'axios';
-import React, { useContext } from 'react';
+import React, { useContext, useState } from 'react';
 import { Notification } from '../../../config/types';
 
 import { CloseIcon, CheckIcon } from '@chakra-ui/icons';
@@ -23,8 +24,11 @@ interface Props {
 const GroupReqNotification: React.FC<Props> = ({ notification }) => {
 	const { removeNotification } = useContext(NotificationContext);
 	const { user } = useContext(AuthContext);
+	const [loadingAgr, setLoadingAgr] = useState(false);
+	const [loadingRgr, setLoadingRgr] = useState(false);
 
 	const closeNotification = async () => {
+		removeNotification(notification._id);
 		try {
 			await axios({
 				method: 'PATCH',
@@ -33,12 +37,11 @@ const GroupReqNotification: React.FC<Props> = ({ notification }) => {
 					notificationId: notification._id,
 				},
 			});
-
-			removeNotification(notification._id);
 		} catch (_) {}
 	};
 
 	const acceptGroupRequest = async () => {
+		setLoadingAgr(true);
 		try {
 			await axios({
 				url: `api/v1/groups/${notification.group._id}/acceptGroupJoinRequest`,
@@ -50,9 +53,11 @@ const GroupReqNotification: React.FC<Props> = ({ notification }) => {
 
 			closeNotification();
 		} catch (err) {}
+		setLoadingAgr(false);
 	};
 
 	const rejectGroupRequest = async () => {
+		setLoadingRgr(true);
 		try {
 			await axios({
 				url: `api/v1/groups/${user._id}/rejectGroupJoinRequest`,
@@ -65,6 +70,7 @@ const GroupReqNotification: React.FC<Props> = ({ notification }) => {
 
 			closeNotification();
 		} catch (err) {}
+		setLoadingRgr(false);
 	};
 
 	return (
@@ -91,13 +97,22 @@ const GroupReqNotification: React.FC<Props> = ({ notification }) => {
 						label='Accept Friend Request'
 						aria-label='Accept Friend Request tooltip'
 						hasArrow>
-						<IconButton
-							onClick={acceptGroupRequest}
-							color='green.600'
-							{...styles.iconbtn}
-							aria-label='accept friend request'
-							icon={<CheckIcon />}
-						/>
+						{!loadingAgr ? (
+							<IconButton
+								onClick={acceptGroupRequest}
+								color='green.600'
+								{...styles.iconbtn}
+								aria-label='accept friend request'
+								icon={<CheckIcon />}
+							/>
+						) : (
+							<IconButton
+								color='green.600'
+								{...styles.iconbtn}
+								aria-label='accept friend request loading'
+								icon={<Spinner />}
+							/>
+						)}
 					</Tooltip>
 				)}
 				{notification.type === 'joinGroupRequestSent' && (
@@ -107,12 +122,21 @@ const GroupReqNotification: React.FC<Props> = ({ notification }) => {
 						label='Reject Group Request'
 						aria-label='Reject group Request tooltip'
 						hasArrow>
-						<IconButton
-							color='red.600'
-							{...styles.iconbtn}
-							aria-label='reject group request'
-							icon={<CloseIcon />}
-						/>
+						{!loadingRgr ? (
+							<IconButton
+								color='red.600'
+								{...styles.iconbtn}
+								aria-label='reject group request'
+								icon={<CloseIcon />}
+							/>
+						) : (
+							<IconButton
+								color='red.600'
+								{...styles.iconbtn}
+								aria-label='reject friend request loading'
+								icon={<Spinner />}
+							/>
+						)}
 					</Tooltip>
 				)}
 			</HStack>

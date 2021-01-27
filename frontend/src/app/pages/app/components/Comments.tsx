@@ -54,7 +54,7 @@ const Comments: React.FC<Props> = ({
 				onClose={onAddCommentClose}
 				setComments={setComments}
 			/>
-			<Modal isOpen={isOpen} onClose={onClose}>
+			<Modal {...styles.container} isOpen={isOpen} onClose={onClose}>
 				<ModalOverlay />
 				<ModalContent {...styles.contentOuterBox}>
 					<Box {...styles.contentInnerBox}>
