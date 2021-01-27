@@ -52,6 +52,7 @@ const NavItem: React.FC<Props> = (props) => {
 				_active={{
 					bg: 'transparent',
 				}}
+				color={color || logout ? 'red.600' : ''}
 				activeClassName='navbar--active'
 				exact={exact}
 				to={to}

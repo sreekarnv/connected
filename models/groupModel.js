@@ -30,10 +30,6 @@ const groupSchema = new mongoose.Schema(
 				required: [true, 'post must belong to a user'],
 			},
 		],
-		createdAt: {
-			type: Date,
-			default: Date.now(),
-		},
 		requests: [
 			{
 				type: mongoose.Schema.ObjectId,
@@ -47,6 +43,7 @@ const groupSchema = new mongoose.Schema(
 	{
 		toObject: { virtuals: true },
 		toJSON: { virtuals: true },
+		timestamps: true,
 	}
 );
 

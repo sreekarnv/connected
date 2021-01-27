@@ -4,11 +4,14 @@ import './scss/main.scss';
 
 import App from './app/App';
 import { ColorModeScript } from '@chakra-ui/react';
+import AuthContextProvider from './app/store/context/AuthContext';
 
 const app: JSX.Element = (
 	<React.StrictMode>
-		<ColorModeScript initialColorMode='light' />
-		<App />
+		<AuthContextProvider>
+			<ColorModeScript initialColorMode='light' />
+			<App />
+		</AuthContextProvider>
 	</React.StrictMode>
 );
 

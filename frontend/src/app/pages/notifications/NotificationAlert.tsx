@@ -29,11 +29,21 @@ const NotificationAlert: React.FC<Props> = ({ notification }) => {
 
 		return (
 			<Alert
-				w='max-content'
 				pos='absolute'
-				bottom='30px'
-				minW='500px'
-				right='30px'
+				top={{
+					md: 'auto',
+					sm: '50px',
+				}}
+				bottom={{
+					lg: '30px',
+					md: '100px',
+				}}
+				maxW={{ md: 'max-content', sm: '100%' }}
+				minW={{ md: '500px' }}
+				right={{
+					md: '30px',
+					sm: '0',
+				}}
 				status='info'
 				variant='solid'>
 				<AlertIcon />

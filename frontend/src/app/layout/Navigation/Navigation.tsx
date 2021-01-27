@@ -17,7 +17,6 @@ import {
 } from '@chakra-ui/react';
 
 import { NavLink } from 'react-router-dom';
-import NavItem from './NavItem';
 import './styles/navigation.scss';
 import { AuthContext } from '../../store/context/AuthContext';
 
@@ -25,12 +24,15 @@ import { HamburgerIcon, ChevronDownIcon } from '@chakra-ui/icons';
 import { ReactComponent as PostNewIcon } from './../../../assets/icons/post_add.svg';
 import { ReactComponent as GroupNewIcon } from './../../../assets/icons/group_add.svg';
 import { ReactComponent as NotificationIcon } from './../../../assets/icons/notifications.svg';
-import NavMobile from './NavMobile';
-import UserAvatar from '../../components/UserAvatar/UserAvatar';
-import Hidden from '../../components/Hidden/Hidden';
+
 import { UIContext } from '../../store/context/UiContext';
-import ThemeToggler from '../../components/ThemeToggler/ThemeToggler';
 import { NotificationContext } from '../../store/context/NotificationContext';
+
+import NavItem from './NavItem';
+import Hidden from '../../components/Hidden/Hidden';
+import ThemeToggler from '../../components/ThemeToggler/ThemeToggler';
+import NavMobile from './NavMobile';
+import UserAvatar from './../../components/UserAvatar/UserAvatar';
 
 const Navigation: React.FC<any> = () => {
 	const { user } = useContext(AuthContext);

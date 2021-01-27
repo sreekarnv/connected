@@ -100,11 +100,10 @@ const CreateGroup = () => {
 
 			onCreateGroupClose();
 		} catch (err) {
-			let message = 'Something went wrong';
 			if (err.response) {
-				message = err.response.data.message;
+				let message = err.response.data.message;
+				setAlert('error', message);
 			}
-			setAlert('error', message);
 		}
 	};
 

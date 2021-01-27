@@ -6,7 +6,8 @@ import { NotificationContext } from '../../store/context/NotificationContext';
 import Loader from '../../components/Spinner/Spinner';
 import NotificationAlert from '../../pages/notifications/NotificationAlert';
 import { AuthContext } from '../../store/context/AuthContext';
-import Error from '../../pages/error/Error';
+import ProtectedRoute from '../../utils/ProtectedRoute';
+import UnProtectedRoute from '../../utils/UnProtectedRoute';
 
 const HomeApp = React.lazy(() => import('../../pages/app/HomeApp'));
 const Login = React.lazy(() => import('../../pages/auth/Login'));
@@ -14,6 +15,7 @@ const Register = React.lazy(() => import('../../pages/auth/Register'));
 const Logout = React.lazy(() => import('../../pages/auth/Logout'));
 const Home = React.lazy(() => import('../../pages/home/Home'));
 const Profile = React.lazy(() => import('../../pages/profile/Profile'));
+const Error = React.lazy(() => import('./../../pages/error/Error'));
 
 const Body: React.FC = () => {
 	const { notifications } = useContext(NotificationContext);
@@ -39,7 +41,7 @@ const Body: React.FC = () => {
 		}
 	}, [newNotification]);
 
-	if (!user && userInit) {
+	if (userInit) {
 		return <Loader />;
 	}
 
@@ -47,41 +49,29 @@ const Body: React.FC = () => {
 		<>
 			<Suspense fallback={<Loader />}>
 				<Switch>
-					{!user && (
-						<Route path='/' exact>
-							<Home />
-						</Route>
-					)}
+					<UnProtectedRoute path='/' exact>
+						<Home />
+					</UnProtectedRoute>
 
-					{!user && (
-						<Route exact path='/auth/login'>
-							<Login />
-						</Route>
-					)}
+					<UnProtectedRoute exact path='/auth/login'>
+						<Login />
+					</UnProtectedRoute>
 
-					{!user && (
-						<Route exact path='/auth/register'>
-							<Register />
-						</Route>
-					)}
+					<UnProtectedRoute exact path='/auth/register'>
+						<Register />
+					</UnProtectedRoute>
 
-					{user && (
-						<Route exact path='/auth/logout'>
-							<Logout />
-						</Route>
-					)}
+					<Route exact path='/auth/logout'>
+						<Logout />
+					</Route>
 
-					{user && (
-						<Route exact path='/profile'>
-							<Profile />
-						</Route>
-					)}
+					<ProtectedRoute user={user} exact path='/profile'>
+						<Profile />
+					</ProtectedRoute>
 
-					{user && (
-						<Route path='/app'>
-							<HomeApp />
-						</Route>
-					)}
+					<Route path='/app'>
+						<HomeApp />
+					</Route>
 
 					<Route exact path='/error'>
 						<Error />

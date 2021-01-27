@@ -1,9 +1,10 @@
 import { Grid, GridItem } from '@chakra-ui/react';
 import React, { Suspense, useContext, useEffect } from 'react';
-import { Route, useHistory, useRouteMatch } from 'react-router-dom';
+import { useHistory, useRouteMatch } from 'react-router-dom';
 import Hidden from '../../components/Hidden/Hidden';
 
 import { AuthContext } from '../../store/context/AuthContext';
+import ProtectedRoute from '../../utils/ProtectedRoute';
 
 import styles from './homeAppStyles';
 
@@ -50,21 +51,21 @@ const HomeApp = () => {
 						className='hide-scrollbar'
 						overflowY='scroll'
 						{...styles.content}>
-						<Route exact path={`${route.url}/public`}>
+						<ProtectedRoute exact path={`${route.url}/public`}>
 							<Public />
-						</Route>
-						<Route exact path={`${route.url}/groups/:groupId/:slug`}>
+						</ProtectedRoute>
+						<ProtectedRoute exact path={`${route.url}/groups/:groupId/:slug`}>
 							<Group />
-						</Route>
-						<Route exact path={`${route.url}/find-friends`}>
+						</ProtectedRoute>
+						<ProtectedRoute exact path={`${route.url}/find-friends`}>
 							<FindFriends />
-						</Route>
-						<Route exact path={`${route.url}/find-groups`}>
+						</ProtectedRoute>
+						<ProtectedRoute exact path={`${route.url}/find-groups`}>
 							<FindGroups />
-						</Route>
-						<Route exact path={`${route.url}/friends/:friendId`}>
+						</ProtectedRoute>
+						<ProtectedRoute exact path={`${route.url}/friends/:friendId`}>
 							<FriendProfile />
-						</Route>
+						</ProtectedRoute>
 					</GridItem>
 					<GridItem {...styles.rightSidebar}>
 						<Hidden hide={{ sm: true, md: true }}>

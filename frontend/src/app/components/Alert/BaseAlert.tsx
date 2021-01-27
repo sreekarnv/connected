@@ -12,9 +12,27 @@ const BaseAlert: React.FC<Props> = ({ alertDetails }) => {
 			variant='solid'
 			borderRadius='2px'
 			pos='absolute'
-			top='20%'
-			left='38%'
-			maxW='500px'
+			top={{
+				'1778px': '20%',
+				xl: '8%',
+				md: '6%',
+				sm: '12%',
+			}}
+			m={{
+				sm: '0 auto',
+			}}
+			zIndex='100'
+			left={{
+				'1778px': '38%',
+				xl: '35%',
+				lg: '28%',
+				md: '20%',
+				sm: '0%',
+			}}
+			maxW={{
+				md: '500px',
+				sm: '100%',
+			}}
 			status={alertDetails?.status}>
 			<AlertIcon />
 			<AlertTitle>{alertDetails?.message}</AlertTitle>

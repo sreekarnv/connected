@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useCallback } from 'react';
 import axios, { AxiosResponse } from 'axios';
 
 import reducer, { initialState } from '../reducers/authReducers';
@@ -14,29 +14,29 @@ const AuthContextProvider = ({ children }: any) => {
 		initialState
 	);
 
-	React.useEffect(() => {
-		const checkUserExists = async () => {
-			dispatch({ type: actionTypes.UPDATE_USER_INIT });
-			try {
-				const res: AxiosResponse = await axios({
-					url: '/api/v1/users/checkAuth',
-					method: 'GET',
-				});
+	const checkUserExists = useCallback(async () => {
+		dispatch({ type: actionTypes.UPDATE_USER_INIT });
+		try {
+			const res: AxiosResponse = await axios({
+				url: '/api/v1/users/checkAuth',
+				method: 'GET',
+			});
 
-				dispatch({
-					type: actionTypes.UPDATE_USER_SUCCESS,
-					user: res.data.user,
-				});
-			} catch (_) {
-				dispatch({
-					type: actionTypes.UPDATE_USER_FAILED,
-					error: null,
-				});
-			}
-		};
-
-		checkUserExists();
+			dispatch({
+				type: actionTypes.UPDATE_USER_SUCCESS,
+				user: res.data.user,
+			});
+		} catch (_) {
+			dispatch({
+				type: actionTypes.UPDATE_USER_FAILED,
+				error: null,
+			});
+		}
 	}, []);
+
+	React.useEffect(() => {
+		checkUserExists();
+	}, [checkUserExists]);
 
 	const logoutUser: () => void = async () => {
 		dispatch({ type: actionTypes.LOGOUT_USER_INIT });
@@ -104,6 +104,7 @@ const AuthContextProvider = ({ children }: any) => {
 		getUserGroups,
 		userCreateNewGroup,
 		updateUser,
+		checkUserExists,
 	};
 
 	return (

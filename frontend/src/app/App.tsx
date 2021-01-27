@@ -1,41 +1,52 @@
-import React from 'react';
+import React, { Suspense } from 'react';
 import { BrowserRouter } from 'react-router-dom';
 import { ChakraProvider, useDisclosure } from '@chakra-ui/react';
 
 import theme from './config/themeConfig';
 
-import Navigation from './layout/Navigation/Navigation';
-import Body from './layout/Body/Body';
-import Footer from './layout/Footer/Footer';
-import AuthContextProvider from './store/context/AuthContext';
 import UIContextProvider from './store/context/UiContext';
 import SearchContextProvider from './store/context/SearchContext';
-import Notifications from './pages/notifications/Notifications';
 import NotificationContextProvider from './store/context/NotificationContext';
-import CreatePost from './pages/app/containers/CreatePost';
-import CreateGroup from './pages/app/containers/CreateGroup';
+
+import Loader from './components/Spinner/Spinner';
+
+const Notifications = React.lazy(
+	() => import('./pages/notifications/Notifications')
+);
+
+const CreatePost = React.lazy(
+	() => import('./pages/app/containers/CreatePost')
+);
+
+const CreateGroup = React.lazy(
+	() => import('./pages/app/containers/CreateGroup')
+);
+
+const Navigation = React.lazy(() => import('./layout/Navigation/Navigation'));
+const Body = React.lazy(() => import('./layout/Body/Body'));
+const Footer = React.lazy(() => import('./layout/Footer/Footer'));
 
 const App: React.FC = () => {
 	const { isOpen, onClose } = useDisclosure();
 
 	return (
 		<BrowserRouter>
-			<AuthContextProvider>
-				<NotificationContextProvider>
-					<SearchContextProvider>
-						<ChakraProvider theme={theme}>
-							<UIContextProvider>
+			<NotificationContextProvider>
+				<SearchContextProvider>
+					<ChakraProvider theme={theme}>
+						<UIContextProvider>
+							<Suspense fallback={<Loader />}>
 								<Notifications isOpen={isOpen} onClose={onClose} />
 								<CreatePost />
 								<CreateGroup />
 								<Navigation />
 								<Body />
 								<Footer />
-							</UIContextProvider>
-						</ChakraProvider>
-					</SearchContextProvider>
-				</NotificationContextProvider>
-			</AuthContextProvider>
+							</Suspense>
+						</UIContextProvider>
+					</ChakraProvider>
+				</SearchContextProvider>
+			</NotificationContextProvider>
 		</BrowserRouter>
 	);
 };
