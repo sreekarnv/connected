@@ -49,7 +49,7 @@ const LeftSidebar = () => {
 					as='div'
 					bg='secondary.600'
 					heading='My Groups'
-					subHeading={`${userGroups.length} groups`}
+					subHeading={`${userGroups && userGroups.length} groups`}
 					image={GroupImage}
 					active={group}
 					onClick={() => {
@@ -96,7 +96,7 @@ const LeftSidebar = () => {
 					}}
 					as='div'
 					heading='My Friends'
-					subHeading={`${user.friends.length} friends`}
+					subHeading={`${user && user.friends && user.friends.length} friends`}
 					image={FriendImage}
 					active={friend}
 				/>
