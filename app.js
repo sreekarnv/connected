@@ -12,24 +12,25 @@ const morgan = require('morgan');
 
 const errorController = require('./controllers/errorController');
 
-const app = express();
+exports.app1 = express();
+exports.app2 = express();
 
-app.enable('trust proxy');
+this.app1.enable('trust proxy');
 
-app.use(cors());
+this.app1.use(cors());
 
 if (process.env.NODE_ENV === 'development') {
-	app.use(morgan('dev'));
+	this.app1.use(morgan('dev'));
 }
 
 // Security Headers
-app.use(
+this.app1.use(
 	helmet({
 		contentSecurityPolicy: false,
 	})
 );
 
-app.use(cookieParser());
+this.app1.use(cookieParser());
 
 // Rate Limit
 const limiter = rateLimit({
@@ -38,7 +39,7 @@ const limiter = rateLimit({
 	message: 'Too many requests fromt this IP, please try again in an hour',
 });
 
-app.use('/api', limiter);
+this.app1.use('/api', limiter);
 
 // API Routess
 const userRoutes = require('./routes/userRoutes');
@@ -48,42 +49,40 @@ const groupRoutes = require('./routes/groupRoutes');
 const notificationRoutes = require('./routes/notificationRoutes');
 
 // setting https headers
-app.use(cookieParser());
-app.use(express.json());
+this.app1.use(cookieParser());
+this.app1.use(express.json());
 
 // cleaning malicious Data against NoSQL query injections
-app.use(mongoSanitize());
+this.app1.use(mongoSanitize());
 
 // cleaning malicious Data aganinst XSS
-app.use(xss());
+this.app1.use(xss());
 
-app.use('/', express.static(path.join(__dirname, 'frontend/build')));
+this.app1.use('/', express.static(path.join(__dirname, 'frontend/build')));
 
-app.use(
+this.app2.use(
 	'/uploads/users',
 	express.static(path.resolve(__dirname, 'uploads', 'users'))
 );
 
-app.use(
+this.app2.use(
 	'/uploads/groups',
 	express.static(path.resolve(__dirname, 'uploads', 'groups'))
 );
 
-app.use(
+this.app2.use(
 	'/uploads/posts',
 	express.static(path.resolve(__dirname, 'uploads', 'posts'))
 );
 
-app.use('/api/v1/users', userRoutes);
-app.use('/api/v1/groups', groupRoutes);
-app.use('/api/v1/posts', postRoutes);
-app.use('/api/v1/comments', commentRoutes);
-app.use('/api/v1/notifications', notificationRoutes);
+this.app1.use('/api/v1/users', userRoutes);
+this.app1.use('/api/v1/groups', groupRoutes);
+this.app1.use('/api/v1/posts', postRoutes);
+this.app1.use('/api/v1/comments', commentRoutes);
+this.app1.use('/api/v1/notifications', notificationRoutes);
 
-app.use((req, res, next) => {
+this.app2.use((req, res, next) => {
 	res.sendFile(path.resolve(__dirname, 'frontend/build/index.html'));
 });
 
-app.use(errorController);
-
-module.exports = app;
+this.app1.use(errorController);

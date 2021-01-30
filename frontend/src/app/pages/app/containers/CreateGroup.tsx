@@ -17,6 +17,8 @@ import {
 	ModalOverlay,
 	Heading,
 	Text,
+	Flex,
+	IconButton,
 } from '@chakra-ui/react';
 
 import { UIContext } from '../../../store/context/UiContext';
@@ -140,9 +142,12 @@ const CreateGroup = () => {
 						}}>
 						<ModalCloseButton />
 						<ModalHeader>
-							<Heading color='primary.700' py={5}>
-								Create Group
-							</Heading>
+							<Flex>
+								<Heading color='primary.700' py={5}>
+									Create Group
+								</Heading>
+								<IconButton aria-label='add members'></IconButton>
+							</Flex>
 						</ModalHeader>
 						<ModalBody>
 							<Formik

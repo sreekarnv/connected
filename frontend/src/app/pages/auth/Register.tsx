@@ -15,6 +15,7 @@ import BaseAlert from '../../components/Alert/BaseAlert';
 import useAlert from '../../hooks/useAlert';
 import axios from 'axios';
 import { FieldError } from '../../utils/FieldError';
+import Hidden from '../../components/Hidden/Hidden';
 
 const initialValues = {
 	email: '',
@@ -93,33 +94,85 @@ const Register: React.FC = () => {
 						{({ isValid, dirty, isSubmitting }) => {
 							return (
 								<Form autoComplete='off'>
-									<HStack>
-										<InputField
-											name='firstName'
-											label='First Name'
-											type='text'
-										/>
-										<InputField
-											name='middleName'
-											required={false}
-											label='Middle Name'
-											type='text'
-										/>
-										<InputField name='lastName' label='Last Name' type='text' />
-									</HStack>
+									<Hidden hide={{ md: true, sm: true }}>
+										<HStack>
+											<InputField
+												name='firstName'
+												label='First Name'
+												type='text'
+											/>
+											<InputField
+												name='middleName'
+												required={false}
+												label='Middle Name'
+												type='text'
+											/>
+											<InputField
+												name='lastName'
+												label='Last Name'
+												type='text'
+											/>
+										</HStack>
+									</Hidden>
+
+									<Hidden hide={{ lg: true, xl: true }}>
+										<>
+											<HStack>
+												<InputField
+													name='firstName'
+													label='First Name'
+													type='text'
+												/>
+												<InputField
+													name='middleName'
+													required={false}
+													label='Middle Name'
+													type='text'
+												/>
+											</HStack>
+											<InputField
+												name='lastName'
+												label='Last Name'
+												type='text'
+											/>
+										</>
+									</Hidden>
+
 									<InputField name='email' label='Email' type='email' />
 
-									<InputField
-										name='password'
-										label='Password'
-										type='password'
-									/>
+									<Hidden hide={{ md: true, sm: true }}>
+										<>
+											<InputField
+												name='password'
+												label='Password'
+												type='password'
+											/>
 
-									<InputField
-										name='passwordConfirm'
-										label='Password Confirm'
-										type='password'
-									/>
+											<InputField
+												name='passwordConfirm'
+												label='Password Confirm'
+												type='password'
+											/>
+										</>
+									</Hidden>
+
+									<Hidden hide={{ lg: true, xl: true }}>
+										<>
+											<HStack>
+												<InputField
+													name='password'
+													label='Password'
+													type='password'
+												/>
+
+												<InputField
+													name='passwordConfirm'
+													label='Password Confirm'
+													type='password'
+												/>
+											</HStack>
+										</>
+									</Hidden>
 
 									<Button
 										isLoading={isSubmitting}

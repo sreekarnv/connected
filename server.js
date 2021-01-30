@@ -2,13 +2,17 @@ const dotenv = require('dotenv');
 dotenv.config({ path: './config.env' });
 
 const config = require('./config');
-const app = require('./app');
+const { app1, app2 } = require('./app');
 
 console.log(process.env.NODE_ENV);
 // console.log({ ...process.env });
 
-const server = app.listen(process.env.PORT, () => {
+const server = app1.listen(process.env.PORT, () => {
 	console.log(`App running on port ${process.env.PORT}`);
+});
+
+app2.listen(process.env.PORT2, () => {
+	console.log(`App running on port ${process.env.PORT2}`);
 });
 
 config(server);

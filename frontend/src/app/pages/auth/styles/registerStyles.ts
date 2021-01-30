@@ -6,7 +6,7 @@ export const registerContainer = {
 	bgPos: {
 		xl: 'left 15rem',
 		md: 'left auto',
-		sm: 'center 50vh',
+		sm: 'center 70vh',
 	},
 	bgSize: {
 		xl: '40rem',

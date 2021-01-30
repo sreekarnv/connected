@@ -140,7 +140,7 @@ exports.likePost = async (req, res, next) => {
 		const user = req.user.id;
 		const { _id } = req.params;
 
-		const updatedPost = await Post.findOneAndUpdate(
+		let updatedPost = await Post.findOneAndUpdate(
 			{
 				_id,
 				likes: { $ne: user },
@@ -150,7 +150,14 @@ exports.likePost = async (req, res, next) => {
 		);
 
 		if (!updatedPost) {
-			return next(new AppError('you already liked this post', 400));
+			updatedPost = await Post.findOneAndUpdate(
+				{
+					_id,
+					likes: user,
+				},
+				{ $pull: { likes: user } },
+				{ new: true, runValidators: true }
+			);
 		}
 
 		res.status(200).json({
@@ -167,7 +174,7 @@ exports.dislikePost = async (req, res, next) => {
 		const user = req.user.id;
 		const { _id } = req.params;
 
-		const updatedPost = await Post.findOneAndUpdate(
+		let updatedPost = await Post.findOneAndUpdate(
 			{
 				_id,
 				dislikes: { $ne: user },
@@ -177,7 +184,14 @@ exports.dislikePost = async (req, res, next) => {
 		);
 
 		if (!updatedPost) {
-			return next(new AppError('you already disliked this post', 400));
+			updatedPost = await Post.findOneAndUpdate(
+				{
+					_id,
+					dislikes: user,
+				},
+				{ $pull: { dislikes: user } },
+				{ new: true, runValidators: true }
+			);
 		}
 
 		res.status(200).json({

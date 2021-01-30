@@ -140,7 +140,10 @@ const Profile = () => {
 						{!saveImageInit && (
 							<Avatar
 								borderRadius='0'
-								boxSize='400px'
+								boxSize={{
+									md: '400px',
+									sm: '300px',
+								}}
 								src={croppedImage || (user && user.photo)}
 								alt={user && user.firstName}
 							/>

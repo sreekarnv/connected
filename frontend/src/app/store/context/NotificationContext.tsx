@@ -34,26 +34,27 @@ const NotificationContextProvider = ({ children }: any) => {
 
 	useEffect(() => {
 		// Get User Notifications
+		if (user) {
+			const getUserNotifications = async () => {
+				dispatch({ type: actionTypes.GET_USER_NOTIFICATIONS_INIT });
+				try {
+					const res = await axios({
+						method: 'GET',
+						url: '/api/v1/notifications',
+					});
 
-		const getUserNotifications = async () => {
-			dispatch({ type: actionTypes.GET_USER_NOTIFICATIONS_INIT });
-			try {
-				const res = await axios({
-					method: 'GET',
-					url: '/api/v1/notifications',
-				});
+					dispatch({
+						type: actionTypes.GET_USER_NOTIFICATIONS_SUCCESS,
+						notifications: res.data.notifications,
+					});
+				} catch (error) {
+					dispatch({ type: actionTypes.GET_USER_NOTIFICATIONS_FAILED, error });
+				}
+			};
 
-				dispatch({
-					type: actionTypes.GET_USER_NOTIFICATIONS_SUCCESS,
-					notifications: res.data.notifications,
-				});
-			} catch (error) {
-				dispatch({ type: actionTypes.GET_USER_NOTIFICATIONS_FAILED, error });
-			}
-		};
-
-		getUserNotifications();
-	}, []);
+			getUserNotifications();
+		}
+	}, [user]);
 
 	const removeNotification = (notification: string) => {
 		return dispatch({
