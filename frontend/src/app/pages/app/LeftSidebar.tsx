@@ -35,7 +35,6 @@ const LeftSidebar = () => {
 			<VStack spacing={1} w='100%' h='100%'>
 				<SidebarItem
 					heading='Public'
-					subHeading='16 posts'
 					exact
 					bg='primary.200'
 					image={PublicImage}
@@ -50,6 +49,7 @@ const LeftSidebar = () => {
 					as='div'
 					bg='secondary.600'
 					heading='My Groups'
+					subHeading={`${userGroups.length} groups`}
 					image={GroupImage}
 					active={group}
 					onClick={() => {
@@ -96,7 +96,7 @@ const LeftSidebar = () => {
 					}}
 					as='div'
 					heading='My Friends'
-					subHeading='5 friends'
+					subHeading={`${user.friends.length} friends`}
 					image={FriendImage}
 					active={friend}
 				/>

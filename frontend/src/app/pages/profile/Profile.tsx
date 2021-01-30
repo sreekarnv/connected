@@ -1,4 +1,4 @@
-import React, { Suspense, useContext } from 'react';
+import React, { Suspense, useContext, useState } from 'react';
 import * as Yup from 'yup';
 import axios from 'axios';
 import { Form, Formik } from 'formik';
@@ -15,12 +15,14 @@ import {
 	Tabs,
 	TabList,
 	Tab,
+	SkeletonText,
+	SkeletonCircle,
 	TabPanels,
 	TabPanel,
 	Avatar,
 } from '@chakra-ui/react';
 
-import { SmallAddIcon, EditIcon, CheckIcon } from '@chakra-ui/icons';
+import { SmallAddIcon, EditIcon, CheckIcon, CloseIcon } from '@chakra-ui/icons';
 
 import useCroppedImage from '../../hooks/useCroppedImage';
 import useAlert from '../../hooks/useAlert';
@@ -74,6 +76,7 @@ const Profile = () => {
 		openImageCropper,
 		resetValues,
 	} = useCroppedImage();
+	const [saveImageInit, setSaveImageInit] = useState(false);
 
 	const detailsInitialValues = {
 		firstName: user.firstName,
@@ -89,6 +92,7 @@ const Profile = () => {
 	};
 
 	const savePhoto = async () => {
+		setSaveImageInit(true);
 		const data = new FormData();
 		data.append('photo', image!);
 		data.append('imageSettings', JSON.stringify(imageSettings!));
@@ -103,6 +107,7 @@ const Profile = () => {
 			updateUser(res.data.user);
 			resetValues();
 		} catch (err) {}
+		setSaveImageInit(false);
 	};
 
 	const { setAlert, isAlertOpen, alertDetails } = useAlert();
@@ -132,12 +137,20 @@ const Profile = () => {
 				</Box>
 				<SimpleGrid {...styles.innerContainer}>
 					<Box alignSelf='center' w='max-content' pos='relative'>
-						<Avatar
-							borderRadius='0'
-							boxSize='400px'
-							src={croppedImage || (user && user.photo)}
-							alt={user && user.firstName}
-						/>
+						{!saveImageInit && (
+							<Avatar
+								borderRadius='0'
+								boxSize='400px'
+								src={croppedImage || (user && user.photo)}
+								alt={user && user.firstName}
+							/>
+						)}
+						{saveImageInit && (
+							<Box boxSize='400px' padding='6' boxShadow='lg' bg='white'>
+								<SkeletonCircle size='10' />
+								<SkeletonText mt='4' noOfLines={8} spacing='4' />
+							</Box>
+						)}
 						<input
 							onChange={(e: any) => setImage(e.target.files[0])}
 							type='file'
@@ -146,6 +159,19 @@ const Profile = () => {
 							style={{ display: 'none' }}
 						/>
 						<ButtonGroup>
+							{image && (
+								<Tooltip hasArrow label='Remove Changes'>
+									<IconButton
+										bottom='20px'
+										left='10px'
+										onClick={resetValues}
+										{...styles.iconbtnDel}
+										aria-label='revert changes'
+										icon={<CloseIcon color='#fff' />}
+									/>
+								</Tooltip>
+							)}
+
 							{image && (
 								<Tooltip hasArrow label='Save Photo'>
 									<IconButton
