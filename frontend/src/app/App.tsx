@@ -1,6 +1,11 @@
 import React, { Suspense } from 'react';
 import { BrowserRouter } from 'react-router-dom';
-import { ChakraProvider, useDisclosure } from '@chakra-ui/react';
+import {
+	ChakraProvider,
+	useDisclosure,
+	useMediaQuery,
+	Text,
+} from '@chakra-ui/react';
 
 import theme from './config/themeConfig';
 
@@ -28,26 +33,35 @@ const Footer = React.lazy(() => import('./layout/Footer/Footer'));
 
 const App: React.FC = () => {
 	const { isOpen, onClose } = useDisclosure();
+	const [moreThan300] = useMediaQuery('(min-width: 320px)');
 
 	return (
-		<BrowserRouter>
-			<NotificationContextProvider>
-				<SearchContextProvider>
-					<ChakraProvider theme={theme}>
-						<UIContextProvider>
-							<Suspense fallback={<Loader />}>
-								<Notifications isOpen={isOpen} onClose={onClose} />
-								<CreatePost />
-								<CreateGroup />
-								<Navigation />
-								<Body />
-								<Footer />
-							</Suspense>
-						</UIContextProvider>
-					</ChakraProvider>
-				</SearchContextProvider>
-			</NotificationContextProvider>
-		</BrowserRouter>
+		<>
+			{moreThan300 ? (
+				<BrowserRouter>
+					<NotificationContextProvider>
+						<SearchContextProvider>
+							<ChakraProvider theme={theme}>
+								<UIContextProvider>
+									<Suspense fallback={<Loader />}>
+										<Notifications isOpen={isOpen} onClose={onClose} />
+										<CreatePost />
+										<CreateGroup />
+										<Navigation />
+										<Body />
+										<Footer />
+									</Suspense>
+								</UIContextProvider>
+							</ChakraProvider>
+						</SearchContextProvider>
+					</NotificationContextProvider>
+				</BrowserRouter>
+			) : (
+				<Text mt={15} colorScheme='primary' textAlign='center'>
+					Use a Larger screen to view this webpage
+				</Text>
+			)}
+		</>
 	);
 };
 

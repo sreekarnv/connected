@@ -6,8 +6,8 @@ const { signToken, decodeToken } = require('./../utils/jwt');
 // register user
 exports.registerUser = async (req, res, next) => {
 	try {
-		if (req.file) {
-			req.body.photo = req.file.filename;
+		if (req.file && req.photo) {
+			user.photo = req.photo;
 		}
 
 		const {

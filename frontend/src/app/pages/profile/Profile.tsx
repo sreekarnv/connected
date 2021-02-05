@@ -144,7 +144,7 @@ const Profile = () => {
 									md: '400px',
 									sm: '300px',
 								}}
-								src={croppedImage || (user && user.photo)}
+								src={croppedImage || (user && user.photo?.url)}
 								alt={user && user.firstName}
 							/>
 						)}
@@ -161,58 +161,60 @@ const Profile = () => {
 							id='image-upload'
 							style={{ display: 'none' }}
 						/>
-						<ButtonGroup>
-							{image && (
-								<Tooltip hasArrow label='Remove Changes'>
-									<IconButton
-										bottom='20px'
-										left='10px'
-										onClick={resetValues}
-										{...styles.iconbtnDel}
-										aria-label='revert changes'
-										icon={<CloseIcon color='#fff' />}
-									/>
-								</Tooltip>
-							)}
+						{!saveImageInit && (
+							<ButtonGroup>
+								{image && (
+									<Tooltip hasArrow label='Remove Changes'>
+										<IconButton
+											bottom='20px'
+											left='10px'
+											onClick={resetValues}
+											{...styles.iconbtnDel}
+											aria-label='revert changes'
+											icon={<CloseIcon color='#fff' />}
+										/>
+									</Tooltip>
+								)}
 
-							{image && (
-								<Tooltip hasArrow label='Save Photo'>
+								{image && (
+									<Tooltip hasArrow label='Save Photo'>
+										<IconButton
+											bottom='20px'
+											right='100px'
+											onClick={savePhoto}
+											{...styles.iconbtn}
+											aria-label='save photo'
+											icon={<CheckIcon color='#fff' />}
+										/>
+									</Tooltip>
+								)}
+
+								{image && (
+									<Tooltip hasArrow label='Edit Photo'>
+										<IconButton
+											bottom='20px'
+											right='55px'
+											onClick={openImageCropper}
+											{...styles.iconbtn}
+											aria-label='edit photo'
+											icon={<EditIcon color='#fff' />}
+										/>
+									</Tooltip>
+								)}
+
+								<Tooltip hasArrow label='Change Photo'>
 									<IconButton
 										bottom='20px'
-										right='100px'
-										onClick={savePhoto}
+										right='10px'
+										as='label'
+										htmlFor='image-upload'
 										{...styles.iconbtn}
-										aria-label='save photo'
-										icon={<CheckIcon color='#fff' />}
+										aria-label='change photo'
+										icon={<SmallAddIcon color='#fff' />}
 									/>
 								</Tooltip>
-							)}
-
-							{image && (
-								<Tooltip hasArrow label='Edit Photo'>
-									<IconButton
-										bottom='20px'
-										right='55px'
-										onClick={openImageCropper}
-										{...styles.iconbtn}
-										aria-label='edit photo'
-										icon={<EditIcon color='#fff' />}
-									/>
-								</Tooltip>
-							)}
-
-							<Tooltip hasArrow label='Change Photo'>
-								<IconButton
-									bottom='20px'
-									right='10px'
-									as='label'
-									htmlFor='image-upload'
-									{...styles.iconbtn}
-									aria-label='change photo'
-									icon={<SmallAddIcon color='#fff' />}
-								/>
-							</Tooltip>
-						</ButtonGroup>
+							</ButtonGroup>
+						)}
 					</Box>
 					<Box alignSelf='center' w='100%'>
 						<Tabs>

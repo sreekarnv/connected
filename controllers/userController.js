@@ -5,7 +5,7 @@ const { v4: uuidv4 } = require('uuid');
 const imageUpload = require('../utils/imageUpload');
 const AppError = require('../utils/AppError');
 const mongoose = require('mongoose');
-// const notificationController = require('./notificationController');
+const cloudinary = require('cloudinary').v2;
 
 ///////////////////////////////////////////////////////////////////////
 // UPLOAD AND RESIZE USER IMAGE
@@ -17,23 +17,39 @@ exports.resizeUserImage = async (req, res, next) => {
 		return next();
 	}
 
-	const { height, width, x: left, y: top, scaleX, scaleY } = JSON.parse(
-		req.body.imageSettings
-	);
+	const { height, width, x: left, y: top } = JSON.parse(req.body.imageSettings);
 
 	req.file.filename = `user-${uuidv4()}.${Date.now()}.jpeg`;
 
-	await sharp(req.file.buffer)
-		.extract({
-			left: parseInt(left),
-			top: parseInt(top),
-			width: parseInt(width),
-			height: parseInt(height),
-		})
-		.resize(500, 500)
-		.toFormat('jpeg')
-		.jpeg({ quality: 90 })
-		.toFile(`uploads/users/${req.file.filename}`);
+	try {
+		await sharp(req.file.buffer)
+			.extract({
+				left: parseInt(left),
+				top: parseInt(top),
+				width: parseInt(width),
+				height: parseInt(height),
+			})
+			.resize(2000, 2000)
+			.toFormat('jpeg')
+			.jpeg({ quality: 90 })
+			.toFile(`uploads/users/${req.file.filename}`);
+
+		const uploadedImg = await cloudinary.uploader.upload(
+			`uploads/users/${req.file.filename}`,
+			{ use_filename: true, folder: 'connected/users' }
+		);
+
+		req.photo = {
+			publicId: uploadedImg.public_id,
+			url: uploadedImg.secure_url,
+			name: uploadedImg.original_filename,
+			signature: uploadedImg.signature,
+		};
+	} catch (_) {
+		return next(
+			new AppError('error uploading your image. Please try later', 400)
+		);
+	}
 
 	next();
 };
@@ -66,8 +82,14 @@ exports.updateCurrentUserData = async (req, res, next) => {
 			}
 		).populate('friends');
 
-		if (req.file && req.file.filename) {
-			user.photo = req.file.filename;
+		if (user.photo && user.photo.url) {
+			await cloudinary.uploader.destroy(user.photo.publicId, {
+				signature: user.photo.signature,
+			});
+		}
+
+		if (req.file && req.photo) {
+			user.photo = req.photo;
 			await user.save({ validateBeforeSave: false, session });
 		}
 
@@ -297,6 +319,58 @@ exports.getAllNotUserFriends = async (req, res, next) => {
 			status: 'success',
 			results: users.length,
 			users,
+		});
+	} catch (err) {
+		next(err);
+	}
+};
+
+/////////////////////////////////////////////////////////////////////////
+// UN Friend User
+
+exports.unFriendUser = async (req, res, next) => {
+	const session = await mongoose.startSession();
+	session.startTransaction();
+	try {
+		const { friend: friendId } = req.body;
+
+		const user = await User.findOneAndUpdate(
+			{ _id: req.user._id, friends: friendId },
+			{
+				$pull: { friends: friendId },
+			},
+			{
+				new: true,
+				validateBeforeSave: true,
+				session,
+			}
+		);
+
+		if (!user) {
+		}
+
+		const friend = await User.findOneAndUpdate(
+			{ _id: friendId, friends: user._id },
+			{
+				$pull: { friends: req.user._id },
+			},
+			{
+				new: true,
+				validateBeforeSave: true,
+				session,
+			}
+		);
+
+		if (!user || !friend) {
+			return next(
+				new AppError('Invalid request. This user is not a friend', 400)
+			);
+		}
+
+		res.status(200).json({
+			status: 'success',
+			friend,
+			user,
 		});
 	} catch (err) {
 		next(err);

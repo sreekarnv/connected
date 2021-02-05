@@ -134,7 +134,7 @@ const MobileSideBar: React.FC<any> = ({ isOpen, onClose }) => {
 												bg='primary.700'
 												heading={friend.firstName}
 												user
-												image={friend && friend.photo}
+												image={friend && friend.photo?.url}
 												to={`/app/friends/${friend._id}`}
 											/>
 										);

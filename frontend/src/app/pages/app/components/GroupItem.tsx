@@ -10,9 +10,10 @@ import {
 import { Group as GroupType } from '../../../config/types';
 
 import { ReactComponent as JoinRequestIcon } from './../../../../assets/icons/message.svg';
-import { ReactComponent as GroupsIcon } from './../../../../assets/icons/groups.svg';
+// import { ReactComponent as GroupsIcon } from './../../../../assets/icons/groups.svg';
 import axios from 'axios';
-import { useContext } from 'react';
+import Spinner from './../../../components/Spinner/Spinner';
+import { useContext, useState } from 'react';
 import { SearchContext } from '../../../store/context/SearchContext';
 
 import styles from './groupItemStyles';
@@ -24,8 +25,10 @@ interface Props {
 const GroupItem: React.FC<Props> = (props) => {
 	const { group } = props;
 	const { updateGroups } = useContext(SearchContext);
+	const [loading, setLoading] = useState(false);
 
 	const sendGroupRequest = async () => {
+		setLoading(true);
 		try {
 			await axios({
 				url: `api/v1/groups/${group._id}/sendGroupJoinRequest`,
@@ -34,6 +37,7 @@ const GroupItem: React.FC<Props> = (props) => {
 
 			updateGroups(group._id);
 		} catch (err) {}
+		setLoading(false);
 	};
 
 	return (
@@ -53,14 +57,30 @@ const GroupItem: React.FC<Props> = (props) => {
 					placement='left-start'
 					label='send group join request'
 					{...styles.btnTooltip}>
-					<IconButton
-						onClick={sendGroupRequest}
-						aria-label='send group join request'
-						{...styles.btn}
-						icon={<JoinRequestIcon fill='#fff' />}
-					/>
+					{loading ? (
+						<IconButton
+							color='green.600'
+							bg='gray.700'
+							hover={{
+								bg: 'gray.700',
+							}}
+							active={{
+								bg: 'gray.700',
+							}}
+							size='sm'
+							aria-label='accept friend request loading'
+							icon={<Spinner />}
+						/>
+					) : (
+						<IconButton
+							onClick={sendGroupRequest}
+							aria-label='send group join request'
+							{...styles.btn}
+							icon={<JoinRequestIcon fill='#fff' />}
+						/>
+					)}
 				</Tooltip>
-				<Tooltip
+				{/* <Tooltip
 					hasArrow
 					placement='right-start'
 					label='show group info'
@@ -70,7 +90,7 @@ const GroupItem: React.FC<Props> = (props) => {
 						aria-label='show group info'
 						icon={<GroupsIcon fill='#fff' />}
 					/>
-				</Tooltip>
+				</Tooltip> */}
 			</HStack>
 		</Flex>
 	);

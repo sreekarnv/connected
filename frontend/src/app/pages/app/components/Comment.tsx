@@ -10,7 +10,7 @@ interface Props {
 const Comment: React.FC<Props> = ({ comment }) => {
 	return (
 		<Grid {...styles.container}>
-			<Avatar {...styles.avatar} />
+			<Avatar {...styles.avatar} src={comment.user.photo?.url} />
 			<Flex {...styles.userBox}>
 				<Heading {...styles.userBoxHeading}>
 					{comment.user.fullName ||

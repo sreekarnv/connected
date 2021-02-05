@@ -44,6 +44,8 @@ const RightSidebar = () => {
 					}}
 				/>
 
+				<Divider />
+
 				<SidebarItem
 					heading='Find Friends'
 					bg='primary.500'
@@ -59,8 +61,6 @@ const RightSidebar = () => {
 					exact
 					to='/app/find-groups'
 				/>
-
-				<Divider />
 			</VStack>
 		</Grid>
 	);

@@ -60,7 +60,7 @@ app.use('/', express.static(path.join(__dirname, 'frontend/build')));
 
 app.use(
 	'/uploads/users',
-	express.static(path.resolve(__dirname, 'uploads', 'users'))
+	express.static(path.join(__dirname, 'uploads', 'users'))
 );
 
 app.use(

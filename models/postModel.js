@@ -3,12 +3,14 @@ const mongoose = require('mongoose');
 const postSchema = new mongoose.Schema(
 	{
 		content: {
-			type: 'string',
+			type: String,
 			trim: true,
 			required: [true, 'post must have content'],
 		},
 		photo: {
-			type: 'string',
+			name: String,
+			publicId: String,
+			url: String,
 		},
 		user: {
 			type: mongoose.Schema.ObjectId,

@@ -29,17 +29,22 @@ const TextAreaField: React.FC<Props> = ({
 	return (
 		<FormControl mb={5} isRequired={required} isInvalid={touched && !!error}>
 			<FormLabel htmlFor={name}>{label}</FormLabel>
-			<Textarea
-				id={name}
-				as={Field}
-				focusBorderColor='primary.500'
-				size={size}
-				value={value}
-				bg={bg}
-				bgColor={touched && error ? 'red.200' : 'secondary.200'}
-				{...field}
-				{...props}
-			/>
+			<Field>
+				{() => {
+					return (
+						<Textarea
+							focusBorderColor='primary.500'
+							id={name}
+							size={size}
+							value={value}
+							bg={bg}
+							bgColor={touched && error ? 'red.200' : 'secondary.200'}
+							{...field}
+							{...props}
+						/>
+					);
+				}}
+			</Field>
 			<FormErrorMessage>{touched && error ? error : ''}</FormErrorMessage>
 		</FormControl>
 	);

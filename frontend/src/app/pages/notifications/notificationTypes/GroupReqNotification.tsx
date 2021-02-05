@@ -80,7 +80,7 @@ const GroupReqNotification: React.FC<Props> = ({ notification }) => {
 			)}
 
 			<HStack spacing={10}>
-				<Avatar size='sm' src={notification.sender.photo} />
+				<Avatar size='sm' src={notification.sender.photo?.url} />
 				<Box as='span' {...styles.senderName}>
 					{notification.sender.firstName}
 				</Box>

@@ -1,4 +1,4 @@
-const dbConfig = require('./db');
+const { dbConfig } = require('./db');
 const sockets = require('./socket');
 const changeStreams = require('./changeStreams');
 

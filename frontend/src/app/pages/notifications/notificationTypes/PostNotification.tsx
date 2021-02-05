@@ -57,7 +57,7 @@ const PostNotification: React.FC<Props> = ({ notification }) => {
 				justifyContent='center'
 				alignItems='center'>
 				<Flex alignItems='center'>
-					<Avatar size='sm' src={notification.sender.photo} />
+					<Avatar size='sm' src={notification.sender.photo?.url} />
 					<Box ml={3} alignSelf='flex-end' as='span' {...styles.senderName}>
 						{notification.sender.firstName}&nbsp;
 					</Box>

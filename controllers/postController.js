@@ -9,6 +9,7 @@ const sharp = require('sharp');
 const imageUpload = require('../utils/imageUpload');
 const { v4: uuidv4 } = require('uuid');
 
+const cloudinary = require('cloudinary').v2;
 const AppError = require('../utils/AppError');
 
 // upload images to posts
@@ -19,23 +20,39 @@ exports.resizePostImage = async (req, res, next) => {
 		return next();
 	}
 
-	const { height, width, x: left, y: top, scaleX, scaleY } = JSON.parse(
-		req.body.imageSettings
-	);
+	const { height, width, x: left, y: top } = JSON.parse(req.body.imageSettings);
 
 	req.file.filename = `post-${uuidv4()}.${Date.now()}.jpeg`;
 
-	await sharp(req.file.buffer)
-		.extract({
-			left: parseInt(left),
-			top: parseInt(top),
-			width: parseInt(width),
-			height: parseInt(height),
-		})
-		.resize(2000, 2000)
-		.toFormat('jpeg')
-		.jpeg({ quality: 90 })
-		.toFile(`uploads/posts/${req.file.filename}`);
+	try {
+		await sharp(req.file.buffer)
+			.extract({
+				left: parseInt(left),
+				top: parseInt(top),
+				width: parseInt(width),
+				height: parseInt(height),
+			})
+			.resize(2000, 2000)
+			.toFormat('jpeg')
+			.jpeg({ quality: 90 })
+			.toFile(`uploads/posts/${req.file.filename}`);
+
+		const uploadedImg = await cloudinary.uploader.upload(
+			`uploads/posts/${req.file.filename}`,
+			{ use_filename: true, folder: 'connected/posts' }
+		);
+
+		req.photo = {
+			publicId: uploadedImg.public_id,
+			url: uploadedImg.secure_url,
+			name: uploadedImg.original_filename,
+			signature: uploadedImg.signature,
+		};
+	} catch (err) {
+		return next(
+			new AppError('error uploading your image. Please try later', 400)
+		);
+	}
 
 	next();
 };
@@ -60,7 +77,7 @@ exports.createPost = async (req, res, next) => {
 	session.startTransaction();
 
 	try {
-		if (req.file) req.body.photo = req.file.filename;
+		if (req.file && req.photo) req.body.photo = req.photo;
 		const { content, group, photo } = req.body;
 		const user = await User.findById(req.user.id, {}, { session });
 

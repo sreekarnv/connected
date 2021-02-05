@@ -1,5 +1,4 @@
 import React, { useContext, useEffect } from 'react';
-import { useHistory } from 'react-router-dom';
 import * as Yup from 'yup';
 import { Form, Formik } from 'formik';
 
@@ -20,8 +19,6 @@ import {
 	Flex,
 } from '@chakra-ui/react';
 
-import { UIContext } from '../../../store/context/UiContext';
-
 import useCroppedImage from '../../../hooks/useCroppedImage';
 
 import ImageCropper from '../../../components/ImageCropper/ImageCropper';
@@ -34,18 +31,29 @@ import { AuthContext } from '../../../store/context/AuthContext';
 
 import useAlert from '../../../hooks/useAlert';
 import BaseAlert from '../../../components/Alert/BaseAlert';
-
-const initialValues = {
-	name: '',
-	description: '',
-};
+import { Group as GroupType } from '../../../config/types';
 
 const createGroupSchema = Yup.object().shape({
 	name: Yup.string().required('Group name cannot be empty!!'),
 	description: Yup.string(),
 });
 
-const CreateGroup = () => {
+interface Props {
+	group: GroupType;
+	isOpen: boolean;
+	onClose: () => void;
+	onOpen: () => void;
+	setGroup: React.Dispatch<React.SetStateAction<GroupType | null>>;
+}
+
+const EditGroup: React.FC<Props> = ({
+	group,
+	isOpen,
+	onClose,
+	onOpen,
+	setGroup,
+	...props
+}) => {
 	const {
 		image,
 		setImage,
@@ -58,16 +66,25 @@ const CreateGroup = () => {
 		croppedImage,
 		resetValues,
 	} = useCroppedImage();
-	const { isCreateGroupOpen, onCreateGroupClose } = useContext(UIContext);
-	const { userCreateNewGroup } = useContext(AuthContext);
-	const history = useHistory();
+	const initialValues = {
+		name: group.name,
+		description: group.description ? group.description : '',
+	};
+
+	const { userUpdateGroup } = useContext(AuthContext);
 	const { setAlert, isAlertOpen, alertDetails } = useAlert();
 
 	useEffect(() => {
-		if (!isCreateGroupOpen) {
+		if (!isOpen) {
 			resetValues();
 		}
-	}, [isCreateGroupOpen, resetValues]);
+	}, [isOpen, resetValues]);
+
+	useEffect(() => {
+		if (group) {
+			setCroppedImage(group.photo);
+		}
+	}, [group, setCroppedImage]);
 
 	const onFormSubmit = async (values: {
 		name: string;
@@ -87,19 +104,14 @@ const CreateGroup = () => {
 
 		try {
 			const res = await axios({
-				method: 'POST',
-				url: '/api/v1/groups',
+				method: 'PATCH',
+				url: `/api/v1/groups/${group._id}`,
 				data,
 			});
 
-			// globally update user groups
-			userCreateNewGroup(res.data.group);
-
-			history.push({
-				pathname: `/app/groups/${res.data.group._id}/${res.data.group.slug}`,
-			});
-
-			onCreateGroupClose();
+			onClose();
+			userUpdateGroup(res.data.group);
+			setGroup(res.data.group);
 		} catch (err) {
 			if (err.response) {
 				let message = err.response.data.message;
@@ -124,9 +136,9 @@ const CreateGroup = () => {
 			<Modal
 				size='full'
 				motionPreset='slideInBottom'
-				isOpen={isCreateGroupOpen}
+				isOpen={isOpen}
 				scrollBehavior='inside'
-				onClose={onCreateGroupClose}>
+				onClose={onClose}>
 				<ModalOverlay />
 
 				<ModalContent
@@ -143,7 +155,7 @@ const CreateGroup = () => {
 						<ModalHeader>
 							<Flex>
 								<Heading color='primary.700' py={5}>
-									Create Group
+									Update Group
 								</Heading>
 							</Flex>
 						</ModalHeader>
@@ -151,8 +163,13 @@ const CreateGroup = () => {
 							<Formik
 								initialValues={initialValues}
 								validationSchema={createGroupSchema}
-								onSubmit={(values: { name: string; description?: string }) => {
+								onSubmit={(
+									values: { name: string; description?: string },
+									{ setSubmitting }
+								) => {
+									setSubmitting(true);
 									onFormSubmit(values);
+									setSubmitting(false);
 								}}>
 								{({ isSubmitting }) => {
 									return (
@@ -200,12 +217,9 @@ const CreateGroup = () => {
 													colorScheme='green'
 													mr={4}
 													variant='solid'>
-													Create Group
+													Update Group
 												</Button>
-												<Button
-													onClick={onCreateGroupClose}
-													colorScheme='blue'
-													mr={3}>
+												<Button onClick={onClose} colorScheme='blue' mr={3}>
 													Close
 												</Button>
 											</ModalFooter>
@@ -221,4 +235,4 @@ const CreateGroup = () => {
 	);
 };
 
-export default CreateGroup;
+export default EditGroup;

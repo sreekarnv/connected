@@ -102,6 +102,21 @@ const reducer = (state: AuthState = initialState, action: AuthActionType) => {
 				...state,
 				userGroups: newGroups,
 			};
+
+		case actionTypes.USER_UPDATE_GROUP:
+			let updateGroup: any = [];
+			if (state.userGroups) updateGroup = [...state.userGroups!];
+
+			const index = updateGroup.findIndex((el: any) => {
+				return el._id === action.group._id;
+			});
+
+			updateGroup[index] = action.group;
+			return {
+				...state,
+				userGroups: updateGroup,
+			};
+
 		case actionTypes.UPDATE_USER_INIT:
 			return {
 				...state,

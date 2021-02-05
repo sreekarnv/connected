@@ -1,3 +1,9 @@
+export type Photo = {
+	url: string;
+	name: string;
+	publicId?: string;
+};
+
 export type Post = {
 	comments: Comment[];
 	content: string;
@@ -8,7 +14,7 @@ export type Post = {
 	isPublic?: string;
 	dislikes: [string];
 	likes: [string];
-	photo?: string;
+	photo?: Photo;
 	user: any;
 };
 
@@ -21,7 +27,7 @@ export type User = {
 	middleName?: string;
 	isActive: boolean;
 	isVerified: boolean;
-	photo?: string;
+	photo?: Photo;
 	requestsReceived: string[];
 	requestsSent: string[];
 	userVerificationToken?: string | null;
@@ -51,6 +57,7 @@ export type Group = {
 	name: string;
 	requests?: string[];
 	slug: string;
+	photo?: Photo;
 };
 
 export type Notification = {

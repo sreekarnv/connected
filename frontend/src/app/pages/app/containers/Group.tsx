@@ -1,21 +1,41 @@
 import React, { useContext, useEffect, useState } from 'react';
-import { Avatar, Box, Heading, HStack } from '@chakra-ui/react';
+import {
+	Avatar,
+	Box,
+	Flex,
+	Heading,
+	HStack,
+	IconButton,
+	Tooltip,
+	useDisclosure,
+} from '@chakra-ui/react';
 
 import Post from '../components/Post';
 
-import { Post as PostProps } from './../../../config/types';
+import {
+	Group as GroupProps,
+	Post as PostProps,
+} from './../../../config/types';
 import { SocketContext } from '../../../store/context/SocketContext';
 import axios from 'axios';
 import { useParams } from 'react-router-dom';
 import PostSkeleton from '../components/PostSkeleton';
 import { ReactComponent as GroupIcon } from './../../../../assets/icons/groups.svg';
+import { EditIcon } from '@chakra-ui/icons';
+import EditGroup from './EditGroup';
 
 const Group = () => {
 	const io = useContext<any>(SocketContext);
 	const { slug } = useParams<any>();
+
 	const [loading, setLoading] = useState<boolean>(false);
-	const [group, setGroup] = useState<null | any>(null);
+	const [group, setGroup] = useState<null | GroupProps>(null);
 	const [groupPosts, setGroupPosts] = useState<PostProps[]>([]);
+	const {
+		isOpen: isEditGroupOpen,
+		onClose: onEditGroupClose,
+		onOpen: onEditGroupOpen,
+	} = useDisclosure();
 
 	useEffect(() => {
 		if (slug) {
@@ -87,34 +107,64 @@ const Group = () => {
 	}
 
 	return (
-		<Box
-			p={{
-				md: 10,
-				sm: 4,
-			}}>
+		<>
 			{group && (
-				<HStack spacing={5} mb={10} alignItems='center'>
-					<Avatar
-						icon={<GroupIcon style={{ height: '3rem' }} />}
-						src={group.photo}
-						size='lg'
-						boxShadow='0 2px 4px rgba(0, 0, 0, .36)'
-					/>
-					<Heading
-						color='primary.700'
-						textAlign={{
-							md: 'left',
-							sm: 'center',
-						}}
-						textTransform='capitalize'>
-						{group.name}
-					</Heading>
-				</HStack>
+				<EditGroup
+					setGroup={setGroup}
+					group={group}
+					isOpen={isEditGroupOpen}
+					onOpen={onEditGroupOpen}
+					onClose={onEditGroupClose}
+				/>
 			)}
-			{groupPosts.map((post: PostProps) => {
-				return <Post post={post} key={post._id} />;
-			})}
-		</Box>
+			<Box
+				p={{
+					md: 10,
+					sm: 4,
+				}}>
+				{group && (
+					<Flex alignItems='center' justifyContent='space-between'>
+						<HStack spacing={5} mb={10} alignItems='center'>
+							<Avatar
+								icon={<GroupIcon style={{ height: '3rem' }} />}
+								src={group.photo?.url}
+								size='lg'
+								boxShadow='0 2px 4px rgba(0, 0, 0, .36)'
+							/>
+							<Heading
+								color='primary.700'
+								textAlign={{
+									md: 'left',
+									sm: 'center',
+								}}
+								textTransform='capitalize'>
+								{group.name}
+							</Heading>
+						</HStack>
+						<HStack>
+							<Tooltip
+								aria-label='edit group'
+								hasArrow
+								label='Edit Group'
+								placement='top-start'>
+								<IconButton
+									onClick={onEditGroupOpen}
+									bg='primary.300'
+									_hover={{ bg: 'primary.500' }}
+									_active={{ bg: 'primary.400' }}
+									color='#fff'
+									aria-label='Edit Group'
+									icon={<EditIcon />}
+								/>
+							</Tooltip>
+						</HStack>
+					</Flex>
+				)}
+				{groupPosts.map((post: PostProps) => {
+					return <Post post={post} key={post._id} />;
+				})}
+			</Box>
+		</>
 	);
 };
 

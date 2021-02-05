@@ -15,6 +15,12 @@ router.get(
 	userController.getAllNotUserFriends
 );
 
+router.post(
+	'/unfriend',
+	authController.protectRoutes,
+	userController.unFriendUser
+);
+
 router.patch(
 	'/sendFriendRequest',
 	authController.protectRoutes,
@@ -52,8 +58,8 @@ router
 	.get(authController.protectRoutes, userController.getCurrentUserData)
 	.patch(
 		authController.protectRoutes,
-		userController.uploadUserPhoto,
 		userController.resizeUserImage,
+		userController.uploadUserPhoto,
 		userController.updateCurrentUserData
 	);
 

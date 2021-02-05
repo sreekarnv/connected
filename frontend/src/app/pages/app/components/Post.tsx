@@ -116,7 +116,7 @@ const Post: React.FC<Props> = ({ post }) => {
 
 					{post.photo && (
 						<GridItem {...styles.photoContainer}>
-							<Image {...styles.photo} src={post.photo} />
+							<Image {...styles.photo} src={post.photo?.url} />
 						</GridItem>
 					)}
 				</Grid>

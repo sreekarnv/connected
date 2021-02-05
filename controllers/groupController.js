@@ -5,6 +5,7 @@ const Group = require('./../models/groupModel');
 const Notification = require('./../models/notificationModel');
 const { v4: uuidv4 } = require('uuid');
 
+const cloudinary = require('cloudinary').v2;
 const imageUpload = require('../utils/imageUpload');
 
 exports.uploadGroupPhoto = imageUpload.single('photo');
@@ -18,17 +19,34 @@ exports.resizeGroupPhoto = async (req, res, next) => {
 
 	req.file.filename = `group-${uuidv4()}.${Date.now()}.jpeg`;
 
-	await sharp(req.file.buffer)
-		.extract({
-			left: parseInt(left),
-			top: parseInt(top),
-			width: parseInt(width),
-			height: parseInt(height),
-		})
-		.resize(5000, 5000)
-		.toFormat('jpeg')
-		.jpeg({ quality: 90 })
-		.toFile(`uploads/groups/${req.file.filename}`);
+	try {
+		await sharp(req.file.buffer)
+			.extract({
+				left: parseInt(left),
+				top: parseInt(top),
+				width: parseInt(width),
+				height: parseInt(height),
+			})
+			.resize(500, 500)
+			.toFormat('jpeg')
+			.jpeg({ quality: 90 })
+			.toFile(`uploads/groups/${req.file.filename}`);
+
+		const uploadedImg = await cloudinary.uploader.upload(
+			`uploads/groups/${req.file.filename}`,
+			{ use_filename: true, folder: 'connected/groups' }
+		);
+
+		req.photo = {
+			publicId: uploadedImg.public_id,
+			url: uploadedImg.secure_url,
+			name: uploadedImg.original_filename,
+		};
+	} catch (_) {
+		return next(
+			new AppError('error uploading your image. Please try later', 400)
+		);
+	}
 
 	next();
 };
@@ -68,7 +86,7 @@ exports.getAllUserGroups = async (req, res, next) => {
 // create Comment
 exports.createGroup = async (req, res, next) => {
 	try {
-		if (req.file) req.body.photo = req.file.filename;
+		if (req.file) req.body.photo = req.photo;
 
 		let user;
 		if (req.user) user = req.user.id;
@@ -223,7 +241,6 @@ exports.acceptGroupJoinRequest = async (req, res, next) => {
 };
 
 // reject group request
-
 exports.rejectGroupJoinRequest = async (req, res, next) => {
 	try {
 		const { _id } = req.params;
@@ -270,6 +287,79 @@ exports.getAllNotUserGroups = async (req, res, next) => {
 		res.status(200).json({
 			status: 'success',
 			groups,
+		});
+	} catch (err) {
+		next(err);
+	}
+};
+
+///////////////////////////////////////////////////////////////////
+// UPDATE GROUP
+
+exports.updateGroup = async (req, res, next) => {
+	const session = await mongoose.startSession();
+	try {
+		session.startTransaction();
+		if (req.file) req.body.photo = req.photo;
+
+		const { name, description, photo } = req.body;
+
+		const group = await Group.findOneAndUpdate(
+			{
+				_id: req.params._id,
+				admin: req.user._id,
+			},
+			{
+				name,
+				description,
+			},
+			{ new: true, runValidators: true, session }
+		);
+
+		if (!group) {
+			return next(new AppError('you are not authorized', 403));
+		}
+
+		if (group.photo && group.photo.publicId) {
+			await cloudinary.uploader.destroy(group.photo.publicId);
+		}
+
+		if (req.photo && req.photo.url) {
+			group.photo = photo;
+		}
+		await group.save({ validateBeforeSave: false, session });
+
+		await session.commitTransaction();
+		session.endSession();
+
+		res.status(200).json({
+			status: 'success',
+			group,
+		});
+	} catch (err) {
+		session.abortTransaction;
+		session.endSession();
+		next(err);
+	}
+};
+
+//////////////////////////////////////////////////////////////////////
+// DELETE GROUP
+
+exports.deleteGroup = async (req, res, next) => {
+	try {
+		const group = await Group.findOneAndDelete({
+			_id: req.params._id,
+			admin: req.user._id,
+		});
+
+		if (!group) {
+			return next(new AppError('you are not authorized', 403));
+		}
+
+		res.status(204).json({
+			status: 'success',
+			group: null,
 		});
 	} catch (err) {
 		next(err);

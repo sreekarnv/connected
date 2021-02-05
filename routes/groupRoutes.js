@@ -63,4 +63,14 @@ router
 	.route('/:slug')
 	.get(authController.protectRoutes, groupController.getUserGroup);
 
+router
+	.route('/:_id')
+	.patch(
+		authController.protectRoutes,
+		groupController.uploadGroupPhoto,
+		groupController.resizeGroupPhoto,
+		groupController.updateGroup
+	)
+	.delete(authController.protectRoutes, groupController.deleteGroup);
+
 module.exports = router;

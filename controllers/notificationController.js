@@ -15,8 +15,6 @@ exports.getNotifications = async (req, res, next) => {
 			.populate('sender')
 			.sort('-createdAt');
 
-		await Notification.deleteMany({ show: false });
-
 		res.status(200).json({
 			status: 'success',
 			notifications,

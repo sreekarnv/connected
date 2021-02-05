@@ -90,13 +90,13 @@ const CreatePost = () => {
 			});
 
 			onCreatePostClose();
-			if (!res.data.post.isPublic) {
+
+			if (!res.data.post[0].isPublic) {
 				return history.push({
 					pathname: `/app/groups/${res.data.post.group._id}/${res.data.post.group.slug}`,
 				});
-			} else {
-				return history.push({ pathname: '/app/public' });
 			}
+			return history.push({ pathname: '/app/public' });
 		} catch (err) {
 			if (err.response) {
 				let message = err.response.data.message;

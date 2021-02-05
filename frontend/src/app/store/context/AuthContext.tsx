@@ -91,6 +91,13 @@ const AuthContextProvider = ({ children }: any) => {
 		});
 	};
 
+	const userUpdateGroup = (group: GroupTypes) => {
+		dispatch({
+			type: actionTypes.USER_UPDATE_GROUP,
+			group,
+		});
+	};
+
 	const updateUser = (user: User) => {
 		dispatch({
 			type: actionTypes.UPDATE_USER_SUCCESS,
@@ -105,6 +112,7 @@ const AuthContextProvider = ({ children }: any) => {
 		userCreateNewGroup,
 		updateUser,
 		checkUserExists,
+		userUpdateGroup,
 	};
 
 	return (

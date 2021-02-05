@@ -16,7 +16,9 @@ const groupSchema = new mongoose.Schema(
 			lowercase: true,
 		},
 		photo: {
-			type: 'string',
+			name: String,
+			publicId: String,
+			url: String,
 		},
 		admin: {
 			type: mongoose.Schema.ObjectId,

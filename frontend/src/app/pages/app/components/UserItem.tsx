@@ -10,10 +10,12 @@ import {
 import { User as UserType } from '../../../config/types';
 
 import { ReactComponent as JoinRequestIcon } from './../../../../assets/icons/message.svg';
-import { ReactComponent as GroupsIcon } from './../../../../assets/icons/groups.svg';
+// import { ReactComponent as GroupsIcon } from './../../../../assets/icons/groups.svg';
 import axios from 'axios';
-import { useContext } from 'react';
+import { useContext, useState } from 'react';
 import { AuthContext } from '../../../store/context/AuthContext';
+
+import Spinner from './../../../components/Spinner/Spinner';
 
 import styles from './userItemStyles';
 
@@ -23,10 +25,12 @@ interface Props {
 
 const UserItem: React.FC<Props> = (props) => {
 	const { user } = props;
+	const [loading, setLoading] = useState(false);
 
 	const { updateUserRequestsSent, user: authUser } = useContext(AuthContext);
 
 	const sendFriendRequest = async () => {
+		setLoading(true);
 		try {
 			await axios({
 				method: 'PATCH',
@@ -37,6 +41,7 @@ const UserItem: React.FC<Props> = (props) => {
 			});
 			updateUserRequestsSent(user._id);
 		} catch (err) {}
+		setLoading(false);
 	};
 
 	return (
@@ -56,19 +61,35 @@ const UserItem: React.FC<Props> = (props) => {
 						placement='left-start'
 						label='send friend request'
 						{...styles.btnTooltip}>
-						<IconButton
-							onClick={sendFriendRequest}
-							aria-label='send friend request'
-							{...styles.btn}
-							icon={<JoinRequestIcon fill='#fff' />}
-						/>
+						{loading ? (
+							<IconButton
+								onClick={sendFriendRequest}
+								aria-label='send friend request'
+								{...styles.btn}
+								icon={<JoinRequestIcon fill='#fff' />}
+							/>
+						) : (
+							<IconButton
+								color='green.600'
+								bg='gray.700'
+								hover={{
+									bg: 'gray.700',
+								}}
+								active={{
+									bg: 'gray.700',
+								}}
+								size='sm'
+								aria-label='accept friend request loading'
+								icon={<Spinner />}
+							/>
+						)}
 					</Tooltip>
 				) : (
 					<Box as='p' color='yellow.300'>
 						Request sent
 					</Box>
 				)}
-				<Tooltip
+				{/* <Tooltip
 					placement='right-start'
 					label='show profile'
 					{...styles.btnTooltip}>
@@ -77,7 +98,7 @@ const UserItem: React.FC<Props> = (props) => {
 						aria-label='show profile'
 						icon={<GroupsIcon fill='#fff' />}
 					/>
-				</Tooltip>
+				</Tooltip> */}
 			</HStack>
 		</Flex>
 	);

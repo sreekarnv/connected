@@ -9,7 +9,11 @@ const UserAvatar = () => {
 		<HStack cursor='pointer' spacing={4} as='nav'>
 			{user && (
 				<>
-					<Avatar loading='lazy' name={user.firstName} src={user.photo} />
+					<Avatar
+						loading='lazy'
+						name={user.firstName}
+						src={user.photo && user.photo.url}
+					/>
 					<Text
 						textTransform='capitalize'
 						fontSize='1.2rem'

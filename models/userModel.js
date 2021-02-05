@@ -1,6 +1,5 @@
 const mongoose = require('mongoose');
 const bcrypt = require('bcryptjs');
-const crypto = require('crypto');
 const { default: validator } = require('validator');
 
 const userSchema = new mongoose.Schema(
@@ -50,7 +49,9 @@ const userSchema = new mongoose.Schema(
 			],
 		},
 		photo: {
-			type: String,
+			name: String,
+			publicId: String,
+			url: String,
 		},
 		isActive: {
 			type: Boolean,
@@ -108,14 +109,6 @@ userSchema.pre('save', async function (next) {
 
 	this.password = await bcrypt.hash(this.password, 12);
 	this.passwordConfirm = undefined;
-
-	next();
-});
-
-userSchema.pre('save', async function (next) {
-	if (!this.isModified('photo') || !this.photo) return next();
-
-	this.photo = `/uploads/users/${this.photo}`;
 
 	next();
 });
