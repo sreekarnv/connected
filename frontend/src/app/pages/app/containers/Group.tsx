@@ -18,15 +18,17 @@ import {
 } from './../../../config/types';
 import { SocketContext } from '../../../store/context/SocketContext';
 import axios from 'axios';
-import { useParams } from 'react-router-dom';
+import { useHistory, useParams } from 'react-router-dom';
 import PostSkeleton from '../components/PostSkeleton';
 import { ReactComponent as GroupIcon } from './../../../../assets/icons/groups.svg';
 import { EditIcon } from '@chakra-ui/icons';
 import EditGroup from './EditGroup';
-
+import { AuthContext } from '../../../store/context/AuthContext';
 const Group = () => {
 	const io = useContext<any>(SocketContext);
 	const { slug } = useParams<any>();
+	const { user: authUser } = useContext(AuthContext);
+	const history = useHistory();
 
 	const [loading, setLoading] = useState<boolean>(false);
 	const [group, setGroup] = useState<null | GroupProps>(null);
@@ -57,6 +59,12 @@ const Group = () => {
 
 	useEffect(() => {
 		if (group) {
+			if (!group?.members?.includes(authUser._id)) {
+				return history.replace('/app/public');
+			}
+		}
+
+		if (group) {
 			const getGroupPosts = async () => {
 				setLoading(true);
 				try {
@@ -71,7 +79,7 @@ const Group = () => {
 			};
 			getGroupPosts();
 		}
-	}, [group]);
+	}, [group, history, authUser._id]);
 
 	useEffect(() => {
 		io.on('newPost', (data: PostProps) => {
@@ -141,23 +149,25 @@ const Group = () => {
 								{group.name}
 							</Heading>
 						</HStack>
-						<HStack>
-							<Tooltip
-								aria-label='edit group'
-								hasArrow
-								label='Edit Group'
-								placement='top-start'>
-								<IconButton
-									onClick={onEditGroupOpen}
-									bg='primary.300'
-									_hover={{ bg: 'primary.500' }}
-									_active={{ bg: 'primary.400' }}
-									color='#fff'
-									aria-label='Edit Group'
-									icon={<EditIcon />}
-								/>
-							</Tooltip>
-						</HStack>
+						{group && group.admin === authUser._id && (
+							<HStack>
+								<Tooltip
+									aria-label='edit group'
+									hasArrow
+									label='Edit Group'
+									placement='top-start'>
+									<IconButton
+										onClick={onEditGroupOpen}
+										bg='primary.300'
+										_hover={{ bg: 'primary.500' }}
+										_active={{ bg: 'primary.400' }}
+										color='#fff'
+										aria-label='Edit Group'
+										icon={<EditIcon />}
+									/>
+								</Tooltip>
+							</HStack>
+						)}
 					</Flex>
 				)}
 				{groupPosts.map((post: PostProps) => {

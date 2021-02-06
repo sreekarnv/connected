@@ -5,12 +5,7 @@ exports.getNotifications = async (req, res, next) => {
 		const notifications = await Notification.find({
 			show: true,
 			sender: { $ne: req.user._id },
-			$or: [
-				{
-					receiver: req.user._id,
-				},
-				{ receiver: { $eq: [] } },
-			],
+			receiver: req.user._id,
 		})
 			.populate('sender')
 			.sort('-createdAt');
@@ -26,13 +21,9 @@ exports.getNotifications = async (req, res, next) => {
 
 exports.hideNotification = async (req, res, next) => {
 	try {
-		await Notification.findOneAndUpdate(
-			{
-				_id: req.body.notificationId,
-			},
-			{ show: false },
-			{ new: true, runValidators: true }
-		);
+		await Notification.findOneAndDelete({
+			_id: req.body.notificationId,
+		});
 
 		next();
 	} catch (err) {

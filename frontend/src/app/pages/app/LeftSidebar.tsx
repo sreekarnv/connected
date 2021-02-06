@@ -78,7 +78,7 @@ const LeftSidebar = () => {
 											exact
 											bg='primary.700'
 											heading={group.name}
-											image={group.photo.url}
+											image={group && group.photo && group.photo.url}
 											user
 											to={`/app/groups/${group._id}/${group.slug}`}
 										/>

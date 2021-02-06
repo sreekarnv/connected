@@ -26,6 +26,13 @@ const SearchContextProvider = ({ children }: any) => {
 		[groups]
 	);
 
+	const updateGroupRequest = (groupId: string, userId: string) => {
+		const newUpdatedRequests = [...groups];
+		const groupIndex = newUpdatedRequests.findIndex((el) => el._id === groupId);
+		newUpdatedRequests[groupIndex].requests?.push(userId);
+		setGroups(newUpdatedRequests);
+	};
+
 	const { pathname } = useLocation();
 
 	useEffect(() => {
@@ -121,6 +128,7 @@ const SearchContextProvider = ({ children }: any) => {
 					searchPeople: people,
 					handleSearchTextChange,
 					updateGroup,
+					updateGroupRequest,
 				}}>
 				{children}
 			</SearchContext.Provider>

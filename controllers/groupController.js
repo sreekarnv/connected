@@ -70,7 +70,9 @@ exports.getAllGroups = async (req, res, next) => {
 // Get All User Groups
 exports.getAllUserGroups = async (req, res, next) => {
 	try {
-		const groups = await Group.find({ members: req.user.id });
+		const groups = await Group.find({
+			$or: [{ members: req.user.id }, { admin: req.user._id }],
+		});
 
 		res.status(200).json({
 			status: 'success',

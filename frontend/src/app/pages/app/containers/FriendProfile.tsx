@@ -92,7 +92,7 @@ const FriendProfile: React.FC = () => {
 								Email: {userFriend.email}
 							</Heading>
 							<Text color='gray.600' fontSize='md'>
-								Joined on {userFriend.createdAt}
+								Joined on {new Date(userFriend.createdAt).toDateString()}
 							</Text>
 						</Box>
 						<Button onClick={unFriend} colorScheme='primary'>

@@ -23,9 +23,15 @@ module.exports = (io) => {
 					group,
 				};
 
-				data.fullDocument.receiver.forEach((el) => {
-					io.emit(`notifications-${el}`, newData);
-				});
+				console.log(newData);
+				console.log(newData.receiver.length);
+				console.log(newData.receiver.length > 0);
+
+				if (newData.receiver.length > 0) {
+					data.fullDocument.receiver.forEach((el) => {
+						io.emit(`notifications-${el}`, newData);
+					});
+				}
 			}
 		});
 

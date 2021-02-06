@@ -6,17 +6,18 @@ import {
 	IconButton,
 	Tooltip,
 	Text,
+	Spinner,
 } from '@chakra-ui/react';
 import { Group as GroupType } from '../../../config/types';
 
 import { ReactComponent as JoinRequestIcon } from './../../../../assets/icons/message.svg';
 // import { ReactComponent as GroupsIcon } from './../../../../assets/icons/groups.svg';
 import axios from 'axios';
-import Spinner from './../../../components/Spinner/Spinner';
 import { useContext, useState } from 'react';
 import { SearchContext } from '../../../store/context/SearchContext';
 
 import styles from './groupItemStyles';
+import { AuthContext } from '../../../store/context/AuthContext';
 
 interface Props {
 	group: GroupType;
@@ -24,7 +25,8 @@ interface Props {
 
 const GroupItem: React.FC<Props> = (props) => {
 	const { group } = props;
-	const { updateGroups } = useContext(SearchContext);
+	const { user } = useContext(AuthContext);
+	const { updateGroupRequest } = useContext(SearchContext);
 	const [loading, setLoading] = useState(false);
 
 	const sendGroupRequest = async () => {
@@ -35,7 +37,7 @@ const GroupItem: React.FC<Props> = (props) => {
 				method: 'GET',
 			});
 
-			updateGroups(group._id);
+			updateGroupRequest(group._id, user._id);
 		} catch (err) {}
 		setLoading(false);
 	};
@@ -45,7 +47,11 @@ const GroupItem: React.FC<Props> = (props) => {
 			<Flex {...styles.textContainer}>
 				<Heading {...styles.textContainerName}>{group.name}</Heading>
 				<Text color='#fff'>
-					<Box as='span'>{group && group.members && group.members.length}</Box>
+					<Box as='span'>
+						{group && group.members && group.members.length > 0
+							? group.members.length
+							: 1}
+					</Box>
 					<Box ml={2} as='span'>
 						member(s)
 					</Box>
@@ -57,17 +63,20 @@ const GroupItem: React.FC<Props> = (props) => {
 					placement='left-start'
 					label='send group join request'
 					{...styles.btnTooltip}>
-					{loading ? (
+					{group && group.requests && group.requests?.includes(user._id) ? (
+						<Box as='p' color='yellow.300'>
+							Request sent
+						</Box>
+					) : loading ? (
 						<IconButton
-							color='green.600'
-							bg='gray.700'
-							hover={{
-								bg: 'gray.700',
+							color='#fff'
+							bg='primary.200'
+							_hover={{
+								bg: 'primary.400',
 							}}
 							active={{
-								bg: 'gray.700',
+								bg: 'primary.400',
 							}}
-							size='sm'
 							aria-label='accept friend request loading'
 							icon={<Spinner />}
 						/>
@@ -80,17 +89,6 @@ const GroupItem: React.FC<Props> = (props) => {
 						/>
 					)}
 				</Tooltip>
-				{/* <Tooltip
-					hasArrow
-					placement='right-start'
-					label='show group info'
-					{...styles.btnTooltip}>
-					<IconButton
-						{...styles.btn}
-						aria-label='show group info'
-						icon={<GroupsIcon fill='#fff' />}
-					/>
-				</Tooltip> */}
 			</HStack>
 		</Flex>
 	);

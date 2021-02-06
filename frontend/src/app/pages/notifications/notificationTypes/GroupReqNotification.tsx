@@ -76,7 +76,7 @@ const GroupReqNotification: React.FC<Props> = ({ notification }) => {
 	return (
 		<Box {...styles.container}>
 			{notification.type === 'joinGroupRequestAccepted' && (
-				<CloseButton {...styles.closebtn} />
+				<CloseButton {...styles.closebtn} onClick={closeNotification} />
 			)}
 
 			<HStack spacing={10}>
