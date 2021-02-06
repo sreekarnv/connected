@@ -1,0 +1,2 @@
+(this.webpackJsonpfrontend=this.webpackJsonpfrontend||[]).push([[40],{510:function(e,t,n){"use strict";n.r(t);var r=n(3),c=n(0),s=n(12),u=n(40);t.default=function(){var e=Object(c.useContext)(u.a),t=e.user,n=e.logoutUser,o=Object(s.g)();return Object(c.useEffect)((function(){if(t)return n(),o.replace("/")}),[n,t,o]),Object(r.jsx)("div",{children:"Loading...."})}}}]);
+//# sourceMappingURL=40.f5076698.chunk.js.map
