@@ -91,7 +91,7 @@ const Post: React.FC<Props> = ({ post }) => {
 			<Flex id={post && post._id} {...styles.container}>
 				<Grid {...styles.contentContainer}>
 					<GridItem colStart={1} colEnd={2} rowStart={1} rowEnd={3}>
-						<Avatar src={post.user.photo} />
+						<Avatar src={post.user.photo?.url} />
 					</GridItem>
 
 					<GridItem colStart={2} colEnd={3} rowStart={1} rowEnd={2}>
