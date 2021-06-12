@@ -1,2 +1,8 @@
 node_modules
-config.env
+build
+dist
+*.env.development
+*.env.production
+*.env
+*.log
+.vscode
