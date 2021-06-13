@@ -1,4 +1,5 @@
 import * as React from 'react';
+import PostContextProvider from '../context/PostContext';
 import useMeQuery from '../hooks/api/users/queries/useMeQuery';
 
 const Body = React.lazy(() => import('./Body'));
@@ -11,8 +12,10 @@ const Layout: React.FC<LayoutProps> = ({}) => {
 
 	return (
 		<>
-			<Navigation />
-			<Body />
+			<PostContextProvider>
+				<Navigation />
+				<Body />
+			</PostContextProvider>
 		</>
 	);
 };

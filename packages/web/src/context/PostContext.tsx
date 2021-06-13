@@ -1,16 +1,22 @@
 import { useDisclosure } from '@chakra-ui/react';
 import * as React from 'react';
 
-interface PostContextProps {}
+interface PostContextProps {
+	isCreatePostOpen: boolean;
+	onCreatePostOpen: () => void;
+	onCreatePostClose: () => void;
+}
 
-const PostContext = React.createContext<Partial<PostContextProps>>({});
+export const PostContext = React.createContext<Partial<PostContextProps>>({});
 
-const PostContextProvider: React.FC<PostContextProps> = ({ children }: any) => {
+const PostContextProvider: React.FC = ({ children }: any) => {
 	const {
 		isOpen: isCreatePostOpen,
 		onOpen: onCreatePostOpen,
 		onClose: onCreatePostClose,
-	} = useDisclosure();
+	} = useDisclosure({
+		isOpen: true,
+	});
 
 	return (
 		<>
