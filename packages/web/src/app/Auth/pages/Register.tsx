@@ -13,8 +13,8 @@ import {
 	Heading,
 } from '@chakra-ui/react';
 import { Form, Formik } from 'formik';
-import FormInput from '../../shared/components/FormInput';
-import useRegisterMutation from '../../shared/hooks/api/users/mutations/useRegisterMutation';
+import FormInput from '../../../components/FormInput';
+import useRegisterMutation from '../../../hooks/api/users/mutations/useRegisterMutation';
 
 interface RegisterProps {}
 

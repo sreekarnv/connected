@@ -1,8 +1,8 @@
 import * as React from 'react';
 import { Button, Container, Grid, Heading } from '@chakra-ui/react';
 import { Form, Formik } from 'formik';
-import FormInput from '../../shared/components/FormInput';
-import useLoginMutation from '../../shared/hooks/api/users/mutations/useLoginMutation';
+import FormInput from '../../../components/FormInput';
+import useLoginMutation from '../../../hooks/api/users/mutations/useLoginMutation';
 
 interface LoginProps {}
 

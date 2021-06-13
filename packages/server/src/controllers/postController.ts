@@ -85,6 +85,9 @@ export const getAllPosts: ExpressResponse = async (req, res, next) => {
 					},
 				},
 			},
+			{
+				$unwind: '$user',
+			},
 		]);
 
 		res.status(200).json({

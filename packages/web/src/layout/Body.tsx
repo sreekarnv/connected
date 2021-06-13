@@ -2,9 +2,9 @@ import * as React from 'react';
 import { useQueryClient } from 'react-query';
 import { Route, Switch } from 'react-router-dom';
 
-const OnBoarding = React.lazy(() => import('../../Home/pages/OnBoarding'));
-const Home = React.lazy(() => import('../../Home/pages/Home'));
-const Auth = React.lazy(() => import('../../Auth'));
+const OnBoarding = React.lazy(() => import('../app/Home/pages/OnBoarding'));
+const Home = React.lazy(() => import('../app/Home/pages/Home'));
+const Auth = React.lazy(() => import('../app/Auth'));
 
 interface BodyProps {}
 

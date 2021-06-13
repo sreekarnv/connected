@@ -12,7 +12,7 @@ const usePostsQuery = (limit: number) => {
 		status,
 	} = useInfiniteQuery(
 		'posts',
-		async ({ pageParam }) => {
+		async ({ pageParam = 0 }) => {
 			const res = await axios({
 				method: 'GET',
 				url: '/api/posts',
