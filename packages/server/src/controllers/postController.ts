@@ -39,14 +39,10 @@ export const getAllPosts: ExpressResponse = async (req, res, next) => {
 			{
 				$group: {
 					_id: '$_id',
-					content: { $first: '$content' },
-					likes: { $first: '$likes' },
-					dislikes: { $first: '$dislikes' },
-					photo: { $first: '$photo' },
-					user: { $first: '$user' },
-					createdAt: { $first: '$createdAt' },
+					doc: { $first: '$$ROOT' },
 				},
 			},
+			{ $replaceRoot: { newRoot: '$doc' } },
 			{
 				$lookup: {
 					from: 'users',
@@ -58,7 +54,6 @@ export const getAllPosts: ExpressResponse = async (req, res, next) => {
 			{
 				$project: {
 					createdAt: 1,
-					_id: 1,
 					content: 1,
 					photo: 1,
 					'user._id': 1,

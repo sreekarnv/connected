@@ -16,6 +16,7 @@ import { useHistory } from 'react-router-dom';
 import Logo from '../../components/Logo';
 import ThemeToggler from '../../components/ThemeToggler';
 import UserAvatar from '../../components/UserAvatar';
+import { PostContext } from '../../context/PostContext';
 import useLogoutMutation from '../../hooks/api/users/mutations/useLogoutMutation';
 import NavItem from './NavItem';
 import NavMenuItem from './NavMenuItem';
@@ -27,10 +28,14 @@ const Navigation: React.FC<NavigationProps> = ({}) => {
 	const user = queryClient.getQueryData('me');
 	const history = useHistory();
 	const { mutate } = useLogoutMutation();
+	const { onCreatePostOpen } = React.useContext(PostContext);
 
 	return (
 		<Flex p='4' alignItems='center' justifyContent='space-between'>
 			<Logo />
+			<HStack>
+				<Button onClick={onCreatePostOpen}>Create Post</Button>
+			</HStack>
 			<HStack spacing={3}>
 				<NavItem to='/' exact>
 					Home

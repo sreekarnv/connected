@@ -14,9 +14,7 @@ const PostContextProvider: React.FC = ({ children }: any) => {
 		isOpen: isCreatePostOpen,
 		onOpen: onCreatePostOpen,
 		onClose: onCreatePostClose,
-	} = useDisclosure({
-		isOpen: true,
-	});
+	} = useDisclosure();
 
 	return (
 		<>
