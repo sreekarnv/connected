@@ -6,7 +6,7 @@
     "scripts": {
         "dev": "cross-env NODE_ENV=development webpack serve",
         "build": "cross-env NODE_ENV=production webpack",
-        "gen:theme-typings": "chakra-cli tokens ./src/app/shared/config/theme/index.ts",
+        "gen:theme-typings": "chakra-cli tokens ./src/config/theme/index.ts",
         "theme": "yarn gen:theme-typings"
     },
     "devDependencies": {
@@ -42,8 +42,6 @@
         "@babel/polyfill": "^7.12.1",
         "@chakra-ui/icons": "^1.0.13",
         "@chakra-ui/react": "^1.6.3",
-        "@editorjs/editorjs": "^2.22.0",
-        "@editorjs/paragraph": "^2.8.0",
         "@emotion/react": "^11",
         "@emotion/styled": "^11",
         "axios": "^0.21.1",
@@ -52,6 +50,7 @@
         "react": "^17.0.2",
         "react-dom": "^17.0.2",
         "react-query": "^3.16.1",
-        "react-router-dom": "^5.2.0"
+        "react-router-dom": "^5.2.0",
+        "yup": "^0.32.9"
     }
 }

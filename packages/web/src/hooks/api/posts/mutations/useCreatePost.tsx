@@ -1,22 +1,22 @@
 import { useMutation, useQueryClient } from 'react-query';
 import axios from '../../../../config/axios';
 
-const useVotePost = (postId: string, pageParam: number) => {
+const useCreatePost = () => {
 	const queryClient = useQueryClient();
 
 	const { mutate, error, data, isLoading, variables } = useMutation<
 		any,
 		any,
-		{ vote: 'like' | 'dislike' }
+		{ content: string }
 	>(
 		async (data) => {
 			const res = await axios({
-				method: 'patch',
-				url: `/api/posts/${postId}/vote`,
+				method: 'post',
+				url: `/api/posts`,
 				data,
 			});
 
-			return res.data.updatedPost;
+			return res.data;
 		},
 		{
 			onSuccess: async () => {
@@ -34,4 +34,4 @@ const useVotePost = (postId: string, pageParam: number) => {
 	};
 };
 
-export default useVotePost;
+export default useCreatePost;

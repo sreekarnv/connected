@@ -13,12 +13,6 @@ import { User } from './userModel';
 	this.populate('user', ['name']).sort('-createdAt');
 	next();
 })
-@pre('aggregate', function (next) {
-	this.sort('-createdAt');
-
-	next();
-})
-@index({ user: 1 })
 @index({ createdAt: -1 })
 @modelOptions({
 	schemaOptions: {

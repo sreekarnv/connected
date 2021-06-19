@@ -34,6 +34,9 @@ export const getAllPosts: ExpressResponse = async (req, res, next) => {
 		if (!page) page = 0;
 
 		const posts = await PostModel.aggregate([
+			{
+				$sort: { createdAt: -1, _id: 1 },
+			},
 			{ $skip: parseInt(page) * parseInt(limit) },
 			{ $limit: parseInt(limit) + 1 },
 			{
@@ -82,6 +85,9 @@ export const getAllPosts: ExpressResponse = async (req, res, next) => {
 			},
 			{
 				$unwind: '$user',
+			},
+			{
+				$sort: { createdAt: -1 },
 			},
 		]);
 

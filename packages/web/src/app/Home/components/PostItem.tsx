@@ -93,12 +93,12 @@ const PostItem: React.FC<PostItemProps> = ({ post, pageParam }) => {
 			<Flex flexDir='column' mb='10'>
 				<Grid {...styles.contentContainer}>
 					<GridItem colStart={1} colEnd={2} rowStart={1} rowEnd={3}>
-						<Avatar src={'Yo'} name={post.user.name} />
+						<Avatar src={'Yo'} name={post.user?.name} />
 					</GridItem>
 
 					<GridItem colStart={2} colEnd={3} rowStart={1} rowEnd={2}>
 						<Text textTransform='capitalize' fontWeight='700'>
-							{post.user.name}
+							{post.user?.name}
 						</Text>
 					</GridItem>
 
@@ -145,7 +145,7 @@ const PostItem: React.FC<PostItemProps> = ({ post, pageParam }) => {
 									<Icon
 										color={post.userLiked ? 'whiteAlpha.400' : 'primary.500'}
 										fontSize='3xl'
-										fill={!post.userLiked ? 'transparent' : 'primary.500'}
+										fill={post.userLiked ? 'primary.500' : 'transparent'}
 										as={LikeIcon}
 									/>
 								)
@@ -168,7 +168,7 @@ const PostItem: React.FC<PostItemProps> = ({ post, pageParam }) => {
 								) : (
 									<Icon
 										color={post.userDisliked ? 'whiteAlpha.400' : 'primary.500'}
-										fill={!post.userDisliked ? 'transparent' : 'primary.500'}
+										fill={post.userDisliked ? 'primary.500' : 'transparent'}
 										fontSize='3xl'
 										as={DislikeIcon}
 									/>
