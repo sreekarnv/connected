@@ -10,7 +10,7 @@ export const getPosts = async (limit, pageParam = 0, headers?) => {
 			page: pageParam,
 		},
 		headers: {
-			cookie: headers ? headers.cookie : '',
+			...headers,
 		},
 	});
 	return {

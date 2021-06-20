@@ -12,8 +12,6 @@ const NavItem: React.FC<NavItemProps> = ({ children, href, color }) => {
 	const { colorMode } = useColorMode();
 	const router = useRouter();
 
-	console.log(router);
-
 	return (
 		<NextLink href={href}>
 			<Button

@@ -40,6 +40,14 @@ export const getAllPosts: ExpressResponse = async (req, res, next) => {
 			{ $skip: parseInt(page) * parseInt(limit) },
 			{ $limit: parseInt(limit) + 1 },
 			{
+				$lookup: {
+					from: 'users',
+					localField: 'user',
+					foreignField: '_id',
+					as: 'creator',
+				},
+			},
+			{
 				$group: {
 					_id: '$_id',
 					doc: { $first: '$$ROOT' },
@@ -47,20 +55,12 @@ export const getAllPosts: ExpressResponse = async (req, res, next) => {
 			},
 			{ $replaceRoot: { newRoot: '$doc' } },
 			{
-				$lookup: {
-					from: 'users',
-					localField: 'user',
-					foreignField: '_id',
-					as: 'user',
-				},
-			},
-			{
 				$project: {
 					createdAt: 1,
 					content: 1,
 					photo: 1,
-					'user._id': 1,
-					'user.name': 1,
+					'user._id': { $arrayElemAt: ['$creator._id', 0] },
+					'user.name': { $arrayElemAt: ['$creator.name', 0] },
 					userDisliked: {
 						$in: [user, '$dislikes'],
 					},
@@ -82,9 +82,6 @@ export const getAllPosts: ExpressResponse = async (req, res, next) => {
 						},
 					},
 				},
-			},
-			{
-				$unwind: '$user',
 			},
 			{
 				$sort: { createdAt: -1 },
