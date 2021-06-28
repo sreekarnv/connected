@@ -10,7 +10,7 @@ import {
 } from '@chakra-ui/react';
 import { Form, Formik } from 'formik';
 import { PostContext } from '../shared/context/PostContext';
-import useCreatePost from './hooks/api/mutations/useCreatePost';
+import useCreatePost from './hooks/mutations/useCreatePost';
 import FormInput from '../shared/components/FormInput';
 
 interface CreatePostProps {}

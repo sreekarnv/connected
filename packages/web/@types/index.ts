@@ -17,4 +17,5 @@ export type User = {
 	email?: string;
 	name: string;
 	isActive?: string;
+	photo?: string;
 };

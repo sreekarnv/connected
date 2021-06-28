@@ -1,5 +1,5 @@
 import { useInfiniteQuery } from 'react-query';
-import axios from '../../../../../lib/axios';
+import axios from '../../../../lib/axios';
 
 export const getPosts = async (limit, pageParam = 0, headers?) => {
 	const res = await axios({

@@ -4,10 +4,12 @@ import {
 	Divider,
 	Flex,
 	HStack,
+	IconButton,
 	Menu,
 	MenuButton,
 	MenuItem,
 	MenuList,
+	Tooltip,
 	VStack,
 } from '@chakra-ui/react';
 import { useRouter } from 'next/router';
@@ -20,6 +22,7 @@ import UserAvatar from '../../components/UserAvatar';
 import { PostContext } from '../../context/PostContext';
 import NavItem from './NavItem';
 import NavMenuItem from './NavMenuItem';
+import { EditIcon } from '@chakra-ui/icons';
 
 interface NavigationProps {}
 
@@ -32,9 +35,21 @@ const Navigation: React.FC<NavigationProps> = ({}) => {
 
 	return (
 		<Flex p='4' alignItems='center' justifyContent='space-between'>
-			<Logo />
-			<HStack>
-				<Button onClick={onCreatePostOpen}>Create Post</Button>
+			<HStack spacing='10'>
+				<Logo />
+				<Tooltip label='Create Post' title='Create Post' hasArrow>
+					<IconButton
+						borderRadius='md'
+						bg='transparent'
+						_hover={{
+							bg: 'transparent',
+						}}
+						aria-label='Create Post'
+						color='primary.200'
+						onClick={onCreatePostOpen}>
+						<EditIcon />
+					</IconButton>
+				</Tooltip>
 			</HStack>
 			<HStack spacing={3}>
 				<NavItem href={user ? '/feed' : '/'}>Home</NavItem>

@@ -1,5 +1,5 @@
 import { useMutation, useQueryClient } from 'react-query';
-import axios from '../../../../../lib/axios';
+import axios from '../../../../lib/axios';
 
 const useVotePost = (postId: string, pageParam: number) => {
 	const queryClient = useQueryClient();

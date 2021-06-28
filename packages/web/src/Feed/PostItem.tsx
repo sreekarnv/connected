@@ -23,7 +23,7 @@ import { Post } from '../../@types';
 import CommentIcon from '../shared/components/icons/CommentIcon';
 import DislikeIcon from '../shared/components/icons/DislikeIcon';
 import LikeIcon from '../shared/components/icons/LikeIcon';
-import useVotePost from './hooks/api/mutations/useVotePost';
+import useVotePost from './hooks/mutations/useVotePost';
 
 interface PostItemProps {
 	post: Post;
@@ -93,7 +93,7 @@ const PostItem: React.FC<PostItemProps> = ({ post, pageParam }) => {
 			<Flex flexDir='column' mb='10'>
 				<Grid {...styles.contentContainer}>
 					<GridItem colStart={1} colEnd={2} rowStart={1} rowEnd={3}>
-						<Avatar src={'Yo'} name={post.user?.name} />
+						<Avatar src={post.user?.photo} name={post.user?.name} />
 					</GridItem>
 
 					<GridItem colStart={2} colEnd={3} rowStart={1} rowEnd={2}>

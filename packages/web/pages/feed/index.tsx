@@ -13,9 +13,7 @@ import { dehydrate } from 'react-query/hydration';
 import { Post } from '../../@types';
 import CreatePost from '../../src/Feed/CreatePost';
 import FeedSidebar from '../../src/Feed/FeedSidebar';
-import usePostsQuery, {
-	getPosts,
-} from '../../src/Feed/hooks/api/queries/usePosts';
+import usePostsQuery, { getPosts } from '../../src/Feed/hooks/queries/usePosts';
 import PostItem from '../../src/Feed/PostItem';
 
 interface FeedPageProps {}
@@ -28,17 +26,16 @@ const FeedPage: React.FC<FeedPageProps> = ({}) => {
 		<>
 			<CreatePost />
 			<Grid
-				pt='8'
-				px='1rem'
-				templateColumns='[left-start] repeat(3, 1fr) [left-end feed-start] repeat(6, 1fr) [feed-end right-start] repeat(3, 1fr) [right-end]'>
+				pt='10'
+				templateColumns='2rem [left-start] repeat(3, 1fr) [left-end] 1fr [feed-start] repeat(6, 1fr) [feed-end right-start] repeat(3, 1fr) [right-end] 2rem'>
 				<GridItem gridColumn='left-start / left-end'>
 					<FeedSidebar />
 				</GridItem>
 
 				<GridItem
 					className='hide-scrollbar'
-					pb='24'
 					px='10'
+					pb='32'
 					h='100vh'
 					overflowY='scroll'
 					gridColumn='feed-start / feed-end'>
