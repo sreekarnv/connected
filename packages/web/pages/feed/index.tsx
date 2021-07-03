@@ -1,12 +1,4 @@
-import {
-	Container,
-	Heading,
-	Button,
-	Text,
-	Grid,
-	GridItem,
-} from '@chakra-ui/react';
-import { GetServerSideProps } from 'next';
+import { Heading, Button, Text, Grid, GridItem } from '@chakra-ui/react';
 import * as React from 'react';
 import { QueryClient } from 'react-query';
 import { dehydrate } from 'react-query/hydration';
@@ -18,7 +10,7 @@ import PostItem from '../../src/Feed/PostItem';
 
 interface FeedPageProps {}
 
-const FeedPage: React.FC<FeedPageProps> = ({}) => {
+const FeedPage: React.FC<FeedPageProps> = () => {
 	const { data, isFetchingNextPage, isLoading, fetchNextPage, hasNextPage } =
 		usePostsQuery(10);
 
@@ -61,7 +53,7 @@ const FeedPage: React.FC<FeedPageProps> = ({}) => {
 	);
 };
 
-export const getServerSideProps: GetServerSideProps = async ({ req }) => {
+export const getInitialProps = async ({ req }) => {
 	const queryClient = new QueryClient();
 
 	const headers = {
