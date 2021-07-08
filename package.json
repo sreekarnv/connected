@@ -1,10 +1,40 @@
 {
-    "version": "1.0.0",
-    "scripts": {
-        "start": "cd server && npm start"
-    },
-    "cacheDirectories":["server/node_modules"],
-    "engines": {
-        "node": ">=12.0.0"
-    }
+  "name": "connected",
+  "version": "1.0.0",
+  "description": "",
+  "main": "server.js",
+  "scripts": {
+    "dev": "nodemon server.js",
+    "start": "node server.js"
+  },
+  "author": "Sreekar Venkata Nutulapati",
+  "dependencies": {
+    "bcryptjs": "^2.4.3",
+    "cloudinary": "^1.24.0",
+    "cookie-parser": "^1.4.5",
+    "cors": "^2.8.5",
+    "dotenv": "^8.2.0",
+    "express": "^4.17.1",
+    "express-mongo-sanitize": "^2.0.1",
+    "express-rate-limit": "^5.2.3",
+    "helmet": "^4.2.0",
+    "hpp": "^0.2.3",
+    "jsonwebtoken": "^8.5.1",
+    "mongoose": "^5.11.8",
+    "morgan": "^1.10.0",
+    "multer": "^1.4.2",
+    "nodemailer": "^6.4.17",
+    "sharp": "^0.27.0",
+    "slugify": "^1.4.6",
+    "socket.io": "^3.0.4",
+    "uuid": "^8.3.2",
+    "validator": "^13.5.2",
+    "xss-clean": "^0.1.1"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.6"
+  },
+  "engines": {
+    "node": ">=12.0.0"
+  }
 }
