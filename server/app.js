@@ -15,6 +15,7 @@ const errorController = require('./controllers/errorController');
 app = express();
 
 app.enable('trust proxy');
+
 app.use(
 	cors({
 		credentials: true,
