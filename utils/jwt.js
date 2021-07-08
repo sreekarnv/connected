@@ -14,7 +14,7 @@ exports.signToken = async (payload, req, res) => {
 		expires: new Date(
 			Date.now() + process.env.JWT_COOKIE_EXPIRE_TIME * 60 * 60 * 1000
 		),
-		sameSite: 'lax',
+		sameSite: 'none',
 		secure,
 		httpOnly: true,
 	});
