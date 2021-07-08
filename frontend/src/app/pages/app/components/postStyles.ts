@@ -1,6 +1,9 @@
 const styles = {
 	container: {
-		mb: 14,
+		mb: {
+			md: 14,
+			sm: 20,
+		},
 		direction: 'column' as any,
 	},
 	contentContainer: {

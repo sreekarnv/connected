@@ -11,9 +11,8 @@ const ThemeToggler: React.FC<FlexProps> = (props) => {
 			<Switch
 				ml={2}
 				isChecked={colorMode === 'dark'}
-				onChange={toggleColorMode}>
-				Toggle
-			</Switch>
+				onChange={toggleColorMode}
+			/>
 		</Flex>
 	);
 };

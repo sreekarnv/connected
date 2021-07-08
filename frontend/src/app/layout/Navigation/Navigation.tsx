@@ -36,11 +36,8 @@ import UserAvatar from './../../components/UserAvatar/UserAvatar';
 
 const Navigation: React.FC<any> = () => {
 	const { user } = useContext(AuthContext);
-	const {
-		onCreatePostOpen,
-		onCreateGroupOpen,
-		onNotificationsOpen,
-	} = useContext(UIContext);
+	const { onCreatePostOpen, onCreateGroupOpen, onNotificationsOpen } =
+		useContext(UIContext);
 	const { notifications } = useContext(NotificationContext);
 
 	const { onOpen, onClose, isOpen } = useDisclosure();
@@ -53,79 +50,80 @@ const Navigation: React.FC<any> = () => {
 			}}
 			justifyContent='space-between'
 			mx={{ lg: '2rem', sm: 0 }}
-			px={{ xl: '4rem', lg: '4rem', md: '2rem', xs: '.75rem' }}
+			px={{ md: '1rem', xs: '.75rem' }}
 			py={4}
 			boxShadow='light'
 			alignItems='center'
 			className='navbar'>
-			<Text
-				className='navbar__brand'
-				fontSize={'2rem'}
-				as={NavLink}
-				to={user ? '/' : '/app/public'}>
-				Connected
-			</Text>
-
 			<NavMobile isOpen={isOpen} onClose={onClose} />
+			<Flex style={{ gap: '3rem' }}>
+				<Text
+					className='navbar__brand'
+					fontSize={'2rem'}
+					as={NavLink}
+					to={user ? '/' : '/app/public'}>
+					Connected
+				</Text>
 
-			{user && (
-				<>
-					<Flex mr='auto'>
-						<Hidden hide={{ sm: true, md: true }}>
-							<Tooltip hasArrow label='Add Post' aria-label='New Post'>
-								<IconButton
-									placeItems='center'
-									variant='text'
-									onClick={onCreatePostOpen}
-									aria-label='new post'
-									icon={<PostNewIcon fill='dodgerblue' />}
-								/>
-							</Tooltip>
-						</Hidden>
-
-						<Hidden hide={{ sm: true, md: true }}>
-							<Tooltip hasArrow label='Add Group' aria-label='New Group'>
-								<IconButton
-									onClick={onCreateGroupOpen}
-									variant='text'
-									mr={1}
-									aria-label='new group'
-									icon={<GroupNewIcon fill='dodgerblue' />}
-								/>
-							</Tooltip>
-						</Hidden>
-
-						<Hidden hide={{ sm: true, md: true }}>
-							<>
-								<Tooltip
-									hasArrow
-									label='Notifications'
-									aria-label='Notifications'>
+				{user && (
+					<>
+						<Flex mr='auto'>
+							<Hidden hide={{ sm: true, md: true }}>
+								<Tooltip hasArrow label='Add Post' aria-label='New Post'>
 									<IconButton
-										onClick={onNotificationsOpen}
+										placeItems='center'
 										variant='text'
-										aria-label='notification'
-										pos='relative'
-										icon={
-											<>
-												<NotificationIcon fill='dodgerblue' />
-												{notifications && notifications.length > 0 && (
-													<Circle
-														size='8px'
-														top='4px'
-														right='7px'
-														pos='absolute'
-														bg='tomato'></Circle>
-												)}
-											</>
-										}
+										onClick={onCreatePostOpen}
+										aria-label='new post'
+										icon={<PostNewIcon fill='dodgerblue' />}
 									/>
 								</Tooltip>
-							</>
-						</Hidden>
-					</Flex>
-				</>
-			)}
+							</Hidden>
+
+							<Hidden hide={{ sm: true, md: true }}>
+								<Tooltip hasArrow label='Add Group' aria-label='New Group'>
+									<IconButton
+										onClick={onCreateGroupOpen}
+										variant='text'
+										mr={1}
+										aria-label='new group'
+										icon={<GroupNewIcon fill='dodgerblue' />}
+									/>
+								</Tooltip>
+							</Hidden>
+
+							<Hidden hide={{ sm: true, md: true }}>
+								<>
+									<Tooltip
+										hasArrow
+										label='Notifications'
+										aria-label='Notifications'>
+										<IconButton
+											onClick={onNotificationsOpen}
+											variant='text'
+											aria-label='notification'
+											pos='relative'
+											icon={
+												<>
+													<NotificationIcon fill='dodgerblue' />
+													{notifications && notifications.length > 0 && (
+														<Circle
+															size='8px'
+															top='4px'
+															right='7px'
+															pos='absolute'
+															bg='tomato'></Circle>
+													)}
+												</>
+											}
+										/>
+									</Tooltip>
+								</>
+							</Hidden>
+						</Flex>
+					</>
+				)}
+			</Flex>
 
 			{user && (
 				<Hidden hide={{ sm: true, md: true }}>

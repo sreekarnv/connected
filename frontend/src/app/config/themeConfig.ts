@@ -49,7 +49,7 @@ const breakpoints = createBreakpoints({
 const config = {
 	initialColorMode: 'light',
 	useSystemColorMode: false,
-};
+} as any;
 
 const theme = extendTheme({ fonts, colors, breakpoints, config });
 

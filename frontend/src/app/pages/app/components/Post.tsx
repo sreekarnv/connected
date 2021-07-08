@@ -102,7 +102,7 @@ const Post: React.FC<Props> = ({ post }) => {
 
 					<GridItem rowStart={2} rowEnd={3}>
 						<Collapse startingHeight={75} in={showPostContent}>
-							{post.content}
+							<Text wordBreak={'break-word'}>{post.content}</Text>
 						</Collapse>
 						{post.content.length > 400 && (
 							<Button

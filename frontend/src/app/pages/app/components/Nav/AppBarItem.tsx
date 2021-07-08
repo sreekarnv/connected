@@ -29,23 +29,19 @@ const AppBarItem: React.FC<Props> = ({
 			as={as || NavLink}
 			to={to}
 			exact={exact}
-			cursor='pointer'
-			bgGradient='linear(to-br, primary.200, primary.600)'
-			_activeLink={{
-				background: 'primary.900',
+			_hover={{
+				bgColor: 'primary.300',
 			}}
 			_active={{
-				background: 'primary.400',
-			}}
-			_hover={{
-				background: 'primary.400',
+				bgColor: 'primary.400',
 			}}
 			_focus={{
-				boxShadow: '0 0 0 3px rgba(66, 153, 225, 0.6)',
-				background: 'primary.400',
+				bgColor: 'primary.400',
 			}}
+			cursor='pointer'
 			h='3.5rem'
 			w='3.5rem'
+			bgColor='primary.300'
 			m={m}
 			aria-label={label}
 			icon={icon}
