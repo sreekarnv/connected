@@ -11,13 +11,12 @@ import {
 import { Group as GroupType } from '../../../config/types';
 
 import { ReactComponent as JoinRequestIcon } from './../../../../assets/icons/message.svg';
-// import { ReactComponent as GroupsIcon } from './../../../../assets/icons/groups.svg';
-import axios from 'axios';
 import { useContext, useState } from 'react';
 import { SearchContext } from '../../../store/context/SearchContext';
 
 import styles from './groupItemStyles';
 import { AuthContext } from '../../../store/context/AuthContext';
+import axios from '../../../config/axios';
 
 interface Props {
 	group: GroupType;

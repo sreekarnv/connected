@@ -11,10 +11,11 @@ import {
 import { AuthContext } from '../../store/context/AuthContext';
 import { useHistory } from 'react-router-dom';
 import * as Yup from 'yup';
-import axios, { AxiosResponse } from 'axios';
+import { AxiosResponse } from 'axios';
 import useAlert from '../../hooks/useAlert';
 import BaseAlert from '../../components/Alert/BaseAlert';
 import { FieldError } from '../../utils/FieldError';
+import axios from '../../config/axios';
 
 const intitalValues = {
 	email: '',

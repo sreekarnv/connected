@@ -13,9 +13,10 @@ import { AuthContext } from '../../store/context/AuthContext';
 import { useHistory } from 'react-router-dom';
 import BaseAlert from '../../components/Alert/BaseAlert';
 import useAlert from '../../hooks/useAlert';
-import axios from 'axios';
+
 import { FieldError } from '../../utils/FieldError';
 import Hidden from '../../components/Hidden/Hidden';
+import axios from '../../config/axios';
 
 const initialValues = {
 	email: '',

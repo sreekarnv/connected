@@ -1,6 +1,6 @@
 import React, { Suspense, useContext, useState } from 'react';
 import * as Yup from 'yup';
-import axios from 'axios';
+import axios from '../../config/axios';
 import { Form, Formik } from 'formik';
 import { useHistory } from 'react-router-dom';
 import {

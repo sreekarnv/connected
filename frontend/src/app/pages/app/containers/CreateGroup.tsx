@@ -29,11 +29,12 @@ import TextAreaField from '../../../components/Form/TextAreaField';
 
 import { ReactComponent as ImageIcon } from './../../../../assets/icons/image-inverted.svg';
 import InputField from '../../../components/Form/InputField';
-import axios from 'axios';
+
 import { AuthContext } from '../../../store/context/AuthContext';
 
 import useAlert from '../../../hooks/useAlert';
 import BaseAlert from '../../../components/Alert/BaseAlert';
+import axios from '../../../config/axios';
 
 const initialValues = {
 	name: '',

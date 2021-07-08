@@ -1,5 +1,4 @@
 import React, { useContext, useEffect } from 'react';
-import axios from 'axios';
 import { useHistory } from 'react-router-dom';
 import { Field, Form, Formik } from 'formik';
 import * as Yup from 'yup';
@@ -33,6 +32,7 @@ import TextAreaField from '../../../components/Form/TextAreaField';
 import { ReactComponent as ImageIcon } from './../../../../assets/icons/image-inverted.svg';
 import useAlert from '../../../hooks/useAlert';
 import BaseAlert from '../../../components/Alert/BaseAlert';
+import axios from '../../../config/axios';
 
 const initialValues = {
 	group: '',

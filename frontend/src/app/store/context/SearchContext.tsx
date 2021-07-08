@@ -4,7 +4,7 @@ import { SocketContext } from './SocketContext';
 
 import { AuthContext } from './AuthContext';
 import { Group, Notification, User } from '../../config/types';
-import axios from 'axios';
+import axios from '../../config/axios';
 import { useLocation } from 'react-router-dom';
 
 export const SearchContext = React.createContext<Partial<any>>({});

@@ -7,7 +7,6 @@ import {
 	Text,
 	useColorMode,
 } from '@chakra-ui/react';
-import axios from 'axios';
 import React, { useContext, useEffect, useState } from 'react';
 import { useHistory, useParams } from 'react-router-dom';
 import Loader from '../../../components/Spinner/Spinner';
@@ -15,6 +14,7 @@ import { AuthContext } from '../../../store/context/AuthContext';
 
 import useAlert from '../../../hooks/useAlert';
 import BaseAlert from '../../../components/Alert/BaseAlert';
+import axios from '../../../config/axios';
 
 const FriendProfile: React.FC = () => {
 	const { friendId } = useParams() as any;

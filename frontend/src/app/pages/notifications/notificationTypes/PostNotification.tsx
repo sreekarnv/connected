@@ -7,7 +7,7 @@ import {
 	IconButton,
 	Text,
 } from '@chakra-ui/react';
-import axios from 'axios';
+import axios from '../../../config/axios';
 import { ArrowForwardIcon } from '@chakra-ui/icons';
 import React, { useContext } from 'react';
 import { Notification } from '../../../config/types';

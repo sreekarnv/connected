@@ -1,5 +1,6 @@
 import React, { useCallback } from 'react';
-import axios, { AxiosResponse } from 'axios';
+import { AxiosResponse } from 'axios';
+import axios from '../../config/axios';
 
 import reducer, { initialState } from '../reducers/authReducers';
 import * as actionTypes from '../actionTypes';

@@ -7,7 +7,7 @@ import {
 	Spinner,
 	Tooltip,
 } from '@chakra-ui/react';
-import axios from 'axios';
+import axios from '../../../config/axios';
 import React, { useContext, useState } from 'react';
 import { Notification } from '../../../config/types';
 

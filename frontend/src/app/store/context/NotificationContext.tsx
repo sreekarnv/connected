@@ -4,13 +4,12 @@ import { SocketContext } from './SocketContext';
 
 import reducer, { initialState } from '../reducers/notitficationReducers';
 import * as actionTypes from '../actionTypes';
-import axios from 'axios';
+import axios from '../../config/axios';
 import { AuthContext } from './AuthContext';
 import { Notification as NotificationType } from './../../config/types';
 
-export const NotificationContext = React.createContext<Partial<any>>(
-	initialState
-);
+export const NotificationContext =
+	React.createContext<Partial<any>>(initialState);
 
 const NotificationContextProvider = ({ children }: any) => {
 	const io = useContext(SocketContext);

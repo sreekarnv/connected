@@ -11,11 +11,11 @@ import {
 import { User as UserType } from '../../../config/types';
 
 import { ReactComponent as JoinRequestIcon } from './../../../../assets/icons/message.svg';
-import axios from 'axios';
 import { useContext, useState } from 'react';
 import { AuthContext } from '../../../store/context/AuthContext';
 
 import styles from './userItemStyles';
+import axios from '../../../config/axios';
 
 interface Props {
 	user: UserType;

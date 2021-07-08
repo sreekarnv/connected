@@ -15,8 +15,6 @@ import {
 
 import React, { useContext, useState } from 'react';
 
-import axios from 'axios';
-
 import { ReactComponent as LikeIcon } from './../../../../assets/icons/like.svg';
 import { ReactComponent as LikeFillIcon } from './../../../../assets/icons/likefill.svg';
 import { ReactComponent as DislikeFillIcon } from './../../../../assets/icons/dislikefill.svg';
@@ -30,6 +28,7 @@ import Comments from './Comments';
 import styles from './postStyles';
 
 import useSpinner from './../../../hooks/useSpinner';
+import axios from '../../../config/axios';
 
 interface Props {
 	post: PostProps;

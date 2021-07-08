@@ -15,11 +15,11 @@ import React, { useContext, useEffect } from 'react';
 import TextAreaField from '../../../components/Form/TextAreaField';
 import { SocketContext } from '../../../store/context/SocketContext';
 import { Comment, Comment as CommentType } from '../../../config/types';
-import axios from 'axios';
 import BaseAlert from '../../../components/Alert/BaseAlert';
 import useAlert from '../../../hooks/useAlert';
 
 import styles from './addCommentStyles';
+import axios from '../../../config/axios';
 
 const commentSchema = Yup.object().shape({
 	content: Yup.string().required('Comment cannot be empty!!'),

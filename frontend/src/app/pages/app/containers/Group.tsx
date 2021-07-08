@@ -17,13 +17,14 @@ import {
 	Post as PostProps,
 } from './../../../config/types';
 import { SocketContext } from '../../../store/context/SocketContext';
-import axios from 'axios';
+
 import { useHistory, useParams } from 'react-router-dom';
 import PostSkeleton from '../components/PostSkeleton';
 import { ReactComponent as GroupIcon } from './../../../../assets/icons/groups.svg';
 import { EditIcon } from '@chakra-ui/icons';
 import EditGroup from './EditGroup';
 import { AuthContext } from '../../../store/context/AuthContext';
+import axios from '../../../config/axios';
 const Group = () => {
 	const io = useContext<any>(SocketContext);
 	const { slug } = useParams<any>();
