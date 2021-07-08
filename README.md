@@ -3,7 +3,7 @@
 Connected is a social media website similar to facebook or instagram.
 Users can post in public forum or create their private groups.
 
-live at: https://always-stay-connected.herokuapp.com
+live at: https://always-stay-connected.netlify.app
 
 # App View
 
