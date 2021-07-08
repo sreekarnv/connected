@@ -1,7 +1,9 @@
 import { createContext } from 'react';
 import { io } from 'socket.io-client';
 
-const socket = io('/');
+const socket = io(process.env.REACT_APP_SERVER_URL!, {
+	withCredentials: true,
+});
 
 export const SocketContext = createContext<Partial<any>>(socket);
 

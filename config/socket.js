@@ -1,7 +1,12 @@
 const mongoose = require('mongoose');
 
 const initSockets = (server) => {
-	const io = require('socket.io')(server);
+	const io = require('socket.io')(server, {
+		cors: {
+			origin: process.env.ALLOWED_HOST,
+			credentials: true,
+		},
+	});
 	io.on('connection', (socket) => {
 		console.log('connected..... websockets');
 
