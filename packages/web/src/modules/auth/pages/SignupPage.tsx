@@ -9,8 +9,12 @@ import {
 	Input,
 	FormErrorMessage,
 	Button,
+	Box,
+	Avatar,
+	Flex,
 } from '@chakra-ui/react';
 import useSignupMutation from '../hooks/useSignupMutation';
+import { ArrowUpIcon } from '@chakra-ui/icons';
 
 interface SignupPageProps {
 	path?: string;
@@ -40,6 +44,7 @@ const validationSchema = Yup.object()
 
 const SignupPage: React.FC<SignupPageProps> = ({}) => {
 	const { isLoading, mutate } = useSignupMutation();
+	const [file, setFile] = React.useState<File | null>(null);
 
 	const {
 		register,
@@ -56,6 +61,7 @@ const SignupPage: React.FC<SignupPageProps> = ({}) => {
 			email: values.email,
 			password: values.password,
 			passwordConfirm: values.passwordConfirm,
+			photo: file,
 		});
 
 		reset();
@@ -89,7 +95,7 @@ const SignupPage: React.FC<SignupPageProps> = ({}) => {
 						</FormErrorMessage>
 					</FormControl>
 
-					<FormControl isRequired isInvalid={!!errors.passwordConfirm}>
+					<FormControl mb='4' isRequired isInvalid={!!errors.passwordConfirm}>
 						<FormLabel>Password Confirm</FormLabel>
 						<Input type='password' {...register('passwordConfirm')} />
 						<FormErrorMessage>
@@ -97,7 +103,30 @@ const SignupPage: React.FC<SignupPageProps> = ({}) => {
 						</FormErrorMessage>
 					</FormControl>
 
-					<Button isLoading={isLoading} colorScheme='blue' type='submit' mt='5'>
+					<Flex justifyContent='space-between' alignItems='center'>
+						<Button
+							cursor='pointer'
+							leftIcon={<ArrowUpIcon />}
+							as='label'
+							htmlFor='photo'
+							size='sm'>
+							Upload Profile Picture
+						</Button>
+
+						<input
+							style={{ display: 'none' }}
+							type='file'
+							name='photo'
+							id='photo'
+							onChange={(e) => {
+								setFile(e.target.files![0]);
+							}}
+						/>
+
+						{file && <Avatar size={'sm'} src={URL.createObjectURL(file)} />}
+					</Flex>
+
+					<Button isLoading={isLoading} colorScheme='blue' type='submit' mt='6'>
 						Create Account
 					</Button>
 				</form>

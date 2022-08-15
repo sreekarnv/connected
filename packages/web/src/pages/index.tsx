@@ -20,6 +20,8 @@ import {
 } from '@chakra-ui/react';
 import Logo from '../modules/shared/components/Logo';
 import ThemeToggler from '../modules/shared/components/ThemeToggler';
+import { useQueryClient } from '@tanstack/react-query';
+import { RQ } from '../modules/shared/types/react-query';
 
 export const Head: HeadFC = () => <title>Home</title>;
 
@@ -32,32 +34,12 @@ interface Styles {
 }
 
 const IndexPage = () => {
-	const { isLoading, mutate } = useLogoutMutation();
+	const queryClient = useQueryClient();
+	const user = queryClient.getQueryData([RQ.LOGGED_IN_USER_QUERY]);
 	const { colorMode } = useColorMode();
 
 	return (
 		<BaseLayout>
-			{/* <h1>Hello World</h1>
-
-			<div>
-				<Link to='/auth/login'>Login</Link>
-				<Link to='/auth/signup'>Signup</Link>
-				<Link to='/app/profile'>Profile</Link>
-				<Link to='/app/feed'>Feed</Link>
-				<Link to='/app/posts/new'>Create Post</Link>
-
-				<Button
-					colorScheme='red'
-					isLoading={isLoading}
-					onClick={() => {
-						mutate();
-					}}>
-					Logout
-				</Button>
-
-				<ThemeToggler />
-			</div> */}
-
 			<Flex justifyContent='space-between' p='4'>
 				<Box>
 					<Logo />
@@ -78,18 +60,33 @@ const IndexPage = () => {
 					</Heading>
 
 					<HStack spacing={10}>
-						<Button as={Link} to='/auth/login' size='lg' variant='outline'>
-							Log In
-						</Button>
+						{user ? (
+							<>
+								<Button
+									as={Link}
+									to='/app/feed'
+									size='lg'
+									variant='solid'
+									colorScheme='blue'>
+									Go to Feed
+								</Button>
+							</>
+						) : (
+							<>
+								<Button as={Link} to='/auth/login' size='lg' variant='outline'>
+									Log In
+								</Button>
 
-						<Button
-							as={Link}
-							to='/auth/signup'
-							size='lg'
-							variant='solid'
-							colorScheme='blue'>
-							Sign Up
-						</Button>
+								<Button
+									as={Link}
+									to='/auth/signup'
+									size='lg'
+									variant='solid'
+									colorScheme='blue'>
+									Sign Up
+								</Button>
+							</>
+						)}
 					</HStack>
 				</GridItem>
 				<GridItem {...styles.imageGridColumn}>

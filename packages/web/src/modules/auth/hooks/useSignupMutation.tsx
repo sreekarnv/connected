@@ -8,7 +8,13 @@ const useSignupMutation = () => {
 	const { data, mutate, isLoading } = useMutation<
 		any,
 		any,
-		{ name: string; email: string; password: string; passwordConfirm: string },
+		{
+			name: string;
+			email: string;
+			password: string;
+			passwordConfirm: string;
+			photo: File | null;
+		},
 		any
 	>(
 		async (data) => {
@@ -16,6 +22,9 @@ const useSignupMutation = () => {
 				url: '/auth/signup',
 				method: 'post',
 				data,
+				headers: {
+					'Content-Type': 'multipart/form-data',
+				},
 			});
 			return res.data;
 		},

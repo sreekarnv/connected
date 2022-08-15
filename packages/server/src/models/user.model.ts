@@ -6,6 +6,7 @@ import {
 	index,
 } from '@typegoose/typegoose';
 import * as argon2 from 'argon2';
+import { Photo } from './photo.model';
 
 export enum Roles {
 	User = 'user',
@@ -80,6 +81,11 @@ export class User {
 		default: true,
 	})
 	isActive!: true;
+
+	@Property({
+		type: Photo,
+	})
+	photo?: Photo;
 
 	@Property({
 		type: String,

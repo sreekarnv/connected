@@ -3,6 +3,7 @@ import { User } from './models/user.model';
 
 export type IRequest = Request & {
 	user?: User;
+	photo?: any;
 };
 
 export type ExpressResponse = (

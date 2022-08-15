@@ -15,6 +15,7 @@ import {
 	Tab,
 	TabPanel,
 	Button,
+	Text,
 } from '@chakra-ui/react';
 import * as Yup from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
@@ -131,6 +132,12 @@ const CommentDrawer: React.FC<CommentDrawerProps> = ({
 						<TabPanels>
 							<TabPanel>
 								<DrawerBody>
+									{comments.length === 0 && (
+										<>
+											<Text>No Comments for this post yet.</Text>
+										</>
+									)}
+
 									{comments.map((comment: any) => (
 										<CommentItem {...{ comment }} key={comment._id} />
 									))}

@@ -2,6 +2,8 @@ import {
 	Avatar,
 	Badge,
 	Box,
+	Button,
+	Collapse,
 	Flex,
 	HStack,
 	Icon,
@@ -16,6 +18,7 @@ import { RQ } from '../../shared/types/react-query';
 import useDislikePostMutation from '../hooks/useDislikePostMutation';
 import useLikePostMutation from '../hooks/useLikePostMutation';
 import CommentDrawer from './CommentDrawer';
+import formatDistance from 'date-fns/formatDistance';
 
 interface PostItemProps {
 	post: PostType;
@@ -34,6 +37,7 @@ const PostItem: React.FC<PostItemProps> = ({ post, pageParam }) => {
 	const [dislikesLength, setDislikesLength] = React.useState(
 		post.dislikes.length
 	);
+	const { isOpen: isShow, onToggle } = useDisclosure();
 
 	const { mutate: likePost, isLoading: isLikeLoading } = useLikePostMutation(
 		post._id,
@@ -77,9 +81,15 @@ const PostItem: React.FC<PostItemProps> = ({ post, pageParam }) => {
 					justifyContent='space-between'>
 					<HStack>
 						<Avatar name={post.user.name} />
-						<Text>{post.user.name}</Text>
+						<Text fontWeight='semibold' fontSize='xl'>
+							{post.user.name}
+						</Text>
 					</HStack>
-					<Text>{post.createdAt.toString()}</Text>
+					<Text color='gray.400' fontWeight='semibold'>
+						{formatDistance(new Date(post.createdAt), new Date(), {
+							addSuffix: true,
+						})}
+					</Text>
 				</Flex>
 				<Box
 					borderWidth='2px'
@@ -89,13 +99,30 @@ const PostItem: React.FC<PostItemProps> = ({ post, pageParam }) => {
 					mb='4'
 					p='5'
 					borderRadius='2xl'>
-					{post.content}
+					{post.content.length > 530 ? (
+						<>
+							<Collapse startingHeight={100} in={isShow}>
+								{post.content}
+							</Collapse>
+							<Button
+								size='sm'
+								onClick={() => {
+									onToggle();
+								}}
+								mt='1rem'>
+								Show {isShow ? 'Less' : 'More'}
+							</Button>
+						</>
+					) : (
+						<>{post.content}</>
+					)}
 				</Box>
 				<Flex
 					borderWidth='2px'
 					borderColor='blue.400'
 					borderStyle='solid'
 					alignItems='center'
+					justifyContent='space-between'
 					p='5'
 					borderRadius='2xl'>
 					<HStack spacing={5}>
@@ -185,47 +212,48 @@ const PostItem: React.FC<PostItemProps> = ({ post, pageParam }) => {
 								/>
 							}
 						/>
-
-						<IconButton
-							onClick={() => {
-								onOpen();
-							}}
-							aria-label='Open Comments Drawer'
-							position='relative'
-							icon={
-								<Icon
-									boxSize='4'
-									as={() => (
-										<>
-											<Badge
-												bottom='-10px'
-												right='-10px'
-												position='absolute'
-												variant='solid'
-												colorScheme='blue'>
-												{post.comments.length}
-											</Badge>
-											<Box
-												as='svg'
-												height='6'
-												width='6'
-												xmlns='http://www.w3.org/2000/svg'
-												fill='none'
-												viewBox='0 0 24 24'
-												stroke='currentColor'
-												strokeWidth={2}>
-												<path
-													strokeLinecap='round'
-													strokeLinejoin='round'
-													d='M3 10h10a8 8 0 018 8v2M3 10l6 6m-6-6l6-6'
-												/>
-											</Box>
-										</>
-									)}
-								/>
-							}
-						/>
 					</HStack>
+
+					<IconButton
+						onClick={() => {
+							onOpen();
+						}}
+						aria-label='Open Comments Drawer'
+						position='relative'
+						variant='outline'
+						icon={
+							<Icon
+								boxSize='4'
+								as={() => (
+									<>
+										<Badge
+											bottom='-10px'
+											right='-10px'
+											position='absolute'
+											variant='solid'
+											colorScheme='blue'>
+											{post.comments.length}
+										</Badge>
+										<Box
+											as='svg'
+											height='5'
+											width='5'
+											xmlns='http://www.w3.org/2000/svg'
+											fill='none'
+											viewBox='0 0 24 24'
+											stroke='currentColor'
+											strokeWidth={2}>
+											<path
+												strokeLinecap='round'
+												strokeLinejoin='round'
+												d='M3 10h10a8 8 0 018 8v2M3 10l6 6m-6-6l6-6'
+											/>
+										</Box>
+									</>
+								)}
+							/>
+						}
+					/>
 				</Flex>
 			</Box>
 		</>

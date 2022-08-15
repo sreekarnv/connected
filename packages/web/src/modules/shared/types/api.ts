@@ -1,3 +1,9 @@
+export interface PhotoType {
+	_id: string;
+	url: string;
+	publicId: string;
+}
+
 export interface CommentType {
 	_id: string;
 	content: string;
@@ -9,6 +15,7 @@ export interface UserType {
 	_id: string;
 	email: string;
 	name: string;
+	photo?: PhotoType;
 	isActive?: boolean;
 	roles?: string[];
 	createdAt?: Date;

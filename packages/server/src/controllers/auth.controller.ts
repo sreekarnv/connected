@@ -60,11 +60,14 @@ export const signup: ExpressResponse = async (req, res, next) => {
 	try {
 		const { email, name, password, passwordConfirm } = req.body;
 
+		const photo = req.photo ?? undefined;
+
 		const user = await UserModel.create({
 			name,
 			email,
 			password,
 			passwordConfirm,
+			photo,
 		});
 
 		createCookie(user._id, res);
