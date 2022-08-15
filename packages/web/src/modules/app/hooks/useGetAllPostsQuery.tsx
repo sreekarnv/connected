@@ -1,25 +1,34 @@
-import { useQuery } from '@tanstack/react-query';
+import { useInfiniteQuery, useQuery } from '@tanstack/react-query';
 import React from 'react';
 import axios from '../../shared/config/axios';
 import { RQ } from '../../shared/types/react-query';
 
 const useGetAllPostsQuery = () => {
-	const { isLoading, data, error } = useQuery(
+	const result = useInfiniteQuery(
 		[RQ.GET_ALL_POSTS_QUERY],
-		async () => {
+		async ({ pageParam = 1 }) => {
 			const res = await axios({
 				url: '/posts',
 				method: 'get',
+				params: {
+					pageParam,
+				},
 			});
 			return res.data;
+		},
+		{
+			getPreviousPageParam: (data) => {
+				if (data.currentPageParam > 1) {
+					return data.currentPageParam - 1;
+				}
+
+				return 1;
+			},
+			getNextPageParam: (data) => data.currentPageParam + 1,
 		}
 	);
 
-	return {
-		isLoading,
-		error,
-		data,
-	};
+	return result;
 };
 
 export default useGetAllPostsQuery;

@@ -5,12 +5,21 @@ import { ExpressResponse } from '../types';
 
 export const getAllPosts: ExpressResponse = async (req, res, next) => {
 	try {
-		const { group } = req.params;
-		const posts = await PostModel.find({ group }).sort('-createdAt');
+		const { pageParam } = req.query;
+		const limit = 2;
+
+		let page = pageParam ? parseInt(pageParam as string) : 1;
+
+		const posts = await PostModel.find()
+			.sort('-createdAt')
+			.skip(limit * (page - 1))
+			.limit(limit + 1);
 
 		res.status(200).json({
 			status: 'success',
-			posts,
+			hasNext: posts.length === limit + 1,
+			currentPageParam: page,
+			posts: posts.slice(0, limit),
 		});
 	} catch (err) {
 		next(err);
