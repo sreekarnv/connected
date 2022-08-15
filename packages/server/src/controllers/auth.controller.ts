@@ -1,6 +1,20 @@
 import { createCookie, verifyToken } from './../utils/jwt';
 import UserModel from '../models/user.model';
 import { ExpressResponse } from '../types';
+import AppError from '../utils/AppError';
+
+export const protectRoutes: ExpressResponse = async (req, _, next) => {
+	if (!req.user?._id) {
+		return next(
+			new AppError(
+				'You are not authorized to access to perform this action',
+				401
+			)
+		);
+	}
+
+	next();
+};
 
 export const parseAuthCookie: ExpressResponse = async (req, _, next) => {
 	const token = req.cookies['auth.token'];
@@ -43,23 +57,28 @@ export const login: ExpressResponse = async (req, res, next) => {
 };
 
 export const signup: ExpressResponse = async (req, res, next) => {
-	const { email, name, password, passwordConfirm } = req.body;
+	try {
+		const { email, name, password, passwordConfirm } = req.body;
 
-	const user = await UserModel.create({
-		name,
-		email,
-		password,
-		passwordConfirm,
-	});
+		const user = await UserModel.create({
+			name,
+			email,
+			password,
+			passwordConfirm,
+		});
 
-	createCookie(user._id, res);
+		createCookie(user._id, res);
 
-	user.password = undefined as any;
+		user.password = undefined as any;
 
-	res.status(201).json({
-		status: 'success',
-		user,
-	});
+		res.status(201).json({
+			status: 'success',
+			user,
+		});
+	} catch (err: any) {
+		err.collection = 'user';
+		next(err);
+	}
 };
 
 export const logout: ExpressResponse = async (req, res, next) => {

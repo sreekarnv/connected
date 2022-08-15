@@ -2,7 +2,6 @@ import {
 	Avatar,
 	Badge,
 	Box,
-	Button,
 	Flex,
 	HStack,
 	Icon,
@@ -38,8 +37,12 @@ const PostItem: React.FC<PostItemProps> = ({ post }) => {
 	const user = queryClient.getQueryData([RQ.LOGGED_IN_USER_QUERY]) as any;
 	const [liked, setLiked] = React.useState(post.likes.includes(user._id));
 	const [likesLength, setLikesLength] = React.useState(post.likes.length);
-	const [disliked, setDisliked] = React.useState(post.likes.includes(user._id));
-	const [dislikesLength, setDislikesLength] = React.useState(post.likes.length);
+	const [disliked, setDisliked] = React.useState(
+		post.dislikes.includes(user._id)
+	);
+	const [dislikesLength, setDislikesLength] = React.useState(
+		post.dislikes.length
+	);
 
 	const { mutate: likePost, isLoading: isLikeLoading } = useLikePostMutation(
 		post._id,

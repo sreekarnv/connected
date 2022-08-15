@@ -7,6 +7,7 @@ import path from 'path';
 import authRouter from './routers/auth.router';
 import commentRouter from './routers/comment.router';
 import postRouter from './routers/post.router';
+import errorController from './controllers/error.controller';
 
 dotenv.config({ path: path.join(__dirname, '../', '.env') });
 
@@ -35,6 +36,8 @@ const app = express();
 		app.use('/api/v1/auth', authRouter);
 		app.use('/api/v1/posts', postRouter);
 		app.use('/api/v1/comments', commentRouter);
+
+		app.use(errorController);
 
 		app.listen(PORT, () => {
 			console.log(`Server is running on port ${PORT}`);

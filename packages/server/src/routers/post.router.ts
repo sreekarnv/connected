@@ -4,7 +4,7 @@ import express from 'express';
 
 const router = express.Router();
 
-router.use(authController.parseAuthCookie);
+router.use(authController.parseAuthCookie, authController.protectRoutes);
 
 router
 	.route('/')
