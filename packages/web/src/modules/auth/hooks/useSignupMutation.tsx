@@ -1,6 +1,7 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import React from 'react';
 import axios from '../../shared/config/axios';
+import { ImageSettings } from '../../shared/types/api';
 import { RQ } from '../../shared/types/react-query';
 
 const useSignupMutation = () => {
@@ -14,6 +15,7 @@ const useSignupMutation = () => {
 			password: string;
 			passwordConfirm: string;
 			photo: File | null;
+			imageSettings: string;
 		},
 		any
 	>(

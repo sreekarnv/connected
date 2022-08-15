@@ -8,6 +8,7 @@ import {
 } from '@typegoose/typegoose';
 import mongoose from 'mongoose';
 import { Comment } from './comment.model';
+import { Photo } from './photo.model';
 import { User } from './user.model';
 
 @pre<Post>(/^find/, function (next) {
@@ -40,7 +41,10 @@ export class Post {
 	})
 	user!: Ref<User>;
 
-	// group?: string;
+	@Property({
+		type: Photo,
+	})
+	photo?: Photo;
 
 	@Property({
 		type: mongoose.SchemaTypes.ObjectId,

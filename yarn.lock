@@ -6412,6 +6412,11 @@ create-require@^1.1.0:
   resolved "https://registry.yarnpkg.com/create-require/-/create-require-1.1.1.tgz#c1d7e8f1e5f6cfc9ff65f9cd352d37348756c333"
   integrity sha512-dcKFX3jn0MpIaXjisoRvexIJVEKzaq7z2rZKxf+MSr9TkdmHmsU4m2lcLojrj/FHl8mk5VxMmYA+ftRkP/3oKQ==
 
+cropperjs@^1.5.12:
+  version "1.5.12"
+  resolved "https://registry.yarnpkg.com/cropperjs/-/cropperjs-1.5.12.tgz#d9c0db2bfb8c0d769d51739e8f916bbc44e10f50"
+  integrity sha512-re7UdjE5UnwdrovyhNzZ6gathI4Rs3KGCBSc8HCIjUo5hO42CtzyblmWLj6QWVw7huHyDMfpKxhiO2II77nhDw==
+
 cross-env@^7.0.3:
   version "7.0.3"
   resolved "https://registry.yarnpkg.com/cross-env/-/cross-env-7.0.3.tgz#865264b29677dc015ba8418918965dd232fc54cf"
@@ -12734,6 +12739,13 @@ react-clientside-effect@^1.2.6:
   integrity sha512-XGGGRQAKY+q25Lz9a/4EPqom7WRjz3z9R2k4jhVKA/puQFH/5Nt27vFZYql4m4NVNdUvX8PS3O7r/Zzm7cjUlg==
   dependencies:
     "@babel/runtime" "^7.12.13"
+
+react-cropper@^2.1.8:
+  version "2.1.8"
+  resolved "https://registry.yarnpkg.com/react-cropper/-/react-cropper-2.1.8.tgz#bf35a7de65769f8ad357e8ae884e791fe3fe9212"
+  integrity sha512-QEj6CE9et/gMRqpaKMgZQdBgtzLjjq+zj1pmHwtoWG6GqscDl4QpTwoEElWN2pieYxkwFaZa0lPiD2b9nwqLKQ==
+  dependencies:
+    cropperjs "^1.5.12"
 
 react-dev-utils@^12.0.1:
   version "12.0.1"

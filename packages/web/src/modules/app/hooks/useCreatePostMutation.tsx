@@ -8,7 +8,7 @@ const useCreatePostMutation = () => {
 	const { isLoading, data, error, mutate } = useMutation<
 		any,
 		any,
-		{ content: string },
+		{ content: string; imageSettings: string; photo: File | null },
 		any
 	>(
 		async (data) => {
@@ -16,13 +16,14 @@ const useCreatePostMutation = () => {
 				url: '/posts',
 				method: 'post',
 				data,
+				headers: {
+					'Content-Type': 'multipart/form-data',
+				},
 			});
 			return res.data.post;
 		},
 		{
 			onSuccess: (data) => {
-				console.log(data);
-
 				navigate('/app/feed');
 			},
 		}

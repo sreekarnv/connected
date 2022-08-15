@@ -12,9 +12,13 @@ import {
 	Box,
 	Avatar,
 	Flex,
+	useDisclosure,
 } from '@chakra-ui/react';
 import useSignupMutation from '../hooks/useSignupMutation';
 import { ArrowUpIcon } from '@chakra-ui/icons';
+import useCroppedImage from '../../shared/hooks/useCropperImage';
+import ImagePreview from '../../shared/components/ImagePreview';
+import ImageCropper from '../../shared/components/ImageCropper';
 
 interface SignupPageProps {
 	path?: string;
@@ -44,7 +48,19 @@ const validationSchema = Yup.object()
 
 const SignupPage: React.FC<SignupPageProps> = ({}) => {
 	const { isLoading, mutate } = useSignupMutation();
-	const [file, setFile] = React.useState<File | null>(null);
+	const { isOpen, onClose, onOpen } = useDisclosure();
+	const {
+		image,
+		setImage,
+		showImageCropper,
+		closeImageCropper,
+		imageSettings,
+		setImageSettings,
+		imageUrl,
+		setCroppedImage,
+		croppedImage,
+		resetValues,
+	} = useCroppedImage();
 
 	const {
 		register,
@@ -61,15 +77,36 @@ const SignupPage: React.FC<SignupPageProps> = ({}) => {
 			email: values.email,
 			password: values.password,
 			passwordConfirm: values.passwordConfirm,
-			photo: file,
+			photo: image,
+			imageSettings: JSON.stringify(imageSettings),
 		});
 
 		reset();
+		resetValues();
 	};
 
 	return (
 		<>
 			<AuthLayout heading='Sign Up'>
+				{image && imageUrl && (
+					<ImageCropper
+						showImageCropper={showImageCropper}
+						closeImageCropper={closeImageCropper}
+						imageSettings={imageSettings}
+						setImageSettings={setImageSettings}
+						photo={imageUrl}
+						setCroppedImage={setCroppedImage}
+					/>
+				)}
+
+				{croppedImage && (
+					<ImagePreview
+						imageUrl={croppedImage}
+						isOpen={isOpen}
+						onClose={onClose}
+					/>
+				)}
+
 				<form noValidate onSubmit={handleSubmit(onSubmit)}>
 					<FormControl mb='4' isRequired isInvalid={!!errors.name}>
 						<FormLabel>Name</FormLabel>
@@ -118,12 +155,12 @@ const SignupPage: React.FC<SignupPageProps> = ({}) => {
 							type='file'
 							name='photo'
 							id='photo'
-							onChange={(e) => {
-								setFile(e.target.files![0]);
-							}}
+							onChange={(e: any) => setImage(e.target.files[0])}
 						/>
 
-						{file && <Avatar size={'sm'} src={URL.createObjectURL(file)} />}
+						<Box role='button' onClick={() => onOpen()}>
+							{croppedImage && <Avatar size={'sm'} src={croppedImage} />}
+						</Box>
 					</Flex>
 
 					<Button isLoading={isLoading} colorScheme='blue' type='submit' mt='6'>

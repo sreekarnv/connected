@@ -10,11 +10,23 @@ export const resizeImage = (folderName: string) => {
 	return async (req: IRequest, _: Response, next: NextFunction) => {
 		if (!req.file) return next();
 
+		const {
+			height,
+			width,
+			x: left,
+			y: top,
+		} = JSON.parse(req.body.imageSettings);
 		req.file.filename = `${uuidv4()}.jpeg`;
 
 		try {
 			await sharp(req.file.buffer)
-				.resize(2000, 2000)
+				.extract({
+					left: parseInt(left),
+					top: parseInt(top),
+					width: parseInt(width),
+					height: parseInt(height),
+				})
+				.resize(1000, 1000)
 				.toFormat('jpeg')
 				.jpeg({ quality: 90 })
 				.toFile(path.join(__dirname, '../../uploads', req.file.filename));

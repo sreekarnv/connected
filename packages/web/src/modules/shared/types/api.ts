@@ -32,3 +32,13 @@ export interface PostType {
 	createdAt: Date;
 	updatedAt: Date;
 }
+
+export interface ImageSettings {
+	x: number;
+	y: number;
+	width: number;
+	height: number;
+	scaleX: number;
+	scaleY: number;
+	rotate: number;
+}

@@ -1,5 +1,8 @@
 import PostModel from '../models/post.model';
 import { ExpressResponse } from '../types';
+import imageUpload from '../utils/imageUpload';
+
+export const uploadPostImage = imageUpload.single('photo');
 
 export const getAllPosts: ExpressResponse = async (req, res, next) => {
 	try {
@@ -28,9 +31,12 @@ export const createPost: ExpressResponse = async (req, res, next) => {
 	try {
 		const { content } = req.body;
 
+		const photo = req.photo ?? undefined;
+
 		let post = await PostModel.create({
 			content,
 			user: req.user?._id,
+			photo,
 		});
 
 		res.status(201).json({
