@@ -43,3 +43,71 @@ export const createPost: ExpressResponse = async (req, res, next) => {
 		next(err);
 	}
 };
+
+export const likePost: ExpressResponse = async (req, res, next) => {
+	try {
+		const user = req.user!._id;
+		const { _id } = req.params;
+
+		let post = await PostModel.findOneAndUpdate(
+			{
+				_id,
+				likes: { $ne: user },
+			},
+			{ $push: { likes: user }, $pull: { dislikes: user } },
+			{ new: true, runValidators: true }
+		);
+
+		if (!post) {
+			post = await PostModel.findOneAndUpdate(
+				{
+					_id,
+					likes: user,
+				},
+				{ $pull: { likes: user } },
+				{ new: true, runValidators: true }
+			);
+		}
+
+		res.status(200).json({
+			status: 'success',
+			post,
+		});
+	} catch (err) {
+		next(err);
+	}
+};
+
+export const dislikePost: ExpressResponse = async (req, res, next) => {
+	try {
+		const user = req.user!._id;
+		const { _id } = req.params;
+
+		let post = await PostModel.findOneAndUpdate(
+			{
+				_id,
+				dislikes: { $ne: user },
+			},
+			{ $push: { dislikes: user }, $pull: { likes: user } },
+			{ new: true, runValidators: true }
+		);
+
+		if (!post) {
+			post = await PostModel.findOneAndUpdate(
+				{
+					_id,
+					dislikes: user,
+				},
+				{ $pull: { dislikes: user } },
+				{ new: true, runValidators: true }
+			);
+		}
+
+		res.status(200).json({
+			status: 'success',
+			post,
+		});
+	} catch (err) {
+		next(err);
+	}
+};

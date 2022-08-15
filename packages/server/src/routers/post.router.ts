@@ -11,4 +11,7 @@ router
 	.get(postController.getAllPosts)
 	.post(postController.createPost);
 
+router.patch('/:_id/like', postController.likePost);
+router.patch('/:_id/dislike', postController.dislikePost);
+
 export default router;
