@@ -7,32 +7,23 @@ import {
 	Icon,
 	IconButton,
 	Text,
+	useDisclosure,
 } from '@chakra-ui/react';
 import { useQueryClient } from '@tanstack/react-query';
 import React from 'react';
+import { CommentType, PostType } from '../../shared/types/api';
 import { RQ } from '../../shared/types/react-query';
 import useDislikePostMutation from '../hooks/useDislikePostMutation';
 import useLikePostMutation from '../hooks/useLikePostMutation';
-
-interface Post {
-	_id: string;
-	content: string;
-	user: {
-		_id: string;
-		name: string;
-		email: string;
-	};
-	likes: string[];
-	dislikes: string[];
-	createdAt: Date;
-	updatedAt: Date;
-}
+import CommentDrawer from './CommentDrawer';
 
 interface PostItemProps {
-	post: Post;
+	post: PostType;
+	pageParam: number;
 }
 
-const PostItem: React.FC<PostItemProps> = ({ post }) => {
+const PostItem: React.FC<PostItemProps> = ({ post, pageParam }) => {
+	const { isOpen, onClose, onOpen } = useDisclosure();
 	const queryClient = useQueryClient();
 	const user = queryClient.getQueryData([RQ.LOGGED_IN_USER_QUERY]) as any;
 	const [liked, setLiked] = React.useState(post.likes.includes(user._id));
@@ -68,6 +59,12 @@ const PostItem: React.FC<PostItemProps> = ({ post }) => {
 
 	return (
 		<>
+			<CommentDrawer
+				{...{ isOpen, onClose }}
+				postId={post._id}
+				comments={post.comments}
+				pageParam={pageParam}
+			/>
 			<Box mb='14'>
 				<Flex
 					borderWidth='2px'
@@ -167,6 +164,7 @@ const PostItem: React.FC<PostItemProps> = ({ post }) => {
 												colorScheme='blue'>
 												{dislikesLength}
 											</Badge>
+
 											<Box
 												as='svg'
 												height='6'
@@ -180,6 +178,46 @@ const PostItem: React.FC<PostItemProps> = ({ post }) => {
 													strokeLinecap='round'
 													strokeLinejoin='round'
 													d='M10 14H5.236a2 2 0 01-1.789-2.894l3.5-7A2 2 0 018.736 3h4.018a2 2 0 01.485.06l3.76.94m-7 10v5a2 2 0 002 2h.096c.5 0 .905-.405.905-.904 0-.715.211-1.413.608-2.008L17 13V4m-7 10h2m5-10h2a2 2 0 012 2v6a2 2 0 01-2 2h-2.5'
+												/>
+											</Box>
+										</>
+									)}
+								/>
+							}
+						/>
+
+						<IconButton
+							onClick={() => {
+								onOpen();
+							}}
+							aria-label='Open Comments Drawer'
+							position='relative'
+							icon={
+								<Icon
+									boxSize='4'
+									as={() => (
+										<>
+											<Badge
+												bottom='-10px'
+												right='-10px'
+												position='absolute'
+												variant='solid'
+												colorScheme='blue'>
+												{post.comments.length}
+											</Badge>
+											<Box
+												as='svg'
+												height='6'
+												width='6'
+												xmlns='http://www.w3.org/2000/svg'
+												fill='none'
+												viewBox='0 0 24 24'
+												stroke='currentColor'
+												strokeWidth={2}>
+												<path
+													strokeLinecap='round'
+													strokeLinejoin='round'
+													d='M3 10h10a8 8 0 018 8v2M3 10l6 6m-6-6l6-6'
 												/>
 											</Box>
 										</>

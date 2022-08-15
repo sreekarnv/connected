@@ -12,7 +12,7 @@ import { User } from './user.model';
 
 @pre<Post>(/^find/, function (next) {
 	this.populate('user', '_id name email');
-	this.populate('comments', '_id content');
+	this.populate('comments', '_id content createdAt');
 	next();
 })
 @modelOptions({

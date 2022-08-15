@@ -1,7 +1,8 @@
-import { Button, Container } from '@chakra-ui/react';
+import { Button, Container, useDisclosure } from '@chakra-ui/react';
 import { Link } from 'gatsby';
 import React from 'react';
 import { useInView } from 'react-intersection-observer';
+import CommentDrawer from '../components/CommentDrawer';
 import PostItem from '../components/PostItem';
 import useGetAllPostsQuery from '../hooks/useGetAllPostsQuery';
 
@@ -27,7 +28,11 @@ const FeedPage: React.FC<FeedPageProps> = ({}) => {
 			<Container maxWidth='container.lg' pb='4'>
 				{data?.pages.map((page) => {
 					return page?.posts.map((post: any) => (
-						<PostItem post={post} key={post._id} />
+						<PostItem
+							pageParam={page.currentPageParam}
+							post={post}
+							key={post._id}
+						/>
 					));
 				})}
 
