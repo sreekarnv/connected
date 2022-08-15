@@ -1,6 +1,4 @@
-import { Document } from 'mongoose';
 import CommentModel from '../models/comment.model';
-import { User } from '../models/user.model';
 import { ExpressResponse } from '../types';
 
 export const createComment: ExpressResponse = async (req, res, next) => {

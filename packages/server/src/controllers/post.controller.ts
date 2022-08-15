@@ -1,6 +1,4 @@
-import mongoose from 'mongoose';
 import PostModel from '../models/post.model';
-import UserModel from '../models/user.model';
 import { ExpressResponse } from '../types';
 
 export const getAllPosts: ExpressResponse = async (req, res, next) => {

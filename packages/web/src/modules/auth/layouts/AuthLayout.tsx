@@ -1,3 +1,4 @@
+import { ChevronLeftIcon } from '@chakra-ui/icons';
 import { Button, Container, Heading } from '@chakra-ui/react';
 import { Link } from 'gatsby';
 import React from 'react';
@@ -10,10 +11,18 @@ interface AuthLayoutProps {
 const AuthLayout: React.FC<AuthLayoutProps> = ({ children, heading }) => {
 	return (
 		<>
-			<Container py='10'>
-				<Button mb='5' variant='ghost' as={Link} to='/'>
+			<Container py='10' maxWidth={'container.lg'}>
+				<Button
+					leftIcon={<ChevronLeftIcon />}
+					mb='5'
+					variant='ghost'
+					colorScheme='blue'
+					as={Link}
+					to='/'>
 					Back
 				</Button>
+			</Container>
+			<Container>
 				<Heading mb='5'>{heading}</Heading>
 				{children}
 			</Container>

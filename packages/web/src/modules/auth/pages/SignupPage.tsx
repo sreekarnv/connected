@@ -81,7 +81,7 @@ const SignupPage: React.FC<SignupPageProps> = ({}) => {
 						</FormErrorMessage>
 					</FormControl>
 
-					<FormControl isRequired isInvalid={!!errors.password}>
+					<FormControl mb='4' isRequired isInvalid={!!errors.password}>
 						<FormLabel>Password</FormLabel>
 						<Input type='password' {...register('password')} />
 						<FormErrorMessage>
