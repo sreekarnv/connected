@@ -3,7 +3,6 @@ import {
 	Avatar,
 	Box,
 	Button,
-	Container,
 	Flex,
 	HStack,
 	Text,
@@ -11,11 +10,10 @@ import {
 	MenuButton,
 	MenuList,
 	MenuItem,
-	MenuItemOption,
-	MenuGroup,
-	MenuOptionGroup,
 	MenuDivider,
 	useDisclosure,
+	Grid,
+	GridItem,
 } from '@chakra-ui/react';
 import { useQueryClient } from '@tanstack/react-query';
 import { Link } from 'gatsby';
@@ -25,8 +23,11 @@ import Logo from '../../shared/components/Logo';
 import ThemeToggler from '../../shared/components/ThemeToggler';
 import { UserType } from '../../shared/types/api';
 import { RQ } from '../../shared/types/react-query';
+import FeedLinkItem from '../components/FeedLinkItem';
 import PostItem from '../components/PostItem';
+import UserProfileCard from '../components/UserProfileCard';
 import useGetAllPostsQuery from '../hooks/useGetAllPostsQuery';
+import FeedLayout from '../layouts/FeedLayout';
 
 interface FeedPageProps {
 	path?: string;
@@ -47,63 +48,7 @@ const FeedPage: React.FC<FeedPageProps> = ({}) => {
 
 	return (
 		<>
-			<Flex
-				position='sticky'
-				top='0'
-				bgColor='gray.800'
-				justifyContent='space-between'
-				zIndex='banner'
-				p='4'>
-				<HStack>
-					<Logo />
-
-					<Button as={Link} to='/app/posts/new'>
-						Create Post
-					</Button>
-				</HStack>
-				<HStack as='ul' listStyleType={'none'} spacing={8}>
-					<Menu>
-						<MenuButton
-							isActive={isOpen}
-							as={Button}
-							variant='ghost'
-							_hover={{
-								bg: 'transparent',
-							}}
-							_active={{
-								bg: 'transparent',
-							}}
-							rightIcon={<ChevronDownIcon />}>
-							<HStack>
-								<Avatar src={user.photo?.url} name={user.name} />
-								<Text fontWeight='semibold'>{user.name}</Text>
-							</HStack>
-						</MenuButton>
-						<MenuList>
-							<MenuItem as={Link} fontWeight='semibold' to='/app/posts/new'>
-								Create Post
-							</MenuItem>
-							<MenuItem as={Link} fontWeight='semibold' to='/app/profile'>
-								My Profile
-							</MenuItem>
-							<MenuDivider />
-							<MenuItem
-								as={Link}
-								color='red.400'
-								fontWeight='semibold'
-								to='/auth/logout'>
-								Logout
-							</MenuItem>
-						</MenuList>
-					</Menu>
-
-					<Box as='li'>
-						<ThemeToggler />
-					</Box>
-				</HStack>
-			</Flex>
-
-			<Container maxWidth='container.lg' py='4'>
+			<FeedLayout>
 				{data?.pages.map((page) => {
 					return page?.posts.map((post: any) => (
 						<PostItem
@@ -126,7 +71,7 @@ const FeedPage: React.FC<FeedPageProps> = ({}) => {
 						Fetch Next
 					</Button>
 				)}
-			</Container>
+			</FeedLayout>
 		</>
 	);
 };

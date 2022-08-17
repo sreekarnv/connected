@@ -8,12 +8,13 @@ import {
 	HStack,
 	Icon,
 	IconButton,
+	Image,
 	Text,
 	useDisclosure,
 } from '@chakra-ui/react';
 import { useQueryClient } from '@tanstack/react-query';
 import React from 'react';
-import { CommentType, PostType } from '../../shared/types/api';
+import { PostType } from '../../shared/types/api';
 import { RQ } from '../../shared/types/react-query';
 import useDislikePostMutation from '../hooks/useDislikePostMutation';
 import useLikePostMutation from '../hooks/useLikePostMutation';
@@ -115,6 +116,11 @@ const PostItem: React.FC<PostItemProps> = ({ post, pageParam }) => {
 						</>
 					) : (
 						<>{post.content}</>
+					)}
+					{post.photo && (
+						<Flex justifyContent='center' mt='4'>
+							<Image boxSize={'100%'} src={post.photo.url} alt={post._id} />
+						</Flex>
 					)}
 				</Box>
 				<Flex

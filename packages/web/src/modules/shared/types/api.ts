@@ -27,6 +27,7 @@ export interface PostType {
 	content: string;
 	user: UserType;
 	likes: string[];
+	photo?: PhotoType;
 	dislikes: string[];
 	comments: CommentType[];
 	createdAt: Date;

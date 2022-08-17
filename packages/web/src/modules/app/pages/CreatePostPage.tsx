@@ -19,7 +19,8 @@ import { FieldValues, useForm } from 'react-hook-form';
 import useCroppedImage from '../../shared/hooks/useCropperImage';
 import ImageCropper from '../../shared/components/ImageCropper';
 import ImagePreview from '../../shared/components/ImagePreview';
-import { ArrowUpIcon } from '@chakra-ui/icons';
+import { ArrowUpIcon, ChevronLeftIcon } from '@chakra-ui/icons';
+import FeedLayout from '../layouts/FeedLayout';
 
 const validationSchema = Yup.object()
 	.shape({
@@ -84,16 +85,11 @@ const CreatePostPage: React.FC<CreatePostPageProps> = ({}) => {
 				/>
 			)}
 
-			<Container maxW='container.lg' py='5'>
-				<Button as={Link} to='/app/feed'>
-					Back
-				</Button>
-			</Container>
-			<Container>
+			<FeedLayout>
 				<form noValidate onSubmit={handleSubmit(onSubmit)}>
 					<FormControl isRequired isInvalid={!!errors.content}>
 						<FormLabel>Content</FormLabel>
-						<Textarea {...register('content')} />
+						<Textarea rows={10} {...register('content')} />
 						<FormErrorMessage>
 							{errors.content?.message as string}
 						</FormErrorMessage>
@@ -126,7 +122,7 @@ const CreatePostPage: React.FC<CreatePostPageProps> = ({}) => {
 						Submit
 					</Button>
 				</form>
-			</Container>
+			</FeedLayout>
 		</>
 	);
 };
