@@ -1,7 +1,6 @@
 import React from 'react';
 import { HeadFC, Link } from 'gatsby';
 import BaseLayout from '../modules/shared/layouts/BaseLayout';
-import useLogoutMutation from '../modules/auth/hooks/useLogoutMutation';
 // @ts-ignore
 import HomeImage from '../images/home.svg';
 import {
@@ -90,14 +89,7 @@ const IndexPage = () => {
 					</HStack>
 				</GridItem>
 				<GridItem {...styles.imageGridColumn}>
-					<Image
-						src={HomeImage}
-						boxSize={{
-							base: 'full',
-							sm: '600px',
-							lg: '750px',
-						}}
-					/>
+					<Image src={HomeImage} height={{ base: '300px', lg: '600px' }} />
 				</GridItem>
 			</Grid>
 		</BaseLayout>
