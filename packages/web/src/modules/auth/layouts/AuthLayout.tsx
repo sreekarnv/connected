@@ -11,10 +11,10 @@ interface AuthLayoutProps {
 const AuthLayout: React.FC<AuthLayoutProps> = ({ children, heading }) => {
 	return (
 		<>
-			<Container py='10' maxWidth={'container.lg'}>
+			<Container py={{ base: '6', md: '10' }} maxWidth={'container.lg'}>
 				<Button
 					leftIcon={<ChevronLeftIcon />}
-					mb='5'
+					mb={{ md: '5' }}
 					variant='ghost'
 					colorScheme='blue'
 					as={Link}
