@@ -5,6 +5,8 @@ import cookieParser from 'cookie-parser';
 import dotenv from 'dotenv';
 import path from 'path';
 import authRouter from './routers/auth.router';
+import userRouter from './routers/user.router';
+import groupRouter from './routers/group.router';
 import commentRouter from './routers/comment.router';
 import postRouter from './routers/post.router';
 import errorController from './controllers/error.controller';
@@ -34,7 +36,9 @@ const app = express();
 		);
 
 		app.use('/api/v1/auth', authRouter);
+		app.use('/api/v1/users', userRouter);
 		app.use('/api/v1/posts', postRouter);
+		app.use('/api/v1/groups', groupRouter);
 		app.use('/api/v1/comments', commentRouter);
 
 		app.use(errorController);

@@ -82,11 +82,15 @@ const PostItem: React.FC<PostItemProps> = ({ post, pageParam }) => {
 					justifyContent='space-between'>
 					<HStack>
 						<Avatar name={post.user.name} />
-						<Text fontWeight='semibold' fontSize='xl'>
+						<Text fontWeight='semibold' fontSize={{ base: 'md', md: 'xl' }}>
 							{post.user.name}
 						</Text>
 					</HStack>
-					<Text color='gray.400' fontWeight='semibold'>
+					<Text
+						textAlign={{ base: 'right', sm: 'left' }}
+						fontSize={{ base: 'sm', sm: 'md' }}
+						color='gray.400'
+						fontWeight='semibold'>
 						{formatDistance(new Date(post.createdAt), new Date(), {
 							addSuffix: true,
 						})}

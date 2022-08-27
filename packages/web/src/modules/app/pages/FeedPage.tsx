@@ -48,7 +48,7 @@ const FeedPage: React.FC<FeedPageProps> = ({}) => {
 
 	return (
 		<>
-			<FeedLayout>
+			<>
 				{data?.pages.map((page) => {
 					return page?.posts.map((post: any) => (
 						<PostItem
@@ -71,7 +71,7 @@ const FeedPage: React.FC<FeedPageProps> = ({}) => {
 						Fetch Next
 					</Button>
 				)}
-			</FeedLayout>
+			</>
 		</>
 	);
 };

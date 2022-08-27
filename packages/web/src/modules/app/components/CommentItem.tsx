@@ -1,4 +1,5 @@
 import { Avatar, Box, Flex, HStack, Text } from '@chakra-ui/react';
+import formatDistance from 'date-fns/formatDistance';
 import React from 'react';
 import { CommentType } from '../../shared/types/api';
 
@@ -16,7 +17,11 @@ const CommentItem: React.FC<CommentItemProps> = ({ comment }) => {
 						<Text fontWeight='semibold'> {comment.user.name}</Text>
 					</HStack>
 
-					<Text>{comment.createdAt.toString()}</Text>
+					<Text>
+						{formatDistance(new Date(comment.createdAt), new Date(), {
+							addSuffix: true,
+						})}
+					</Text>
 				</Flex>
 				<Text color='gray.300'>{comment.content}</Text>
 			</Box>

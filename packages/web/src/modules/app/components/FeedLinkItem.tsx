@@ -7,6 +7,7 @@ import SrcImage from './../../../images/home.svg';
 const colors = {
 	blue: 'blue.600',
 	purple: 'purple.600',
+	facebook: 'facebook.600',
 };
 
 interface FeedLinkItemProps {

@@ -43,3 +43,16 @@ export interface ImageSettings {
 	scaleY: number;
 	rotate: number;
 }
+
+export interface GroupType {
+	_id: string;
+	name: string;
+	description: string;
+	photo?: PhotoType;
+	groupType: 'public' | 'private';
+	admin: UserType;
+	members: string[];
+	requests: string[];
+	createdAt: Date;
+	updatedAt: Date;
+}

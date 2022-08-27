@@ -7,7 +7,7 @@ export const uploadPostImage = imageUpload.single('photo');
 export const getAllPosts: ExpressResponse = async (req, res, next) => {
 	try {
 		const { pageParam } = req.query;
-		const limit = 2;
+		const limit = 5;
 
 		let page = pageParam ? parseInt(pageParam as string) : 1;
 

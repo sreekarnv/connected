@@ -1,3 +1,4 @@
+import React from 'react';
 import {
 	Avatar,
 	Box,
@@ -6,11 +7,11 @@ import {
 	FormControl,
 	FormErrorMessage,
 	FormLabel,
+	Input,
+	Select,
 	Textarea,
 	useDisclosure,
 } from '@chakra-ui/react';
-import React from 'react';
-import useCreatePostMutation from '../hooks/useCreatePostMutation';
 import * as Yup from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { FieldValues, useForm } from 'react-hook-form';
@@ -19,17 +20,20 @@ import ImageCropper from '../../shared/components/ImageCropper';
 import ImagePreview from '../../shared/components/ImagePreview';
 import { ArrowUpIcon } from '@chakra-ui/icons';
 import FeedLayout from '../layouts/FeedLayout';
+import useCreateGroupMutation from '../hooks/useCreateGroupMutation';
+
+interface CreateGroupPageProps {}
 
 const validationSchema = Yup.object()
 	.shape({
-		content: Yup.string().required('This is a required field').trim(),
+		name: Yup.string().required('This is a required field').trim(),
+		description: Yup.string().required('This is a required field').trim(),
+		groupType: Yup.string().required('This is a required field').trim(),
 	})
 	.required();
 
-interface CreatePostPageProps {}
-
-const CreatePostPage: React.FC<CreatePostPageProps> = ({}) => {
-	const { isLoading, mutate } = useCreatePostMutation();
+const CreateGroupPage: React.FC<CreateGroupPageProps> = ({}) => {
+	const { isLoading, mutate } = useCreateGroupMutation();
 	const {
 		image,
 		setImage,
@@ -54,7 +58,9 @@ const CreatePostPage: React.FC<CreatePostPageProps> = ({}) => {
 
 	const onSubmit = (values: FieldValues) => {
 		mutate({
-			content: values.content,
+			name: values.name,
+			description: values.description,
+			groupType: values.groupType,
 			imageSettings: JSON.stringify(imageSettings),
 			photo: image,
 		});
@@ -85,13 +91,29 @@ const CreatePostPage: React.FC<CreatePostPageProps> = ({}) => {
 
 			<>
 				<form noValidate onSubmit={handleSubmit(onSubmit)}>
-					<FormControl isRequired isInvalid={!!errors.content}>
-						<FormLabel>Content</FormLabel>
-						<Textarea rows={10} {...register('content')} />
+					<FormControl isRequired isInvalid={!!errors.name} mb='5'>
+						<FormLabel>Group Name</FormLabel>
+						<Input {...register('name')} />
 						<FormErrorMessage>
-							{errors.content?.message as string}
+							{errors.name?.message as string}
 						</FormErrorMessage>
 					</FormControl>
+
+					<FormControl isRequired isInvalid={!!errors.description} mb='5'>
+						<FormLabel>Group Description</FormLabel>
+						<Textarea rows={10} {...register('description')} />
+						<FormErrorMessage>
+							{errors.description?.message as string}
+						</FormErrorMessage>
+					</FormControl>
+
+					<Select
+						defaultValue={'public'}
+						placeholder='Select option'
+						{...register('groupType')}>
+						<option value='public'>Public</option>
+						<option value='private'>Private</option>
+					</Select>
 
 					<Flex justifyContent='space-between' alignItems='center' mt='4'>
 						<Button
@@ -125,4 +147,4 @@ const CreatePostPage: React.FC<CreatePostPageProps> = ({}) => {
 	);
 };
 
-export default CreatePostPage;
+export default CreateGroupPage;

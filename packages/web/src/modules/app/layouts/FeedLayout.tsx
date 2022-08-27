@@ -126,6 +126,11 @@ const FeedLayout: React.FC<FeedLayoutProps> = ({ children }) => {
 					<Box position={'sticky'} zIndex='sticky' top='24'>
 						<FeedLinkItem color='purple' name='My Feed' to='/app/feed' />
 						<FeedLinkItem name='Create Post' to='/app/posts/new' />
+						<FeedLinkItem
+							color='facebook'
+							name='Create Group'
+							to='/app/groups/new'
+						/>
 					</Box>
 				</GridItem>
 				<GridItem
@@ -148,6 +153,14 @@ const FeedLayout: React.FC<FeedLayoutProps> = ({ children }) => {
 					}}>
 					<Box width='100%' position={'sticky'} zIndex='sticky' top='24'>
 						<UserProfileCard />
+						<Box mt='8'>
+							<FeedLinkItem name='Find Groups' to='/app/groups/find' />
+							<FeedLinkItem
+								color='purple'
+								name='Find Friends'
+								to='/app/groups/find'
+							/>
+						</Box>
 					</Box>
 				</GridItem>
 			</Grid>
