@@ -85,7 +85,7 @@ const FeedLayout: React.FC<FeedLayoutProps> = ({ children }) => {
 							<FeedLinkItem
 								color='purple'
 								name='Find Friends'
-								to='/app/groups/find'
+								to='/app/friends/find'
 							/>
 						</Box>
 					</Box>

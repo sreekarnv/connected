@@ -1,5 +1,5 @@
 import { BeAnObject, DocumentType } from '@typegoose/typegoose/lib/types';
-import { UpdateQuery } from 'mongoose';
+import { UpdateQuery, FilterQuery } from 'mongoose';
 import UserModel, { User } from '../models/user.model';
 import { ExpressResponse } from '../types';
 import AppError from '../utils/AppError';
@@ -58,6 +58,39 @@ export const updateUserProfile: ExpressResponse = async (req, res, next) => {
 		res.status(200).json({
 			status: 'success',
 			user,
+		});
+	} catch (err) {
+		next(err);
+	}
+};
+
+export const getAllUsers: ExpressResponse = async (req, res, next) => {
+	try {
+		const { search, pageParam } = req.query;
+		const limit = 6;
+
+		let page = pageParam ? parseInt(pageParam as string) : 1;
+		let query: FilterQuery<DocumentType<User, BeAnObject>> = {
+			_id: { $ne: req.user?._id },
+		};
+
+		if (search) {
+			query = {
+				name: { $regex: search, $options: 'i' },
+			};
+			query['$text'] = { $search: search as string };
+		}
+
+		const users = await UserModel.find(query)
+			.select('_id name photo.url email')
+			.skip(limit * (page - 1))
+			.limit(limit + 1);
+
+		res.status(200).json({
+			status: 'success',
+			hasNext: users.length === limit + 1,
+			currentPageParam: page,
+			users: users.slice(0, limit),
 		});
 	} catch (err) {
 		next(err);

@@ -70,6 +70,20 @@ const io = new Server(httpServer, {
 			socket.on(NotifType.JOIN_GROUP_REQUEST_ACCEPTED, (data) => {
 				handleGroupJoinRequestAccepted(io, socket, data);
 			});
+
+			socket.on(NotifType.FRIEND_REQUEST_SENT, (data) => {
+				console.log(
+					data,
+					`${NotifType.FRIEND_REQUEST_SENT} event received from ${socket.id}`
+				);
+			});
+
+			socket.on(NotifType.FRIEND_REQUEST_ACCEPTED, (data) => {
+				console.log(
+					data,
+					`${NotifType.FRIEND_REQUEST_ACCEPTED} event received from ${socket.id}`
+				);
+			});
 		});
 
 		httpServer.listen(PORT, () => {

@@ -8,11 +8,13 @@ const router = express.Router();
 router.use(authController.parseAuthCookie, authController.protectRoutes);
 
 router.patch('/update-password', userController.updatePassword);
-router.patch(
-	'/',
-	userController.uploadProfileImage,
-	resizeImage('users'),
-	userController.updateUserProfile
-);
+router
+	.route('/')
+	.get(userController.getAllUsers)
+	.patch(
+		userController.uploadProfileImage,
+		resizeImage('users'),
+		userController.updateUserProfile
+	);
 
 export default router;
