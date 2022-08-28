@@ -1,178 +1,31 @@
-import { BellIcon, ChevronDownIcon } from '@chakra-ui/icons';
-import {
-	Avatar,
-	Box,
-	Flex,
-	HStack,
-	Text,
-	useDisclosure,
-	Grid,
-	GridItem,
-	Menu,
-	Button,
-	MenuButton,
-	MenuItem,
-	MenuList,
-	MenuDivider,
-	IconButton,
-	Drawer,
-	DrawerContent,
-	DrawerOverlay,
-	DrawerCloseButton,
-	DrawerHeader,
-	DrawerBody,
-} from '@chakra-ui/react';
+import { Box, Grid, GridItem } from '@chakra-ui/react';
 import { useQueryClient } from '@tanstack/react-query';
-import { Link } from 'gatsby';
-
 import React from 'react';
-import Logo from '../../shared/components/Logo';
-import ThemeToggler from '../../shared/components/ThemeToggler';
-import { socket } from '../../shared/providers/AppProvider';
-import { NotificationType, UserType } from '../../shared/types/api';
+import AppNavbar from '../../shared/layouts/navigation/AppNavbar';
+import { UserType } from '../../shared/types/api';
 import { RQ } from '../../shared/types/react-query';
 import FeedLinkItem from '../components/FeedLinkItem';
-import NotificationItem from '../components/NotificationItem';
 import UserProfileCard from '../components/UserProfileCard';
-import useGetAllNotificationsQuery from '../hooks/useGetAllNotificationsQuery';
 
 interface FeedLayoutProps {
 	children: React.ReactNode;
 }
 
-const NotificationsDrawer = ({ isOpen, onClose }: any) => {
-	const { isLoading, data } = useGetAllNotificationsQuery();
-
-	return (
-		<Drawer isOpen={isOpen} placement='left' onClose={onClose}>
-			<DrawerOverlay />
-			<DrawerContent>
-				<DrawerCloseButton />
-				<DrawerHeader>Notifications</DrawerHeader>
-
-				<DrawerBody px='2'>
-					{isLoading && <h1>Loading....</h1>}
-					{data && data?.length === 0 ? (
-						<h1>No Notifications</h1>
-					) : (
-						<>
-							{data?.map((notification: NotificationType) => (
-								<NotificationItem
-									notification={notification}
-									key={notification._id}
-								/>
-							))}
-						</>
-					)}
-				</DrawerBody>
-			</DrawerContent>
-		</Drawer>
-	);
-};
-
 const FeedLayout: React.FC<FeedLayoutProps> = ({ children }) => {
 	const queryClient = useQueryClient();
 	const user = queryClient.getQueryData([RQ.LOGGED_IN_USER_QUERY]) as UserType;
-	const { isOpen, onClose, onOpen } = useDisclosure();
 
-	React.useEffect(() => {
-		socket.on(`user-${user._id}`, (data) => {
-			const cachedNotifs =
-				(queryClient.getQueryData([
-					RQ.GET_ALL_NOTIFICATIONS_QUERY,
-				]) as NotificationType[]) || [];
-
-			const newNotifs = [data, ...cachedNotifs];
-
-			queryClient.setQueryData([RQ.GET_ALL_NOTIFICATIONS_QUERY], newNotifs);
-		});
-	}, [socket]);
+	if (!user) return <>{children}</>;
 
 	return (
 		<>
-			<NotificationsDrawer {...{ isOpen, onClose }} />
-			<Flex
-				position='sticky'
-				top='0'
-				bgColor='gray.800'
-				justifyContent='space-between'
-				zIndex='banner'
-				p='4'>
-				<HStack gap={3}>
-					<Logo />
-
-					<IconButton
-						onClick={() => onOpen()}
-						aria-label='notifications'
-						icon={<BellIcon fontSize='xl' />}
-						variant='ghost'
-						colorScheme='blue'
-					/>
-				</HStack>
-				<HStack
-					display={{ base: 'none', md: 'flex' }}
-					as='ul'
-					listStyleType={'none'}
-					spacing={8}>
-					<HStack>
-						<Avatar src={user.photo?.url} name={user.name} />
-						<Text fontWeight='semibold'>{user.name}</Text>
-					</HStack>
-
-					<Box as='li'>
-						<ThemeToggler />
-					</Box>
-				</HStack>
-				<Box display={{ base: 'block', md: 'none' }}>
-					<Menu>
-						<MenuButton
-							as={Button}
-							variant='ghost'
-							rightIcon={<ChevronDownIcon />}
-							_hover={{
-								bgColor: 'transparent',
-							}}
-							_active={{
-								bgColor: 'transparent',
-							}}>
-							<Avatar src={user.photo?.url} name={user.name} />
-						</MenuButton>
-						<MenuList>
-							<MenuItem as={Link} to='/app/feed' fontWeight='semibold'>
-								My Feed
-							</MenuItem>
-							<MenuItem as={Link} to='/app/posts/new' fontWeight='semibold'>
-								Create Post
-							</MenuItem>
-							<MenuDivider />
-							<MenuItem as={Link} to='/app/profile' fontWeight='semibold'>
-								My Profile
-							</MenuItem>
-							<MenuItem
-								as={Link}
-								to='/app/profile/update'
-								fontWeight='semibold'>
-								Update Profile
-							</MenuItem>
-							<MenuDivider />
-							<MenuItem
-								as={Link}
-								to='/auth/logout'
-								fontWeight='semibold'
-								color='red.400'>
-								Logout
-							</MenuItem>
-						</MenuList>
-					</Menu>
-				</Box>
-			</Flex>
-
+			<AppNavbar />
 			<Grid
 				templateColumns={{
 					base: '1rem [content-start] 1fr [content-end] 1rem',
-					lg: '.01rem [content-start] repeat(12, [col-start] 1fr [col-end]) [content-end] .01rem',
+					lg: '.01rem [content-start] repeat(14, [col-start] 1fr [col-end]) [content-end] .01rem',
 					'2xl':
-						'1.2rem [content-start] repeat(12, [col-start] 1fr [col-end]) [content-end] 1.2rem',
+						'1.2rem [content-start] repeat(14, [col-start] 1fr [col-end]) [content-end] 1.2rem',
 				}}
 				columnGap={{ lg: 4, xl: 6, '2xl': 0 }}>
 				<GridItem
@@ -180,12 +33,23 @@ const FeedLayout: React.FC<FeedLayoutProps> = ({ children }) => {
 						base: 'none',
 						lg: 'block',
 					}}
+					height='100%'
 					gridColumn={{
-						'2xl': 'content-start / col-end 2',
-						xl: 'content-start / col-end 3',
-						lg: 'content-start / col-end 4',
+						'2xl': 'content-start / col-end 3',
+						xl: 'content-start / col-end 4',
+						lg: 'content-start / col-end 5',
 					}}>
-					<Box position={'sticky'} zIndex='sticky' top='24'>
+					<Box
+						position={'sticky'}
+						zIndex='sticky'
+						borderRadius='50px'
+						top='24'
+						p='8'
+						mt='4'
+						height='calc(90vh - 24px)'
+						// @ts-ignore
+						boxShadow={(theme) => `0 0 10px 5px ${theme.colors.blue[600]}`}>
+						{' '}
 						<FeedLinkItem color='purple' name='My Feed' to='/app/feed' />
 						<FeedLinkItem name='Create Post' to='/app/posts/new' />
 						<FeedLinkItem
@@ -198,20 +62,21 @@ const FeedLayout: React.FC<FeedLayoutProps> = ({ children }) => {
 				<GridItem
 					gridColumn={{
 						base: 'content-start / content-end',
-						lg: 'col-start 5 / content-end',
-						xl: 'col-start 4 / col-end 9',
+						lg: 'col-start 6 / content-end',
+						xl: 'col-start 5 / col-end 10',
 					}}>
-					<Box pt={{ base: '5', xl: '7' }}>{children}</Box>
+					<Box pt={{ base: '4' }}>{children}</Box>
 				</GridItem>
 				<GridItem
 					py='4'
+					pl='8'
 					display={{
 						base: 'none',
 						xl: 'block',
 					}}
 					gridColumn={{
-						'2xl': 'col-start 11 / content-end',
-						xl: 'col-start 10 / content-end',
+						'2xl': 'col-start 12 / content-end',
+						xl: 'col-start 11 / content-end',
 					}}>
 					<Box width='100%' position={'sticky'} zIndex='sticky' top='24'>
 						<UserProfileCard />

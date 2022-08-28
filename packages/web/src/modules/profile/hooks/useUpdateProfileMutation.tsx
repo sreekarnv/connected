@@ -4,25 +4,23 @@ import React from 'react';
 import axios from '../../shared/config/axios';
 import { RQ } from '../../shared/types/react-query';
 
-const useSignupMutation = () => {
+const useUpdateProfileMutation = () => {
 	const queryClient = useQueryClient();
-	const { data, mutate, isLoading } = useMutation<
+	const result = useMutation<
 		any,
 		any,
 		{
-			name: string;
-			email: string;
-			password: string;
-			passwordConfirm: string;
-			photo: File | null;
-			imageSettings: string;
+			name?: string;
+			email?: string;
+			photo?: File | null;
+			imageSettings?: string;
 		},
 		any
 	>(
 		async (data) => {
 			const res = await axios({
-				url: '/auth/signup',
-				method: 'post',
+				url: '/users',
+				method: 'patch',
 				data,
 				headers: {
 					'Content-Type': 'multipart/form-data',
@@ -33,16 +31,11 @@ const useSignupMutation = () => {
 		{
 			onSuccess(data) {
 				queryClient.setQueryData([RQ.LOGGED_IN_USER_QUERY], data.user);
-				navigate('/app/feed');
 			},
 		}
 	);
 
-	return {
-		data,
-		mutate,
-		isLoading,
-	};
+	return result;
 };
 
-export default useSignupMutation;
+export default useUpdateProfileMutation;

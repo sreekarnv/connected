@@ -47,17 +47,9 @@ const UserProfileCard: React.FC<UserProfileCardProps> = ({}) => {
 						colorScheme='blue'
 						as={Link}
 						variant='outline'
-						to='/app/profile'
+						to='/profile'
 						width='full'>
 						My Profile
-					</Button>
-
-					<Button
-						variant='outline'
-						as={Link}
-						to='/app/profile/update'
-						width='full'>
-						Update Profile
 					</Button>
 
 					<Divider />

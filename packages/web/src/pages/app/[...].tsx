@@ -1,6 +1,5 @@
 import React from 'react';
 import { Router } from '@reach/router';
-import ProfilePage from '../../modules/app/pages/ProfilePage';
 import PrivateRoute from '../../modules/shared/components/PrivateRoute';
 import FeedPage from '../../modules/app/pages/FeedPage';
 import CreatePostPage from '../../modules/app/pages/CreatePostPage';
@@ -21,7 +20,6 @@ const App: React.FC<AppProps> = ({}) => {
 					<PrivateRoute path='/groups/new' component={CreateGroupPage} />
 					<PrivateRoute path='/groups/find' component={FindGroupsPage} />
 					<PrivateRoute path='/groups/:id' component={GroupFeedPage} />
-					<PrivateRoute path='/profile' component={ProfilePage} />
 				</Router>
 			</FeedLayout>
 		</>

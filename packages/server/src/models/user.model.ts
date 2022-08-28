@@ -14,7 +14,7 @@ export enum Roles {
 }
 
 @pre<User>('save', async function (next) {
-	if (!this.isModified('password') || !this.isNew) return next();
+	if (!this.isModified('password') && !this.isNew) return next();
 
 	this.password = await argon2.hash(this.password, { hashLength: 15 });
 	this.passwordConfirm = undefined as any;

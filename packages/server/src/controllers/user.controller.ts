@@ -1,4 +1,6 @@
-import UserModel from '../models/user.model';
+import { BeAnObject, DocumentType } from '@typegoose/typegoose/lib/types';
+import { UpdateQuery } from 'mongoose';
+import UserModel, { User } from '../models/user.model';
 import { ExpressResponse } from '../types';
 import AppError from '../utils/AppError';
 import imageUpload from '../utils/imageUpload';
@@ -20,10 +22,42 @@ export const updatePassword: ExpressResponse = async (req, res, next) => {
 		user.password = newPassword;
 		user.passwordConfirm = passwordConfirm;
 
-		await user.save();
+		await user.save({ validateModifiedOnly: true, validateBeforeSave: true });
 
 		res.status(200).json({
 			status: 'success',
+		});
+	} catch (err) {
+		next(err);
+	}
+};
+
+export const updateUserProfile: ExpressResponse = async (req, res, next) => {
+	try {
+		const { name, email } = req.body;
+		const updates: UpdateQuery<DocumentType<User, BeAnObject>> = {
+			name,
+			email,
+		};
+
+		const photo = req.photo ?? undefined;
+
+		if (photo) {
+			updates.photo = photo;
+		}
+
+		const user = await UserModel.findByIdAndUpdate(req.user?._id, updates, {
+			new: true,
+			runValidators: true,
+		});
+
+		if (!user) {
+			return next(new AppError('User not found', 404));
+		}
+
+		res.status(200).json({
+			status: 'success',
+			user,
 		});
 	} catch (err) {
 		next(err);

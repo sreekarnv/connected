@@ -14,11 +14,7 @@ import {
 	GridItemProps,
 	HeadingProps,
 	Image,
-	Box,
-	Flex,
 } from '@chakra-ui/react';
-import Logo from '../modules/shared/components/Logo';
-import ThemeToggler from '../modules/shared/components/ThemeToggler';
 import { useQueryClient } from '@tanstack/react-query';
 import { RQ } from '../modules/shared/types/react-query';
 
@@ -39,16 +35,6 @@ const IndexPage = () => {
 
 	return (
 		<BaseLayout>
-			<Flex justifyContent='space-between' p='4'>
-				<Box>
-					<Logo />
-				</Box>
-				<HStack as='ul' listStyleType={'none'}>
-					<Box as='li'>
-						<ThemeToggler />
-					</Box>
-				</HStack>
-			</Flex>
 			<Grid {...styles.grid}>
 				<GridItem {...styles.headingGridItem}>
 					<Heading {...styles.heading1}>Always Stay</Heading>
