@@ -16,9 +16,12 @@ import {
 	Tooltip,
 	useDisclosure,
 } from '@chakra-ui/react';
+import { useQueryClient } from '@tanstack/react-query';
 import { Link } from 'gatsby';
 import React from 'react';
-import { GroupType } from '../../shared/types/api';
+import { socket } from '../../shared/providers/AppProvider';
+import { GroupType, NotifType, UserType } from '../../shared/types/api';
+import { RQ } from '../../shared/types/react-query';
 
 interface FindGroupItemProps {
 	group: GroupType;
@@ -26,6 +29,10 @@ interface FindGroupItemProps {
 
 const FindGroupItem: React.FC<FindGroupItemProps> = ({ group }) => {
 	const { isOpen, onToggle } = useDisclosure();
+	const queryClient = useQueryClient();
+	const user = queryClient.getQueryData([RQ.LOGGED_IN_USER_QUERY]) as UserType;
+
+	const requestSent = group.requests.includes(user._id);
 
 	return (
 		<>
@@ -72,32 +79,51 @@ const FindGroupItem: React.FC<FindGroupItemProps> = ({ group }) => {
 							/>
 						</Tooltip>
 
-						{group.groupType === 'public' && (
-							<Tooltip placement='top' hasArrow label='View Group Profile'>
-								<IconButton
-									as={Link}
-									to={`/app/groups/${group._id}`}
-									aria-label='view group'
-									icon={<ExternalLinkIcon />}
-									variant='outline'
-								/>
-							</Tooltip>
-						)}
+						{group.groupType === 'public' ||
+							(group.members.includes(user._id) && (
+								<Tooltip placement='top' hasArrow label='View Group Profile'>
+									<IconButton
+										as={Link}
+										to={`/app/groups/${group._id}`}
+										aria-label='view group'
+										icon={<ExternalLinkIcon />}
+										variant='outline'
+									/>
+								</Tooltip>
+							))}
 
-						{group.groupType === 'private' && (
-							<Tooltip
-								placement='top'
-								hasArrow
-								label='Send request to join the group'>
-								<IconButton
-									as={Link}
-									to={`/app/groups/${group._id}`}
-									aria-label='view group'
-									icon={<ArrowRightIcon />}
-									variant='outline'
-								/>
-							</Tooltip>
-						)}
+						{group.groupType === 'private' &&
+							!group.members.includes(user._id) && (
+								<Tooltip
+									placement='top'
+									hasArrow
+									label={
+										requestSent
+											? 'You have already requested'
+											: 'Send request to join the group'
+									}>
+									<IconButton
+										onClick={() => {
+											if (!requestSent) {
+												socket.emit(NotifType.JOIN_GROUP_REQUEST_SENT, {
+													group: { _id: group._id, name: group.name },
+													user: queryClient.getQueryData([
+														RQ.LOGGED_IN_USER_QUERY,
+													]) as UserType,
+												});
+											}
+										}}
+										cursor={requestSent ? 'default' : 'pointer'}
+										aria-label='view group'
+										icon={
+											<ArrowRightIcon
+												color={requestSent ? 'gray.600' : 'inherit'}
+											/>
+										}
+										variant={requestSent ? 'unstyled' : 'outline'}
+									/>
+								</Tooltip>
+							)}
 					</HStack>
 				</Flex>
 			</Box>

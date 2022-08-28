@@ -1,5 +1,8 @@
 import React from 'react';
 import useGetLoggedInUserQuery from '../../auth/hooks/useGetLoggedInUserQuery';
+import io from 'socket.io-client';
+
+export const socket = io('http://localhost:4000');
 
 interface AppProviderProps {
 	children: React.ReactNode;

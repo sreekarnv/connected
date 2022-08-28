@@ -56,3 +56,22 @@ export interface GroupType {
 	createdAt: Date;
 	updatedAt: Date;
 }
+
+export enum NotifType {
+	FRIEND_REQUEST_SENT = 'FRIEND_REQUEST_SENT',
+	FRIEND_REQUEST_ACCEPTED = 'FRIEND_REQUEST_ACCEPTED',
+
+	JOIN_GROUP_REQUEST_SENT = 'JOIN_GROUP_REQUEST_SENT',
+	JOIN_GROUP_REQUEST_ACCEPTED = 'JOIN_GROUP_REQUEST_ACCEPTED',
+
+	NEW_GROUP_POST = 'NEW_GROUP_POST',
+}
+
+export type NotificationType = {
+	_id: string;
+	type: NotifType;
+	sender: UserType;
+	receiver?: UserType;
+	group?: GroupType;
+	post?: PostType;
+};

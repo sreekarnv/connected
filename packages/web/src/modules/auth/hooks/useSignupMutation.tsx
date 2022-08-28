@@ -1,4 +1,5 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { navigate } from 'gatsby';
 import React from 'react';
 import axios from '../../shared/config/axios';
 import { ImageSettings } from '../../shared/types/api';
@@ -33,6 +34,7 @@ const useSignupMutation = () => {
 		{
 			onSuccess(data) {
 				queryClient.setQueryData([RQ.LOGGED_IN_USER_QUERY], data.user);
+				navigate('/app/feed');
 			},
 		}
 	);

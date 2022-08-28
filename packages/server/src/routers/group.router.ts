@@ -16,6 +16,10 @@ router
 		groupController.createGroup
 	);
 
+router
+	.route('/reject-join-request/:_id')
+	.patch(groupController.rejectGroupJoinRequest);
+
 router.route('/:_id').get(groupController.getGroup);
 
 export default router;

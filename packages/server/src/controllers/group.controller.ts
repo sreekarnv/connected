@@ -1,6 +1,7 @@
 import { BeAnObject, DocumentType } from '@typegoose/typegoose/lib/types';
 import { FilterQuery } from 'mongoose';
 import GroupModel, { Group } from '../models/group.model';
+import NotificationModel from '../models/notification.model';
 import { ExpressResponse } from '../types';
 import AppError from '../utils/AppError';
 import imageUpload from '../utils/imageUpload';
@@ -76,6 +77,40 @@ export const getGroup: ExpressResponse = async (req, res, next) => {
 		res.status(200).json({
 			status: 'success',
 			group,
+		});
+	} catch (err) {
+		next(err);
+	}
+};
+
+export const rejectGroupJoinRequest: ExpressResponse = async (
+	req,
+	res,
+	next
+) => {
+	try {
+		const { _id } = req.params;
+		const { member, notificationId } = req.body;
+
+		const user = req.user?._id;
+
+		const updatedGroup = await GroupModel.findOneAndUpdate(
+			{ $and: [{ _id }, { admin: user }, { requests: member }] },
+			{ $pull: { requests: member } },
+			{ new: true, runValidators: true }
+		);
+
+		if (!updatedGroup) {
+			return next(
+				new AppError('You are not authorized to perform this action', 403)
+			);
+		}
+
+		await NotificationModel.findByIdAndDelete(notificationId);
+
+		res.status(200).json({
+			status: 'success',
+			group: updatedGroup,
 		});
 	} catch (err) {
 		next(err);

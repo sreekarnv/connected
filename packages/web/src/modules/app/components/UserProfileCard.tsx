@@ -37,7 +37,7 @@ const UserProfileCard: React.FC<UserProfileCardProps> = ({}) => {
 					alignItems='center'
 					justifyContent='center'>
 					<Avatar mb='4' size='2xl' src={user.photo?.url} name={user.name} />
-					<Text fontWeight='semibold' fontSize='3xl'>
+					<Text textAlign='center' fontWeight='semibold' fontSize='3xl'>
 						{user.name}
 					</Text>
 				</Flex>

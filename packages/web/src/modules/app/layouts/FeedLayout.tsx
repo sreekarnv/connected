@@ -1,4 +1,4 @@
-import { ChevronDownIcon } from '@chakra-ui/icons';
+import { BellIcon, ChevronDownIcon } from '@chakra-ui/icons';
 import {
 	Avatar,
 	Box,
@@ -14,6 +14,13 @@ import {
 	MenuItem,
 	MenuList,
 	MenuDivider,
+	IconButton,
+	Drawer,
+	DrawerContent,
+	DrawerOverlay,
+	DrawerCloseButton,
+	DrawerHeader,
+	DrawerBody,
 } from '@chakra-ui/react';
 import { useQueryClient } from '@tanstack/react-query';
 import { Link } from 'gatsby';
@@ -21,22 +28,69 @@ import { Link } from 'gatsby';
 import React from 'react';
 import Logo from '../../shared/components/Logo';
 import ThemeToggler from '../../shared/components/ThemeToggler';
-import { UserType } from '../../shared/types/api';
+import { socket } from '../../shared/providers/AppProvider';
+import { NotificationType, UserType } from '../../shared/types/api';
 import { RQ } from '../../shared/types/react-query';
 import FeedLinkItem from '../components/FeedLinkItem';
+import NotificationItem from '../components/NotificationItem';
 import UserProfileCard from '../components/UserProfileCard';
+import useGetAllNotificationsQuery from '../hooks/useGetAllNotificationsQuery';
 
 interface FeedLayoutProps {
 	children: React.ReactNode;
 }
 
+const NotificationsDrawer = ({ isOpen, onClose }: any) => {
+	const { isLoading, data } = useGetAllNotificationsQuery();
+
+	return (
+		<Drawer isOpen={isOpen} placement='left' onClose={onClose}>
+			<DrawerOverlay />
+			<DrawerContent>
+				<DrawerCloseButton />
+				<DrawerHeader>Notifications</DrawerHeader>
+
+				<DrawerBody px='2'>
+					{isLoading && <h1>Loading....</h1>}
+					{data && data?.length === 0 ? (
+						<h1>No Notifications</h1>
+					) : (
+						<>
+							{data?.map((notification: NotificationType) => (
+								<NotificationItem
+									notification={notification}
+									key={notification._id}
+								/>
+							))}
+						</>
+					)}
+				</DrawerBody>
+			</DrawerContent>
+		</Drawer>
+	);
+};
+
 const FeedLayout: React.FC<FeedLayoutProps> = ({ children }) => {
 	const queryClient = useQueryClient();
 	const user = queryClient.getQueryData([RQ.LOGGED_IN_USER_QUERY]) as UserType;
-	const { isOpen } = useDisclosure();
+	const { isOpen, onClose, onOpen } = useDisclosure();
+
+	React.useEffect(() => {
+		socket.on(`user-${user._id}`, (data) => {
+			const cachedNotifs =
+				(queryClient.getQueryData([
+					RQ.GET_ALL_NOTIFICATIONS_QUERY,
+				]) as NotificationType[]) || [];
+
+			const newNotifs = [data, ...cachedNotifs];
+
+			queryClient.setQueryData([RQ.GET_ALL_NOTIFICATIONS_QUERY], newNotifs);
+		});
+	}, [socket]);
 
 	return (
 		<>
+			<NotificationsDrawer {...{ isOpen, onClose }} />
 			<Flex
 				position='sticky'
 				top='0'
@@ -44,8 +98,16 @@ const FeedLayout: React.FC<FeedLayoutProps> = ({ children }) => {
 				justifyContent='space-between'
 				zIndex='banner'
 				p='4'>
-				<HStack>
+				<HStack gap={3}>
 					<Logo />
+
+					<IconButton
+						onClick={() => onOpen()}
+						aria-label='notifications'
+						icon={<BellIcon fontSize='xl' />}
+						variant='ghost'
+						colorScheme='blue'
+					/>
 				</HStack>
 				<HStack
 					display={{ base: 'none', md: 'flex' }}

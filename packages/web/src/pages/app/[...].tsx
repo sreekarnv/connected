@@ -7,6 +7,7 @@ import CreatePostPage from '../../modules/app/pages/CreatePostPage';
 import CreateGroupPage from '../../modules/app/pages/CreateGroupPage';
 import FindGroupsPage from '../../modules/app/pages/FindGroupPage';
 import FeedLayout from '../../modules/app/layouts/FeedLayout';
+import GroupFeedPage from '../../modules/app/pages/GroupFeedPage';
 
 interface AppProps {}
 
@@ -19,6 +20,7 @@ const App: React.FC<AppProps> = ({}) => {
 					<PrivateRoute path='/posts/new' component={CreatePostPage} />
 					<PrivateRoute path='/groups/new' component={CreateGroupPage} />
 					<PrivateRoute path='/groups/find' component={FindGroupsPage} />
+					<PrivateRoute path='/groups/:id' component={GroupFeedPage} />
 					<PrivateRoute path='/profile' component={ProfilePage} />
 				</Router>
 			</FeedLayout>

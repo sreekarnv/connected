@@ -4,12 +4,22 @@ import cors from 'cors';
 import cookieParser from 'cookie-parser';
 import dotenv from 'dotenv';
 import path from 'path';
+import { createServer } from 'http';
+import { Server } from 'socket.io';
+
 import authRouter from './routers/auth.router';
 import userRouter from './routers/user.router';
 import groupRouter from './routers/group.router';
 import commentRouter from './routers/comment.router';
 import postRouter from './routers/post.router';
+import notificationRouter from './routers/notification.router';
+
 import errorController from './controllers/error.controller';
+import {
+	handleGroupJoinRequestSent,
+	handleGroupJoinRequestAccepted,
+} from './web-sockets';
+import { NotifType } from './models/notification.model';
 
 dotenv.config({ path: path.join(__dirname, '../', '.env') });
 
@@ -17,7 +27,15 @@ console.log(`NODE_ENV=${process.env.NODE_ENV}`);
 
 const PORT = process.env.PORT || 4000;
 
-const app = express();
+export const app = express();
+const httpServer = createServer(app);
+
+const io = new Server(httpServer, {
+	cors: {
+		credentials: true,
+		origin: process.env.CORS_ORIGIN || 'http://localhost:3000',
+	},
+});
 
 (async () => {
 	try {
@@ -40,10 +58,21 @@ const app = express();
 		app.use('/api/v1/posts', postRouter);
 		app.use('/api/v1/groups', groupRouter);
 		app.use('/api/v1/comments', commentRouter);
+		app.use('/api/v1/notifications', notificationRouter);
 
 		app.use(errorController);
 
-		app.listen(PORT, () => {
+		io.on('connection', (socket) => {
+			socket.on(NotifType.JOIN_GROUP_REQUEST_SENT, (data) => {
+				handleGroupJoinRequestSent(io, socket, data);
+			});
+
+			socket.on(NotifType.JOIN_GROUP_REQUEST_ACCEPTED, (data) => {
+				handleGroupJoinRequestAccepted(io, socket, data);
+			});
+		});
+
+		httpServer.listen(PORT, () => {
 			console.log(`Server is running on port ${PORT}`);
 		});
 	} catch (err) {
