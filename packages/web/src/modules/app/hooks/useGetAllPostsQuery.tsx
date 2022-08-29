@@ -3,9 +3,9 @@ import React from 'react';
 import axios from '../../shared/config/axios';
 import { RQ } from '../../shared/types/react-query';
 
-const useGetAllPostsQuery = () => {
+const useGetAllPostsQuery = (groupId = '') => {
 	const result = useInfiniteQuery(
-		[RQ.GET_ALL_POSTS_QUERY],
+		[RQ.GET_ALL_POSTS_QUERY, groupId],
 		async ({ pageParam = 1 }) => {
 			const res = await axios({
 				url: '/posts',

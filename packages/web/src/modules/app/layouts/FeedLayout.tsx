@@ -50,7 +50,7 @@ const FeedLayout: React.FC<FeedLayoutProps> = ({ children }) => {
 						// @ts-ignore
 						boxShadow={(theme) => `0 0 10px 5px ${theme.colors.blue[600]}`}>
 						{' '}
-						<FeedLinkItem color='purple' name='My Feed' to='/app/feed' />
+						<FeedLinkItem color='purple' name='Public Feed' to='/app/feed' />
 						<FeedLinkItem name='Create Post' to='/app/posts/new' />
 						<FeedLinkItem
 							color='facebook'

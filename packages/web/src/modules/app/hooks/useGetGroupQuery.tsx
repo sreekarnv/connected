@@ -12,7 +12,7 @@ const useGetGroupQuery = (id: string) => {
 				method: 'get',
 			});
 
-			return res.data;
+			return res.data.group;
 		},
 		{}
 	);
