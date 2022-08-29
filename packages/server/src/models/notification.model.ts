@@ -63,7 +63,3 @@ export class Notification {
 
 	updatedAt!: Date;
 }
-
-const NotificationModel = getModelForClass(Notification);
-
-export default NotificationModel;

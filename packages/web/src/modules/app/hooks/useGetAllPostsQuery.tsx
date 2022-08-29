@@ -12,6 +12,7 @@ const useGetAllPostsQuery = (groupId = '') => {
 				method: 'get',
 				params: {
 					pageParam,
+					groupId,
 				},
 			});
 			return res.data;

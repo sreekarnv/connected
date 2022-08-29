@@ -1,18 +1,25 @@
 import {
-	getModelForClass,
 	prop as Property,
 	pre,
 	modelOptions,
 	index,
+	Ref,
 } from '@typegoose/typegoose';
 import * as argon2 from 'argon2';
+import { Group } from './group.model';
 import { Photo } from './photo.model';
+import { Post } from './post.model';
 
 export enum Roles {
 	User = 'user',
 	Admin = 'admin',
 }
 
+@pre<User>('findOne', async function (next) {
+	this.populate('groups', '_id name photo.url -members');
+
+	next();
+})
 @pre<User>('save', async function (next) {
 	if (!this.isModified('password') && !this.isNew) return next();
 
@@ -32,6 +39,8 @@ export enum Roles {
 @modelOptions({
 	schemaOptions: {
 		timestamps: true,
+		toJSON: { virtuals: true },
+		toObject: { virtuals: true },
 	},
 })
 export class User {
@@ -93,6 +102,13 @@ export class User {
 	})
 	roles!: Roles[];
 
+	@Property({
+		localField: '_id',
+		foreignField: 'members',
+		ref: () => Group,
+	})
+	groups?: Ref<Group>[] = [];
+
 	readonly createdAt!: Date;
 
 	readonly updatedAt!: Date;
@@ -105,7 +121,3 @@ export class User {
 		return this.roles.includes(role);
 	}
 }
-
-const UserModel = getModelForClass(User);
-
-export default UserModel;

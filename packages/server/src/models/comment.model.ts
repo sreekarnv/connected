@@ -44,7 +44,3 @@ export class Comment {
 	})
 	post!: Ref<Post>;
 }
-
-const CommentModel = getModelForClass(Comment);
-
-export default CommentModel;

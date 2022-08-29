@@ -9,7 +9,7 @@ import mongoose from 'mongoose';
 import { Photo } from './photo.model';
 import { User } from './user.model';
 
-enum GROUP_TYPE {
+export enum GROUP_TYPE {
 	PUBLIC = 'public',
 	PRIVATE = 'private',
 }
@@ -70,7 +70,3 @@ export class Group {
 
 	readonly updatedAt!: Date;
 }
-
-const GroupModel = getModelForClass(Group);
-
-export default GroupModel;

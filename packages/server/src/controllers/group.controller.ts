@@ -1,7 +1,7 @@
 import { BeAnObject, DocumentType } from '@typegoose/typegoose/lib/types';
 import { FilterQuery } from 'mongoose';
-import GroupModel, { Group } from '../models/group.model';
-import NotificationModel from '../models/notification.model';
+import { Group } from '../models/group.model';
+import { GroupModel, NotificationModel } from '../models';
 import { ExpressResponse } from '../types';
 import AppError from '../utils/AppError';
 import imageUpload from '../utils/imageUpload';

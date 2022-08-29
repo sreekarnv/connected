@@ -20,6 +20,7 @@ export interface UserType {
 	roles?: string[];
 	createdAt?: Date;
 	updatedAt?: Date;
+	groups?: GroupType[];
 }
 
 export interface PostType {

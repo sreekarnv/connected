@@ -1,4 +1,4 @@
-import CommentModel from '../models/comment.model';
+import { CommentModel } from '../models';
 import { ExpressResponse } from '../types';
 
 export const createComment: ExpressResponse = async (req, res, next) => {

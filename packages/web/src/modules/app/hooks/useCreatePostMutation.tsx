@@ -8,7 +8,12 @@ const useCreatePostMutation = () => {
 	const { isLoading, data, error, mutate } = useMutation<
 		any,
 		any,
-		{ content: string; imageSettings: string; photo: File | null },
+		{
+			content: string;
+			imageSettings: string;
+			photo: File | null;
+			group?: string;
+		},
 		any
 	>(
 		async (data) => {

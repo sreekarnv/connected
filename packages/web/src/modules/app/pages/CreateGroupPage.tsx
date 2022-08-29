@@ -19,7 +19,6 @@ import useCroppedImage from '../../shared/hooks/useCropperImage';
 import ImageCropper from '../../shared/components/ImageCropper';
 import ImagePreview from '../../shared/components/ImagePreview';
 import { ArrowUpIcon } from '@chakra-ui/icons';
-import FeedLayout from '../layouts/FeedLayout';
 import useCreateGroupMutation from '../hooks/useCreateGroupMutation';
 
 interface CreateGroupPageProps {}

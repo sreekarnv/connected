@@ -8,6 +8,7 @@ import {
 } from '@typegoose/typegoose';
 import mongoose from 'mongoose';
 import { Comment } from './comment.model';
+import { Group } from './group.model';
 import { Photo } from './photo.model';
 import { User } from './user.model';
 
@@ -54,6 +55,12 @@ export class Post {
 
 	@Property({
 		type: mongoose.SchemaTypes.ObjectId,
+		ref: () => Group,
+	})
+	group?: Ref<Group>;
+
+	@Property({
+		type: mongoose.SchemaTypes.ObjectId,
 		ref: () => User,
 	})
 	dislikes: Ref<User>[] = [];
@@ -70,7 +77,3 @@ export class Post {
 
 	readonly updatedAt!: Date;
 }
-
-const PostModel = getModelForClass(Post);
-
-export default PostModel;

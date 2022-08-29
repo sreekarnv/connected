@@ -1,5 +1,4 @@
-import GroupModel from '../models/group.model';
-import NotificationModel from '../models/notification.model';
+import { NotificationModel } from '../models';
 import { ExpressResponse } from '../types';
 
 export const getNotifications: ExpressResponse = async (req, res, next) => {

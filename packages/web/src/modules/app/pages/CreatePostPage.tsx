@@ -6,6 +6,7 @@ import {
 	FormControl,
 	FormErrorMessage,
 	FormLabel,
+	Select,
 	Textarea,
 	useDisclosure,
 } from '@chakra-ui/react';
@@ -18,7 +19,9 @@ import useCroppedImage from '../../shared/hooks/useCropperImage';
 import ImageCropper from '../../shared/components/ImageCropper';
 import ImagePreview from '../../shared/components/ImagePreview';
 import { ArrowUpIcon } from '@chakra-ui/icons';
-import FeedLayout from '../layouts/FeedLayout';
+import { useQueryClient } from '@tanstack/react-query';
+import { RQ } from '../../shared/types/react-query';
+import { UserType } from '../../shared/types/api';
 
 const validationSchema = Yup.object()
 	.shape({
@@ -30,6 +33,8 @@ interface CreatePostPageProps {}
 
 const CreatePostPage: React.FC<CreatePostPageProps> = ({}) => {
 	const { isLoading, mutate } = useCreatePostMutation();
+	const queryClient = useQueryClient();
+	const user = queryClient.getQueryData([RQ.LOGGED_IN_USER_QUERY]) as UserType;
 	const {
 		image,
 		setImage,
@@ -55,6 +60,7 @@ const CreatePostPage: React.FC<CreatePostPageProps> = ({}) => {
 	const onSubmit = (values: FieldValues) => {
 		mutate({
 			content: values.content,
+			group: values.group,
 			imageSettings: JSON.stringify(imageSettings),
 			photo: image,
 		});
@@ -88,6 +94,24 @@ const CreatePostPage: React.FC<CreatePostPageProps> = ({}) => {
 					<FormControl isRequired isInvalid={!!errors.content}>
 						<FormLabel>Content</FormLabel>
 						<Textarea rows={10} {...register('content')} />
+						<FormErrorMessage>
+							{errors.content?.message as string}
+						</FormErrorMessage>
+					</FormControl>
+
+					<FormControl isRequired isInvalid={!!errors.content}>
+						<Select
+							my='8'
+							defaultValue={''}
+							placeholder='Select option'
+							{...register('group')}>
+							<option value=''>None (Public Feed)</option>
+							{user.groups?.map((group) => (
+								<option key={group._id} value={group._id}>
+									{group.name}
+								</option>
+							))}
+						</Select>
 						<FormErrorMessage>
 							{errors.content?.message as string}
 						</FormErrorMessage>

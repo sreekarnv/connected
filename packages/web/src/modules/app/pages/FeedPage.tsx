@@ -1,5 +1,4 @@
 import { Button } from '@chakra-ui/react';
-import { useQueryClient } from '@tanstack/react-query';
 import React from 'react';
 import { useInView } from 'react-intersection-observer';
 import PostItem from '../components/PostItem';
@@ -10,9 +9,7 @@ interface FeedPageProps {
 }
 
 const FeedPage: React.FC<FeedPageProps> = ({}) => {
-	const queryClient = useQueryClient();
-	const { data, fetchNextPage, isFetchingNextPage, isLoading } =
-		useGetAllPostsQuery();
+	const { data, fetchNextPage, isFetchingNextPage } = useGetAllPostsQuery();
 	const { ref, inView } = useInView();
 
 	React.useEffect(() => {

@@ -1,6 +1,7 @@
 import { BeAnObject, DocumentType } from '@typegoose/typegoose/lib/types';
 import { UpdateQuery, FilterQuery } from 'mongoose';
-import UserModel, { User } from '../models/user.model';
+import { User } from '../models/user.model';
+import { UserModel } from '../models';
 import { ExpressResponse } from '../types';
 import AppError from '../utils/AppError';
 import imageUpload from '../utils/imageUpload';

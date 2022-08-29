@@ -53,15 +53,6 @@ const io = new Server(httpServer, {
 			})
 		);
 
-		app.use('/api/v1/auth', authRouter);
-		app.use('/api/v1/users', userRouter);
-		app.use('/api/v1/posts', postRouter);
-		app.use('/api/v1/groups', groupRouter);
-		app.use('/api/v1/comments', commentRouter);
-		app.use('/api/v1/notifications', notificationRouter);
-
-		app.use(errorController);
-
 		io.on('connection', (socket) => {
 			socket.on(NotifType.JOIN_GROUP_REQUEST_SENT, (data) => {
 				handleGroupJoinRequestSent(io, socket, data);
@@ -85,6 +76,15 @@ const io = new Server(httpServer, {
 				);
 			});
 		});
+
+		app.use('/api/v1/auth', authRouter);
+		app.use('/api/v1/users', userRouter);
+		app.use('/api/v1/posts', postRouter);
+		app.use('/api/v1/groups', groupRouter);
+		app.use('/api/v1/comments', commentRouter);
+		app.use('/api/v1/notifications', notificationRouter);
+
+		app.use(errorController);
 
 		httpServer.listen(PORT, () => {
 			console.log(`Server is running on port ${PORT}`);

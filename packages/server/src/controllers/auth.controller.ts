@@ -1,5 +1,5 @@
 import { createCookie, verifyToken } from './../utils/jwt';
-import UserModel from '../models/user.model';
+import { UserModel } from '../models';
 import { ExpressResponse } from '../types';
 import AppError from '../utils/AppError';
 
@@ -24,6 +24,7 @@ export const parseAuthCookie: ExpressResponse = async (req, _, next) => {
 	if (!data?._id) return next();
 
 	const user = await UserModel.findById(data._id);
+
 	if (!user) return next();
 
 	req.user = user;
