@@ -23,9 +23,7 @@ interface FindFriendsPageProps {}
 
 const FindFriendsPage: React.FC<FindFriendsPageProps> = ({}) => {
 	const [search, setSearch] = React.useState('');
-	const [page, setPage] = React.useState(1);
-	const { data, isLoading, fetchNextPage, fetchPreviousPage } =
-		useGetAllUsersQuery(search);
+	const { data, isLoading, page, setPage } = useGetAllUsersQuery(search);
 
 	const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
 		setPage(1);
@@ -51,7 +49,7 @@ const FindFriendsPage: React.FC<FindFriendsPageProps> = ({}) => {
 				<Box mt='5'>
 					{isLoading && <p>Loading....</p>}
 					<SimpleGrid gap={3} columns={{ base: 1, sm: 2, lg: 3 }}>
-						{data?.pages?.[page - 1]?.users.map((friend: UserType) => {
+						{data?.users?.map((friend: UserType) => {
 							return <FindFriendItem key={friend._id} user={friend} />;
 						})}
 					</SimpleGrid>
@@ -63,10 +61,7 @@ const FindFriendsPage: React.FC<FindFriendsPageProps> = ({}) => {
 						gap={4}>
 						<IconButton
 							onClick={async () => {
-								if (page > 1) {
-									await fetchPreviousPage({ pageParam: page - 1 });
-									setPage(page - 1);
-								}
+								setPage(page - 1);
 							}}
 							disabled={page === 1}
 							icon={<ChevronLeftIcon fontSize={20} />}
@@ -74,13 +69,12 @@ const FindFriendsPage: React.FC<FindFriendsPageProps> = ({}) => {
 						/>
 						<Text fontWeight='bold'>{page}</Text>
 						<IconButton
-							onClick={async () => {
-								if (data?.pages[page - 1].hasNext) {
-									await fetchNextPage({ pageParam: page + 1 });
+							onClick={() => {
+								if (data.hasNext) {
 									setPage(page + 1);
 								}
 							}}
-							disabled={!data?.pages[page - 1].hasNext}
+							disabled={!data?.hasNext}
 							icon={<ChevronRightIcon fontSize={20} />}
 							aria-label='Next'
 						/>
