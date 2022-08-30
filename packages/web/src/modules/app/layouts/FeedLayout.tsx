@@ -43,7 +43,7 @@ const FeedLayout: React.FC<FeedLayoutProps> = ({ children }) => {
 						position={'sticky'}
 						zIndex='sticky'
 						borderRadius='50px'
-						top='24'
+						top='20'
 						p='8'
 						mt='4'
 						height='calc(90vh - 24px)'

@@ -6,9 +6,9 @@ import {
 	Ref,
 } from '@typegoose/typegoose';
 import * as argon2 from 'argon2';
+import mongoose from 'mongoose';
 import { Group } from './group.model';
 import { Photo } from './photo.model';
-import { Post } from './post.model';
 
 export enum Roles {
 	User = 'user',
@@ -108,6 +108,18 @@ export class User {
 		ref: () => Group,
 	})
 	groups?: Ref<Group>[] = [];
+
+	@Property({
+		type: mongoose.SchemaTypes.ObjectId,
+		ref: () => User,
+	})
+	requests?: Ref<User>[] = [];
+
+	@Property({
+		type: mongoose.SchemaTypes.ObjectId,
+		ref: () => User,
+	})
+	friends?: Ref<User>[] = [];
 
 	readonly createdAt!: Date;
 

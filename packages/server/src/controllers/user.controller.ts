@@ -1,7 +1,7 @@
 import { BeAnObject, DocumentType } from '@typegoose/typegoose/lib/types';
 import { UpdateQuery, FilterQuery } from 'mongoose';
 import { User } from '../models/user.model';
-import { UserModel } from '../models';
+import { NotificationModel, UserModel } from '../models';
 import { ExpressResponse } from '../types';
 import AppError from '../utils/AppError';
 import imageUpload from '../utils/imageUpload';
@@ -83,7 +83,7 @@ export const getAllUsers: ExpressResponse = async (req, res, next) => {
 		}
 
 		const users = await UserModel.find(query)
-			.select('_id name photo.url email')
+			.select('_id name photo.url email requests')
 			.skip(limit * (page - 1))
 			.limit(limit + 1);
 
@@ -96,4 +96,29 @@ export const getAllUsers: ExpressResponse = async (req, res, next) => {
 	} catch (err) {
 		next(err);
 	}
+};
+
+export const rejectFriendRequest: ExpressResponse = async (req, res, next) => {
+	const { friendId, notificationId } = req.body;
+
+	console.log(friendId, notificationId);
+
+	const updatedUser = await UserModel.findOneAndUpdate(
+		{ $and: [{ _id: req.user?._id }, { requests: friendId }] },
+		{ $pull: { requests: friendId } },
+		{ new: true, runValidators: true }
+	);
+
+	if (!updatedUser) {
+		return next(
+			new AppError('You are not authorized to perform this action', 403)
+		);
+	}
+
+	await NotificationModel.findByIdAndDelete(notificationId);
+
+	res.status(200).json({
+		status: 'success',
+		user: updatedUser,
+	});
 };

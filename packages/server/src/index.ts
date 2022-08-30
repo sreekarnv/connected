@@ -1,6 +1,7 @@
 import express from 'express';
 import mongoose from 'mongoose';
 import cors from 'cors';
+import cookie from 'cookie';
 import cookieParser from 'cookie-parser';
 import dotenv from 'dotenv';
 import path from 'path';
@@ -18,11 +19,13 @@ import errorController from './controllers/error.controller';
 import {
 	handleGroupJoinRequestSent,
 	handleGroupJoinRequestAccepted,
-} from './web-sockets';
+	handleFriendRequestSent,
+	handleFriendRequestAccepted,
+} from './sockets';
 import { NotifType } from './models/notification.model';
+import { verifyToken } from './utils/jwt';
 
 dotenv.config({ path: path.join(__dirname, '../', '.env') });
-
 console.log(`NODE_ENV=${process.env.NODE_ENV}`);
 
 const PORT = process.env.PORT || 4000;
@@ -35,6 +38,7 @@ const io = new Server(httpServer, {
 		credentials: true,
 		origin: process.env.CORS_ORIGIN || 'http://localhost:3000',
 	},
+	cookie: true,
 });
 
 (async () => {
@@ -54,6 +58,25 @@ const io = new Server(httpServer, {
 		);
 
 		io.on('connection', (socket) => {
+			if (!socket.client.request.headers.cookie) {
+				socket.disconnect(true);
+				return;
+			}
+
+			const cookies = cookie.parse(socket.client.request.headers.cookie);
+
+			if (!cookies['auth.token']) {
+				socket.disconnect(true);
+				return;
+			}
+
+			const payload = verifyToken(cookies['auth.token']) as any;
+
+			if (!payload._id) {
+				socket.disconnect(true);
+				return;
+			}
+
 			socket.on(NotifType.JOIN_GROUP_REQUEST_SENT, (data) => {
 				handleGroupJoinRequestSent(io, socket, data);
 			});
@@ -63,17 +86,11 @@ const io = new Server(httpServer, {
 			});
 
 			socket.on(NotifType.FRIEND_REQUEST_SENT, (data) => {
-				console.log(
-					data,
-					`${NotifType.FRIEND_REQUEST_SENT} event received from ${socket.id}`
-				);
+				handleFriendRequestSent(io, socket, data);
 			});
 
 			socket.on(NotifType.FRIEND_REQUEST_ACCEPTED, (data) => {
-				console.log(
-					data,
-					`${NotifType.FRIEND_REQUEST_ACCEPTED} event received from ${socket.id}`
-				);
+				handleFriendRequestAccepted(io, socket, data);
 			});
 		});
 

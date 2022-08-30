@@ -21,6 +21,7 @@ export interface UserType {
 	createdAt?: Date;
 	updatedAt?: Date;
 	groups?: GroupType[];
+	requests?: string[];
 }
 
 export interface PostType {

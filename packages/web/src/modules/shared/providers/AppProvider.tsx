@@ -3,7 +3,7 @@ import useGetLoggedInUserQuery from '../../auth/hooks/useGetLoggedInUserQuery';
 import io from 'socket.io-client';
 import Loader from '../components/Loader';
 
-export const socket = io('http://localhost:4000');
+export const socket = io('http://localhost:4000', { withCredentials: true });
 
 interface AppProviderProps {
 	children: React.ReactNode;

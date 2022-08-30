@@ -4,19 +4,23 @@ import axios from '../../shared/config/axios';
 import { NotificationType } from '../../shared/types/api';
 import { RQ } from '../../shared/types/react-query';
 
-const useDeleteNotificationMutation = (notificationId: string) => {
+const useRejectFriendRequestMutation = (notificationId: string) => {
 	const queryClient = useQueryClient();
-	const result = useMutation(
-		async () => {
+	const result = useMutation<any, any, { friendId: string }, any>(
+		async ({ friendId }) => {
 			const res = await axios({
-				url: `/notifications/${notificationId}`,
-				method: 'delete',
+				url: `/users/reject-friend-request`,
+				method: 'patch',
+				data: {
+					friendId,
+					notificationId,
+				},
 			});
 
-			return res.data;
+			return res.data.user;
 		},
 		{
-			onSuccess: () => {
+			onSuccess: (data) => {
 				const notificationsCached = queryClient.getQueryData([
 					RQ.GET_ALL_NOTIFICATIONS_QUERY,
 				]) as NotificationType[];
@@ -27,9 +31,8 @@ const useDeleteNotificationMutation = (notificationId: string) => {
 					[RQ.GET_ALL_NOTIFICATIONS_QUERY],
 					newNotifications
 				);
-			},
-			onSettled: () => {
-				queryClient.invalidateQueries([RQ.GET_ALL_NOTIFICATIONS_QUERY]);
+
+				queryClient.setQueryData([RQ.LOGGED_IN_USER_QUERY], data);
 			},
 		}
 	);
@@ -37,4 +40,4 @@ const useDeleteNotificationMutation = (notificationId: string) => {
 	return result;
 };
 
-export default useDeleteNotificationMutation;
+export default useRejectFriendRequestMutation;

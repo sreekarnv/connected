@@ -10,9 +10,10 @@ import {
 import { useQueryClient } from '@tanstack/react-query';
 import React from 'react';
 import { socket } from '../../shared/providers/AppProvider';
-import { NotificationType, NotifType } from '../../shared/types/api';
+import { NotificationType, NotifType, UserType } from '../../shared/types/api';
 import { RQ } from '../../shared/types/react-query';
 import useDeleteNotificationMutation from '../hooks/useDeleteNotificationMutation';
+import useRejectFriendRequestMutation from '../hooks/useRejectFriendRequestMutation';
 import useRejectJoinGroupMutation from '../hooks/useRejectJoinGroupMutation';
 
 interface NotificationItemProps {
@@ -20,12 +21,18 @@ interface NotificationItemProps {
 }
 
 const loadUi = (notification: NotificationType) => {
+	const { mutate } = useDeleteNotificationMutation(notification._id);
+	const { isLoading: isRejectLoading, mutate: mutateReject } =
+		useRejectJoinGroupMutation(notification._id);
+	const { isLoading: isFriendRejectLoading, mutate: mutateFriendReject } =
+		useRejectFriendRequestMutation(notification._id);
+	const queryClient = useQueryClient();
+	const loggedInUser = queryClient.getQueryData([
+		RQ.LOGGED_IN_USER_QUERY,
+	]) as UserType;
+
 	switch (notification.type) {
 		case NotifType.JOIN_GROUP_REQUEST_SENT:
-			const { isLoading: isRejectLoading, mutate: mutateReject } =
-				useRejectJoinGroupMutation(notification._id);
-
-			const queryClient = useQueryClient();
 			return (
 				<>
 					<HStack mb='3'>
@@ -82,8 +89,6 @@ const loadUi = (notification: NotificationType) => {
 				</>
 			);
 		case NotifType.JOIN_GROUP_REQUEST_ACCEPTED:
-			const { mutate } = useDeleteNotificationMutation(notification._id);
-
 			return (
 				<>
 					<Flex mb='1' alignItems='center' justifyContent={'flex-end'}>
@@ -98,6 +103,78 @@ const loadUi = (notification: NotificationType) => {
 						<Text fontWeight={'bold'}>{notification.group?.name}</Text>
 					</HStack>
 					<Text>Your request to join this group has been accepted.</Text>
+				</>
+			);
+		case NotifType.FRIEND_REQUEST_SENT:
+			return (
+				<>
+					<HStack mb='3'>
+						<Avatar
+							size='sm'
+							src={notification.sender.photo?.url}
+							name={notification.sender.name}
+						/>
+						<Text fontWeight={'bold'}>{notification.sender.name}</Text>
+					</HStack>
+
+					<Text mb='4'>has sent you a friend request.</Text>
+
+					<HStack>
+						<Button
+							size='sm'
+							colorScheme='green'
+							onClick={() => {
+								socket.emit(NotifType.FRIEND_REQUEST_ACCEPTED, {
+									receiver: {
+										_id: loggedInUser._id,
+										name: loggedInUser.name,
+										photo: loggedInUser.photo,
+									},
+									sender: notification.sender,
+									notificationId: notification._id,
+								});
+								const notificationsCached = queryClient.getQueryData([
+									RQ.GET_ALL_NOTIFICATIONS_QUERY,
+								]) as NotificationType[];
+								const newNotifications = notificationsCached.filter(
+									(n) => notification._id !== n._id
+								);
+								queryClient.setQueryData(
+									[RQ.GET_ALL_NOTIFICATIONS_QUERY],
+									newNotifications
+								);
+							}}>
+							Accept
+						</Button>
+						<Button
+							onClick={() =>
+								mutateFriendReject({
+									friendId: notification.sender._id,
+								})
+							}
+							isLoading={isFriendRejectLoading}
+							size='sm'
+							colorScheme='red'>
+							Reject
+						</Button>
+					</HStack>
+				</>
+			);
+		case NotifType.FRIEND_REQUEST_ACCEPTED:
+			return (
+				<>
+					<Flex mb='1' alignItems='center' justifyContent={'flex-end'}>
+						<CloseButton onClick={() => mutate()} />
+					</Flex>
+					<HStack mb='3'>
+						<Avatar
+							size='sm'
+							src={notification.sender?.photo?.url}
+							name={notification.sender?.name}
+						/>
+						<Text fontWeight={'bold'}>{notification.sender?.name}</Text>
+					</HStack>
+					<Text>has accepted your friend request</Text>
 				</>
 			);
 	}

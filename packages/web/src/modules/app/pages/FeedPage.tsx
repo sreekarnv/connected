@@ -1,4 +1,4 @@
-import { Button } from '@chakra-ui/react';
+import { Box, Button } from '@chakra-ui/react';
 import React from 'react';
 import { useInView } from 'react-intersection-observer';
 import PostItem from '../components/PostItem';

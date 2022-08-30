@@ -19,14 +19,24 @@ import {
 	useDisclosure,
 	VStack,
 } from '@chakra-ui/react';
+import { useQueryClient } from '@tanstack/react-query';
 import React from 'react';
+import { socket } from '../../shared/providers/AppProvider';
 import { GroupType, NotifType, UserType } from '../../shared/types/api';
+import { RQ } from '../../shared/types/react-query';
 
 interface FindFriendItemProps {
 	user: UserType;
 }
 
 const FindFriendItem: React.FC<FindFriendItemProps> = ({ user }) => {
+	const queryClient = useQueryClient();
+	const loggedInUser = queryClient.getQueryData([
+		RQ.LOGGED_IN_USER_QUERY,
+	]) as UserType;
+
+	const friendRequestSent = user.requests?.includes(loggedInUser._id);
+
 	return (
 		<>
 			<Flex
@@ -58,8 +68,29 @@ const FindFriendItem: React.FC<FindFriendItemProps> = ({ user }) => {
 				</VStack>
 
 				<HStack mt='10'>
-					<Button variant='outline' colorScheme='green'>
-						Send Friend Request
+					<Button
+						onClick={() => {
+							if (!friendRequestSent) {
+								socket.emit(NotifType.FRIEND_REQUEST_SENT, {
+									sender: {
+										_id: loggedInUser._id,
+										name: loggedInUser.name,
+										photo: loggedInUser.photo ?? undefined,
+									},
+									receiver: {
+										_id: user._id,
+										name: user.name,
+										photo: user.photo ?? undefined,
+									},
+								});
+							}
+						}}
+						disabled={friendRequestSent}
+						variant='outline'
+						colorScheme={friendRequestSent ? 'gray' : 'green'}>
+						{friendRequestSent
+							? 'Friend Request Sent !!'
+							: 'Send Friend Request'}
 					</Button>
 					<Tooltip aria-label='View Profile' label='View Profile'>
 						<IconButton

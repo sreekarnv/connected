@@ -8,6 +8,9 @@ const router = express.Router();
 router.use(authController.parseAuthCookie, authController.protectRoutes);
 
 router.patch('/update-password', userController.updatePassword);
+
+router.patch('/reject-friend-request', userController.rejectFriendRequest);
+
 router
 	.route('/')
 	.get(userController.getAllUsers)
