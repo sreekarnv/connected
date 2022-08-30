@@ -24,6 +24,10 @@ import {
 } from './sockets';
 import { NotifType } from './models/notification.model';
 import { verifyToken } from './utils/jwt';
+import rateLimit from 'express-rate-limit';
+import xss from 'xss-clean';
+import mongoSanitize from 'express-mongo-sanitize';
+import helmet from 'helmet';
 
 dotenv.config({ path: path.join(__dirname, '../', '.env') });
 console.log(`NODE_ENV=${process.env.NODE_ENV}`);
@@ -41,6 +45,12 @@ const io = new Server(httpServer, {
 	cookie: true,
 });
 
+const limiter = rateLimit({
+	max: 1000,
+	windowMs: 30 * 60 * 1000,
+	message: 'Too many requests from this IP, please try again in an hour',
+});
+
 (async () => {
 	try {
 		await mongoose.connect(process.env.MONGO_URI!);
@@ -56,6 +66,17 @@ const io = new Server(httpServer, {
 				credentials: true,
 			})
 		);
+
+		app.use(
+			helmet({
+				hidePoweredBy: true,
+				crossOriginResourcePolicy: {
+					policy: 'cross-origin',
+				},
+			})
+		);
+
+		app.use(limiter);
 
 		io.on('connection', (socket) => {
 			if (!socket.client.request.headers.cookie) {
@@ -93,6 +114,9 @@ const io = new Server(httpServer, {
 				handleFriendRequestAccepted(io, socket, data);
 			});
 		});
+
+		app.use(mongoSanitize());
+		app.use(xss());
 
 		app.use('/api/v1/auth', authRouter);
 		app.use('/api/v1/users', userRouter);
