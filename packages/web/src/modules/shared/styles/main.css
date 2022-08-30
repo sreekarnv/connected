@@ -1,2 +1,10 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
-@import url('http://fonts.cdnfonts.com/css/grinched-2');
+
+@font-face {
+	font-family: 'Grinched';
+	font-style: normal;
+	font-weight: 400;
+	src: local('Grinched'),
+		url('https://fonts.cdnfonts.com/s/17793/GrinchedRegular.woff')
+			format('woff');
+}

@@ -3,6 +3,7 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 import { ChakraProvider, Box } from '@chakra-ui/react';
 import { GatsbySSR } from 'gatsby';
+import './src/modules/shared/styles/main.css';
 import AppProvider from './src/modules/shared/providers/AppProvider';
 
 const queryClient = new QueryClient();

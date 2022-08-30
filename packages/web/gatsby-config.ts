@@ -7,8 +7,8 @@ dotenv.config({
 
 const config: GatsbyConfig = {
 	siteMetadata: {
-		title: `My Gatsby Site`,
-		siteUrl: `https://www.yourdomain.tld`,
+		title: `Connected`,
+		siteUrl: `${process.env.GATSBY_SERVER_URL}`,
 	},
 	// More easily incorporate content into your pages through automatic TypeScript type generation and better GraphQL IntelliSense.
 	// If you use VSCode you can also use the GraphQL plugin
@@ -32,6 +32,14 @@ const config: GatsbyConfig = {
 				path: './src/images/',
 			},
 			__key: 'images',
+		},
+		{
+			resolve: `gatsby-plugin-netlify`,
+			options: {
+				mergeSecurityHeaders: true,
+				mergeCachingHeaders: true,
+				generateMatchPathRewrites: true,
+			},
 		},
 	],
 };

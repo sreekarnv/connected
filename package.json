@@ -1,12 +1,16 @@
 {
   "name": "connected",
   "private": true,
-  "devDependencies": {
-    "kill-port-process": "^3.1.0",
+  "dependencies": {
     "lerna": "^4.0.0"
   },
+  "devDependencies": {
+    "kill-port-process": "^3.1.0"
+  },
   "scripts": {
-    "kill": "kill-port 3000 4000"
+    "kill": "kill-port 3000 4000",
+    "build": "lerna run build --scope=@connected/server",
+    "start": "npx lerna run start --scope=@connected/server"
   },
   "workspaces": [
     "packages/*"

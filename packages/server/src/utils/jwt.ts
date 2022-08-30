@@ -15,7 +15,7 @@ export const createCookie = (_id: string, res: Context['res']) => {
 	res.cookie('auth.token', token, {
 		httpOnly: true,
 		secure: false,
-		sameSite: 'lax',
+		sameSite: 'none',
 		maxAge: 1000 * 60 * 60 * 24,
 	});
 
