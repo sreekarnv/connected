@@ -4,7 +4,9 @@ import io from 'socket.io-client';
 import Loader from '../components/Loader';
 import useGetAllNotificationsQuery from '../../app/hooks/useGetAllNotificationsQuery';
 
-export const socket = io('http://localhost:4000', { withCredentials: true });
+export const socket = io(process.env.GATSBY_SERVER_URL!, {
+	withCredentials: true,
+});
 
 interface AppProviderProps {
 	children: React.ReactNode;
