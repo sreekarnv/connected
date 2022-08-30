@@ -1,28 +1,17 @@
 import {
-	ArrowRightIcon,
-	ExternalLinkIcon,
-	ViewIcon,
-	ViewOffIcon,
-} from '@chakra-ui/icons';
-import {
 	Avatar,
-	Badge,
 	Box,
 	Button,
-	Collapse,
 	Flex,
 	HStack,
-	IconButton,
 	Link,
 	Text,
-	Tooltip,
-	useDisclosure,
 	VStack,
 } from '@chakra-ui/react';
 import { useQueryClient } from '@tanstack/react-query';
 import React from 'react';
 import { socket } from '../../shared/providers/AppProvider';
-import { GroupType, NotifType, UserType } from '../../shared/types/api';
+import {  NotifType, UserType } from '../../shared/types/api';
 import { RQ } from '../../shared/types/react-query';
 
 interface FindFriendItemProps {
@@ -69,6 +58,7 @@ const FindFriendItem: React.FC<FindFriendItemProps> = ({ user }) => {
 
 				<HStack mt='10'>
 					<Button
+						w='full'
 						onClick={() => {
 							if (!friendRequestSent) {
 								socket.emit(NotifType.FRIEND_REQUEST_SENT, {
@@ -92,14 +82,6 @@ const FindFriendItem: React.FC<FindFriendItemProps> = ({ user }) => {
 							? 'Friend Request Sent !!'
 							: 'Send Friend Request'}
 					</Button>
-					<Tooltip aria-label='View Profile' label='View Profile'>
-						<IconButton
-							colorScheme='purple'
-							variant='outline'
-							aria-label='View Profile'
-							icon={<ViewIcon fontSize={20} />}
-						/>
-					</Tooltip>
 				</HStack>
 			</Flex>
 		</>

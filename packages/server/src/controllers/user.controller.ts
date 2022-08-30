@@ -73,6 +73,7 @@ export const getAllUsers: ExpressResponse = async (req, res, next) => {
 		let page = pageParam ? parseInt(pageParam as string) : 1;
 		let query: FilterQuery<DocumentType<User, BeAnObject>> = {
 			_id: { $ne: req.user?._id },
+			friends: { $ne: req.user?._id },
 		};
 
 		if (search) {
@@ -83,7 +84,7 @@ export const getAllUsers: ExpressResponse = async (req, res, next) => {
 		}
 
 		const users = await UserModel.find(query)
-			.select('_id name photo.url email requests')
+			.select('_id name photo.url email requests friends')
 			.skip(limit * (page - 1))
 			.limit(limit + 1);
 

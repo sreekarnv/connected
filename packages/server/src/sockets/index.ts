@@ -127,6 +127,17 @@ export const handleFriendRequestAccepted = async (
 		{ new: true }
 	);
 
+	await UserModel.findOneAndUpdate(
+		{
+			$and: [{ _id: data.sender._id }],
+		},
+		{
+			$push: { friends: data.receiver._id },
+			$pull: { requests: data.receiver._id },
+		},
+		{ new: true }
+	);
+
 	if (!user) return;
 
 	await NotificationModel.deleteOne({ _id: data.notificationId });

@@ -53,7 +53,7 @@ const loadUi = (notification: NotificationType) => {
 						<Button
 							size='sm'
 							colorScheme='green'
-							onClick={() => {
+							onClick={async () => {
 								socket.emit(NotifType.JOIN_GROUP_REQUEST_ACCEPTED, {
 									group: notification.group,
 									user: notification.sender,
@@ -70,6 +70,10 @@ const loadUi = (notification: NotificationType) => {
 									[RQ.GET_ALL_NOTIFICATIONS_QUERY],
 									newNotifications
 								);
+
+								await queryClient.invalidateQueries([
+									RQ.GET_ALL_NOTIFICATIONS_QUERY,
+								]);
 							}}>
 							Accept
 						</Button>
@@ -123,7 +127,7 @@ const loadUi = (notification: NotificationType) => {
 						<Button
 							size='sm'
 							colorScheme='green'
-							onClick={() => {
+							onClick={async () => {
 								socket.emit(NotifType.FRIEND_REQUEST_ACCEPTED, {
 									receiver: {
 										_id: loggedInUser._id,
@@ -143,6 +147,10 @@ const loadUi = (notification: NotificationType) => {
 									[RQ.GET_ALL_NOTIFICATIONS_QUERY],
 									newNotifications
 								);
+
+								await queryClient.invalidateQueries([
+									RQ.GET_ALL_NOTIFICATIONS_QUERY,
+								]);
 							}}>
 							Accept
 						</Button>
