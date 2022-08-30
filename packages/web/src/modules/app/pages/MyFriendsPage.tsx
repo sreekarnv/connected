@@ -18,6 +18,7 @@ import debounce from 'lodash/debounce';
 import useGetAllUsersQuery from '../hooks/useGetAllUsersQuery';
 import { UserType } from '../../shared/types/api';
 import MyFriendItem from '../components/MyFriendItem';
+import FindItemSkeleton from '../components/FindItemSkeleton';
 
 interface MyFriendsPageProps {}
 
@@ -39,6 +40,20 @@ const MyFriendsPage: React.FC<MyFriendsPageProps> = ({}) => {
 		[]
 	);
 
+	if (isLoading) {
+		return (
+			<>
+				<SimpleGrid gap={3} columns={{ base: 1, sm: 2, lg: 3 }}>
+					{Array(9)
+						.fill(0)
+						.map((_, index) => (
+							<FindItemSkeleton key={index} />
+						))}
+				</SimpleGrid>
+			</>
+		);
+	}
+
 	return (
 		<>
 			<Box>
@@ -50,7 +65,6 @@ const MyFriendsPage: React.FC<MyFriendsPageProps> = ({}) => {
 					/>
 				</InputGroup>
 				<Box mt='5'>
-					{isLoading && <p>Loading....</p>}
 					<SimpleGrid gap={3} columns={{ base: 1, sm: 2, lg: 3 }}>
 						{data?.users?.map((friend: UserType) => {
 							return <MyFriendItem key={friend._id} user={friend} />;

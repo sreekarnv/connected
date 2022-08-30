@@ -7,6 +7,7 @@ import {
 	FormControl,
 	FormErrorMessage,
 	FormLabel,
+	Heading,
 	Input,
 	Select,
 	Textarea,
@@ -89,6 +90,7 @@ const CreateGroupPage: React.FC<CreateGroupPageProps> = ({}) => {
 			)}
 
 			<>
+				<Heading mb='8'>Create Group</Heading>
 				<form noValidate onSubmit={handleSubmit(onSubmit)}>
 					<FormControl isRequired isInvalid={!!errors.name} mb='5'>
 						<FormLabel>Group Name</FormLabel>

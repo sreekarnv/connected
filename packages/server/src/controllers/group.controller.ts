@@ -10,14 +10,27 @@ export const uploadGroupImage = imageUpload.single('photo');
 
 export const getAllGroups: ExpressResponse = async (req, res, next) => {
 	try {
-		const { search, pageParam } = req.query;
+		const { search, pageParam, fetchOptions } = req.query;
 		const limit = 10;
 
 		let page = pageParam ? parseInt(pageParam as string) : 1;
 		let query: FilterQuery<DocumentType<Group, BeAnObject>> = {};
 
+		if (fetchOptions === 'groups-joined') {
+			query = {
+				...query,
+				members: { $in: req.user?._id },
+			};
+		} else if (fetchOptions === 'groups-not-joined') {
+			query = {
+				...query,
+				members: { $nin: req.user?._id },
+			};
+		}
+
 		if (search) {
 			query = {
+				...query,
 				name: { $regex: search, $options: 'i' },
 			};
 			query['$text'] = { $search: search as string };

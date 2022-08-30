@@ -7,11 +7,11 @@ import FindGroupItem from '../components/FindGroupItem';
 import useGetAllGroupsQuery from '../hooks/useGetAllGroupsQuery';
 import FindItemSkeleton from '../components/FindItemSkeleton';
 
-interface FindGroupsPageProps {}
+interface MyGroupsPageProps {}
 
-const FindGroupsPage: React.FC<FindGroupsPageProps> = ({}) => {
+const MyGroupsPage: React.FC<MyGroupsPageProps> = ({}) => {
 	const [search, setSearch] = React.useState('');
-	const { data, isLoading } = useGetAllGroupsQuery(search, 'groups-not-joined');
+	const { data, isLoading } = useGetAllGroupsQuery(search, 'groups-joined');
 
 	const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
 		const value = e.target.value;
@@ -26,7 +26,7 @@ const FindGroupsPage: React.FC<FindGroupsPageProps> = ({}) => {
 	if (isLoading) {
 		return (
 			<>
-				{Array(6)
+				{Array(3)
 					.fill(0)
 					.map((_, index) => (
 						<FindItemSkeleton key={index} />
@@ -46,7 +46,6 @@ const FindGroupsPage: React.FC<FindGroupsPageProps> = ({}) => {
 					/>
 				</InputGroup>
 				<Box mt='5'>
-					{isLoading && <p>Loading....</p>}
 					{data?.pages.map((page) => {
 						return page?.groups.map((group: GroupType) => (
 							<FindGroupItem key={group._id} group={group} />
@@ -58,4 +57,4 @@ const FindGroupsPage: React.FC<FindGroupsPageProps> = ({}) => {
 	);
 };
 
-export default FindGroupsPage;
+export default MyGroupsPage;

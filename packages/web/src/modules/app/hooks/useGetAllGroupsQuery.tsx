@@ -3,9 +3,12 @@ import React from 'react';
 import axios from '../../shared/config/axios';
 import { RQ } from '../../shared/types/react-query';
 
-const useGetAllGroupsQuery = (search = '') => {
+const useGetAllGroupsQuery = (
+	search = '',
+	fetchOptions: 'all' | 'groups-joined' | 'groups-not-joined' = 'all'
+) => {
 	const result = useInfiniteQuery(
-		[RQ.GET_ALL_GROUPS_QUERY, search],
+		[RQ.GET_ALL_GROUPS_QUERY, fetchOptions, search],
 		async ({ pageParam = 1 }) => {
 			const res = await axios({
 				url: '/groups',
@@ -13,6 +16,7 @@ const useGetAllGroupsQuery = (search = '') => {
 				params: {
 					pageParam,
 					search,
+					fetchOptions,
 				},
 			});
 			return res.data;

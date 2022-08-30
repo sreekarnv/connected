@@ -5,7 +5,6 @@ import AppNavbar from '../../shared/layouts/navigation/AppNavbar';
 import { UserType } from '../../shared/types/api';
 import { RQ } from '../../shared/types/react-query';
 import FeedLinkItem from '../components/FeedLinkItem';
-import UserProfileCard from '../components/UserProfileCard';
 
 interface FeedLayoutProps {
 	children: React.ReactNode;
@@ -43,10 +42,10 @@ const FeedLayout: React.FC<FeedLayoutProps> = ({ children }) => {
 						position={'sticky'}
 						zIndex='sticky'
 						borderRadius='50px'
-						top='20'
+						top={'88px'}
 						p='8'
 						mt='4'
-						height='calc(90vh - 24px)'
+						height='calc(96vh - 72px)'
 						// @ts-ignore
 						boxShadow={(theme) => `0 0 10px 5px ${theme.colors.blue[600]}`}>
 						{' '}
@@ -57,7 +56,6 @@ const FeedLayout: React.FC<FeedLayoutProps> = ({ children }) => {
 							name='Create Group'
 							to='/app/groups/new'
 						/>
-						<FeedLinkItem color='blue' name='My Friends' to='/app/friends/me' />
 					</Box>
 				</GridItem>
 				<GridItem
@@ -69,8 +67,6 @@ const FeedLayout: React.FC<FeedLayoutProps> = ({ children }) => {
 					<Box pt={{ base: '4' }}>{children}</Box>
 				</GridItem>
 				<GridItem
-					py='4'
-					pl='8'
 					display={{
 						base: 'none',
 						xl: 'block',
@@ -79,16 +75,32 @@ const FeedLayout: React.FC<FeedLayoutProps> = ({ children }) => {
 						'2xl': 'col-start 12 / content-end',
 						xl: 'col-start 11 / content-end',
 					}}>
-					<Box width='100%' position={'sticky'} zIndex='sticky' top='24'>
-						<UserProfileCard />
-						<Box mt='8'>
-							<FeedLinkItem name='Find Groups' to='/app/groups/find' />
-							<FeedLinkItem
-								color='purple'
-								name='Find Friends'
-								to='/app/friends/find'
-							/>
-						</Box>
+					<Box
+						width='100%'
+						top={'88px'}
+						p='8'
+						mt='4'
+						height='calc(96vh - 72px)'
+						position={'sticky'}
+						zIndex='sticky'
+						borderRadius='50px'
+						// @ts-ignore
+						boxShadow={(theme) => `0 0 10px 5px ${theme.colors.blue[600]}`}>
+						{/* <UserProfileCard /> */}
+						<FeedLinkItem name='Find Groups' to='/app/groups/find' />
+						<FeedLinkItem
+							color='facebook'
+							name='Find Friends'
+							to='/app/friends/find'
+						/>
+
+						<FeedLinkItem
+							color='purple'
+							name='My Friends'
+							to='/app/friends/me'
+						/>
+
+						<FeedLinkItem color='blue' name='My Groups' to='/app/groups/me' />
 					</Box>
 				</GridItem>
 			</Grid>

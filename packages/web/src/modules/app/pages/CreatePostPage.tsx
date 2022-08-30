@@ -6,6 +6,7 @@ import {
 	FormControl,
 	FormErrorMessage,
 	FormLabel,
+	Heading,
 	Select,
 	Textarea,
 	useDisclosure,
@@ -90,6 +91,7 @@ const CreatePostPage: React.FC<CreatePostPageProps> = ({}) => {
 			)}
 
 			<>
+				<Heading mb='8'>Create Post</Heading>
 				<form noValidate onSubmit={handleSubmit(onSubmit)}>
 					<FormControl isRequired isInvalid={!!errors.content}>
 						<FormLabel>Content</FormLabel>

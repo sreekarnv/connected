@@ -1,8 +1,20 @@
-import { Avatar, Button, Flex, HStack, Text, VStack } from '@chakra-ui/react';
+import {
+	Avatar,
+	Box,
+	Button,
+	Flex,
+	HStack,
+	Skeleton,
+	SkeletonCircle,
+	SkeletonText,
+	Text,
+	VStack,
+} from '@chakra-ui/react';
 import { Link } from 'gatsby';
 import React from 'react';
 import { useInView } from 'react-intersection-observer';
 import PostItem from '../components/PostItem';
+import PostSkeleton from '../components/PostItemSkeleton';
 import useGetAllPostsQuery from '../hooks/useGetAllPostsQuery';
 import useGetGroupQuery from '../hooks/useGetGroupQuery';
 
@@ -30,7 +42,23 @@ const GroupFeedPage: React.FC<GroupFeedPageProps> = ({ id }) => {
 	if (isLoading || isLoadingGroup) {
 		return (
 			<>
-				<Text textAlign='center'>Loading...</Text>
+				<Box
+					justifyContent={'space-between'}
+					display={'flex'}
+					px={{ base: '2', md: '5' }}>
+					<SkeletonCircle size='20' />
+					<Box flexBasis={{ base: '70%', md: '80%' }}>
+						<Skeleton height='20px' mb='4' />
+						<Skeleton height='20px' mb='4' />
+						<Skeleton height='20px' mb='4' />
+					</Box>
+				</Box>
+
+				{Array(3)
+					.fill(0)
+					.map((_, index) => (
+						<PostSkeleton key={index} />
+					))}
 			</>
 		);
 	}
@@ -78,6 +106,7 @@ const GroupFeedPage: React.FC<GroupFeedPageProps> = ({ id }) => {
 
 			{posts?.pages[posts?.pages.length - 1].hasNext && (
 				<Button
+					mb='4'
 					display='block'
 					isLoading={isFetchingNextPage}
 					mx='auto'

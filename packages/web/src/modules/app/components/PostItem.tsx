@@ -72,7 +72,7 @@ const PostItem: React.FC<PostItemProps> = ({ post, pageParam }) => {
 			/>
 			<Box mb='14'>
 				<Flex
-					borderWidth='2px'
+					borderWidth='thin'
 					borderColor='blue.400'
 					borderStyle='solid'
 					alignItems='center'
@@ -97,7 +97,7 @@ const PostItem: React.FC<PostItemProps> = ({ post, pageParam }) => {
 					</Text>
 				</Flex>
 				<Box
-					borderWidth='2px'
+					borderWidth='thin'
 					borderColor='blue.400'
 					borderStyle='solid'
 					alignItems='center'
@@ -128,7 +128,7 @@ const PostItem: React.FC<PostItemProps> = ({ post, pageParam }) => {
 					)}
 				</Box>
 				<Flex
-					borderWidth='2px'
+					borderWidth='thin'
 					borderColor='blue.400'
 					borderStyle='solid'
 					alignItems='center'

@@ -24,8 +24,10 @@ const NotificationsDrawer: React.FC<NotificationsDrawerProps> = ({
 	isOpen,
 	onClose,
 }) => {
-	const { isLoading, data } = useGetAllNotificationsQuery();
 	const queryClient = useQueryClient();
+	const notifications = queryClient.getQueryData([
+		RQ.GET_ALL_NOTIFICATIONS_QUERY,
+	]) as NotificationType[];
 	const user = queryClient.getQueryData([RQ.LOGGED_IN_USER_QUERY]) as UserType;
 
 	React.useEffect(() => {
@@ -49,8 +51,7 @@ const NotificationsDrawer: React.FC<NotificationsDrawerProps> = ({
 				<DrawerHeader>Notifications</DrawerHeader>
 
 				<DrawerBody px='2'>
-					{isLoading && <h1>Loading....</h1>}
-					{data && data?.length === 0 ? (
+					{notifications?.length === 0 ? (
 						<Text
 							my='5'
 							textAlign='center'
@@ -60,7 +61,7 @@ const NotificationsDrawer: React.FC<NotificationsDrawerProps> = ({
 						</Text>
 					) : (
 						<>
-							{data?.map((notification: NotificationType) => (
+							{notifications?.map((notification: NotificationType) => (
 								<NotificationItem
 									notification={notification}
 									key={notification._id}
