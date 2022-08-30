@@ -4,10 +4,18 @@ import * as notificationController from './../controllers/notification.controlle
 
 const router = express.Router();
 
-router.use(authController.parseAuthCookie, authController.protectRoutes);
+router.use(authController.parseAuthCookie);
 
-router.get('/', notificationController.getNotifications);
+router.get(
+	'/',
+	authController.protectRoutesWithoutError,
+	notificationController.getNotifications
+);
 
-router.delete('/:_id', notificationController.deleteNotification);
+router.delete(
+	'/:_id',
+	authController.protectRoutes,
+	notificationController.deleteNotification
+);
 
 export default router;

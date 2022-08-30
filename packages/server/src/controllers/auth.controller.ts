@@ -16,6 +16,19 @@ export const protectRoutes: ExpressResponse = async (req, _, next) => {
 	next();
 };
 
+export const protectRoutesWithoutError: ExpressResponse = async (
+	req,
+	res,
+	next
+) => {
+	if (!req.user?._id) {
+		res.status(204).json({});
+		return;
+	}
+
+	next();
+};
+
 export const parseAuthCookie: ExpressResponse = async (req, _, next) => {
 	const token = req.cookies['auth.token'];
 	if (!token) return next();
