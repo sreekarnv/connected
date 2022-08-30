@@ -29,7 +29,13 @@ const useCreatePostMutation = () => {
 		},
 		{
 			onSuccess: (data) => {
-				navigate('/app/feed');
+				if (data) {
+					if (data.group) {
+						navigate(`/app/groups/${data.group}`);
+					} else {
+						navigate('/app/feed');
+					}
+				}
 			},
 		}
 	);

@@ -11,7 +11,7 @@ import {
 import { useQueryClient } from '@tanstack/react-query';
 import React from 'react';
 import { socket } from '../../shared/providers/AppProvider';
-import {  NotifType, UserType } from '../../shared/types/api';
+import { NotifType, UserType } from '../../shared/types/api';
 import { RQ } from '../../shared/types/react-query';
 
 interface FindFriendItemProps {

@@ -52,7 +52,7 @@ const GroupFeedPage: React.FC<GroupFeedPageProps> = ({ id }) => {
 		<>
 			<Flex alignItems={'center'} justifyContent='space-between' mb='8'>
 				<HStack gap='3'>
-					<Avatar size='lg' src={data?.photo.url} name={data?.name} />
+					<Avatar size='lg' src={data?.photo?.url} name={data?.name} />
 					<Text fontSize='2xl' fontWeight='bold'>
 						{data?.name}
 					</Text>

@@ -5,7 +5,7 @@ import {
 	index,
 	Ref,
 } from '@typegoose/typegoose';
-import * as argon2 from 'argon2';
+import bcrypt from 'bcryptjs';
 import mongoose from 'mongoose';
 import { Group } from './group.model';
 import { Photo } from './photo.model';
@@ -23,7 +23,7 @@ export enum Roles {
 @pre<User>('save', async function (next) {
 	if (!this.isModified('password') && !this.isNew) return next();
 
-	this.password = await argon2.hash(this.password, { hashLength: 15 });
+	this.password = await bcrypt.hash(this.password, 12);
 	this.passwordConfirm = undefined as any;
 
 	next();
@@ -126,7 +126,7 @@ export class User {
 	readonly updatedAt!: Date;
 
 	async verifyPassword(hash: string, input: string) {
-		return await argon2.verify(hash, input);
+		return await bcrypt.compare(input, hash);
 	}
 
 	hasRole(role: Roles) {

@@ -17,15 +17,15 @@ import React from 'react';
 import debounce from 'lodash/debounce';
 import useGetAllUsersQuery from '../hooks/useGetAllUsersQuery';
 import { UserType } from '../../shared/types/api';
-import FindFriendItem from '../components/FindFriendItem';
+import MyFriendItem from '../components/MyFriendItem';
 
-interface FindFriendsPageProps {}
+interface MyFriendsPageProps {}
 
-const FindFriendsPage: React.FC<FindFriendsPageProps> = ({}) => {
+const MyFriendsPage: React.FC<MyFriendsPageProps> = ({}) => {
 	const [search, setSearch] = React.useState('');
 	const { data, isLoading, page, setPage } = useGetAllUsersQuery(
 		search,
-		'all-but-friends'
+		'friends-only'
 	);
 
 	const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -53,7 +53,7 @@ const FindFriendsPage: React.FC<FindFriendsPageProps> = ({}) => {
 					{isLoading && <p>Loading....</p>}
 					<SimpleGrid gap={3} columns={{ base: 1, sm: 2, lg: 3 }}>
 						{data?.users?.map((friend: UserType) => {
-							return <FindFriendItem key={friend._id} user={friend} />;
+							return <MyFriendItem key={friend._id} user={friend} />;
 						})}
 					</SimpleGrid>
 					<Flex
@@ -88,4 +88,4 @@ const FindFriendsPage: React.FC<FindFriendsPageProps> = ({}) => {
 	);
 };
 
-export default FindFriendsPage;
+export default MyFriendsPage;

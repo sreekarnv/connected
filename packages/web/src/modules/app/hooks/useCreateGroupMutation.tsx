@@ -29,7 +29,11 @@ const useCreateGroupMutation = () => {
 		},
 		{
 			onSuccess: (data) => {
-				navigate('/app/feed');
+				if (data) {
+					if (data.group) {
+						navigate(`/app/groups/${data._id}`);
+					}
+				}
 			},
 		}
 	);

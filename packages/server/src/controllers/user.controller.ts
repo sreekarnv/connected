@@ -5,6 +5,7 @@ import { NotificationModel, UserModel } from '../models';
 import { ExpressResponse } from '../types';
 import AppError from '../utils/AppError';
 import imageUpload from '../utils/imageUpload';
+import { query } from 'express';
 
 export const uploadProfileImage = imageUpload.single('photo');
 
@@ -67,17 +68,29 @@ export const updateUserProfile: ExpressResponse = async (req, res, next) => {
 
 export const getAllUsers: ExpressResponse = async (req, res, next) => {
 	try {
-		const { search, pageParam } = req.query;
+		const { search, pageParam, fetchOptions } = req.query;
 		const limit = 6;
 
 		let page = pageParam ? parseInt(pageParam as string) : 1;
 		let query: FilterQuery<DocumentType<User, BeAnObject>> = {
 			_id: { $ne: req.user?._id },
-			friends: { $ne: req.user?._id },
 		};
+
+		if (fetchOptions === 'all-but-friends') {
+			query = {
+				...query,
+				friends: { $nin: [req.user?._id] },
+			};
+		} else if (fetchOptions === 'friends-only') {
+			query = {
+				...query,
+				friends: { $in: [req.user?._id] },
+			};
+		}
 
 		if (search) {
 			query = {
+				...query,
 				name: { $regex: search, $options: 'i' },
 			};
 			query['$text'] = { $search: search as string };

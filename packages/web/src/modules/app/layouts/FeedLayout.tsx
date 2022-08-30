@@ -57,6 +57,7 @@ const FeedLayout: React.FC<FeedLayoutProps> = ({ children }) => {
 							name='Create Group'
 							to='/app/groups/new'
 						/>
+						<FeedLinkItem color='blue' name='My Friends' to='/app/friends/me' />
 					</Box>
 				</GridItem>
 				<GridItem
