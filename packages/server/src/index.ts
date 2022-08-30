@@ -35,21 +35,39 @@ console.log(`NODE_ENV=${process.env.NODE_ENV}`);
 const PORT = process.env.PORT || 4000;
 
 export const app = express();
+
+app.use(
+	cors({
+		origin: process.env.CORS_ORIGIN,
+		credentials: true,
+	})
+);
+
+app.use(
+	helmet({
+		hidePoweredBy: true,
+	})
+);
+
+app.use(cookieParser());
+
+app.use(express.json());
+
 const httpServer = createServer(app);
 
 const io = new Server(httpServer, {
 	cors: {
 		credentials: true,
-		origin: process.env.CORS_ORIGIN || 'http://localhost:3000',
+		origin: process.env.CORS_ORIGIN,
 	},
 	cookie: true,
 });
 
-const limiter = rateLimit({
-	max: 1000,
-	windowMs: 30 * 60 * 1000,
-	message: 'Too many requests from this IP, please try again in an hour',
-});
+// const limiter = rateLimit({
+// 	max: 1000,
+// 	windowMs: 30 * 60 * 1000,
+// 	message: 'Too many requests from this IP, please try again in an hour',
+// });
 
 (async () => {
 	try {
@@ -57,26 +75,7 @@ const limiter = rateLimit({
 		console.log('Connected to mongodb');
 		mongoose.set('debug', true);
 
-		app.use(cookieParser());
-		app.use(express.json());
-
-		app.use(
-			cors({
-				origin: process.env.CORS_ORIGIN || 'http://localhost:3000',
-				credentials: true,
-			})
-		);
-
-		app.use(
-			helmet({
-				hidePoweredBy: true,
-				crossOriginResourcePolicy: {
-					policy: 'cross-origin',
-				},
-			})
-		);
-
-		app.use(limiter);
+		// app.use(limiter);
 
 		io.on('connection', (socket) => {
 			if (!socket.client.request.headers.cookie) {
@@ -115,8 +114,8 @@ const limiter = rateLimit({
 			});
 		});
 
-		app.use(mongoSanitize());
-		app.use(xss());
+		// app.use(mongoSanitize());
+		// app.use(xss());
 
 		app.use('/api/v1/auth', authRouter);
 		app.use('/api/v1/users', userRouter);
