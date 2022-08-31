@@ -1,5 +1,5 @@
 import React from 'react';
-import { HeadFC, Link } from 'gatsby';
+import { graphql, HeadFC, Link } from 'gatsby';
 import BaseLayout from '../modules/shared/layouts/BaseLayout';
 // @ts-ignore
 import HomeImage from '../images/home.svg';
@@ -18,7 +18,29 @@ import {
 import { useQueryClient } from '@tanstack/react-query';
 import { RQ } from '../modules/shared/types/react-query';
 
-export const Head: HeadFC = () => <title>Home</title>;
+export const query = graphql`
+	query SiteInfo {
+		site {
+			siteMetadata {
+				title
+				description
+			}
+		}
+	}
+`;
+
+interface SiteMetadata {
+	title: string;
+	description: string;
+}
+
+export const Head: HeadFC = ({ data }) => {
+	const siteData = (data as any).site.siteMetadata as SiteMetadata;
+	const title = `${siteData.title} | Home`;
+	const description = siteData.description;
+
+	return <title>{title}</title>;
+};
 
 interface Styles {
 	grid: GridProps;

@@ -59,7 +59,7 @@ export const login: ExpressResponse = async (req, res, next) => {
 
 		user.password = undefined as any;
 
-		createCookie(user._id, res);
+		createCookie(user._id, req, res);
 
 		res.status(200).json({
 			status: 'success',
@@ -84,7 +84,7 @@ export const signup: ExpressResponse = async (req, res, next) => {
 			photo,
 		});
 
-		createCookie(user._id, res);
+		createCookie(user._id, req, res);
 
 		user.password = undefined as any;
 
