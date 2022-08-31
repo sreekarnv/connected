@@ -10,7 +10,7 @@ const useGetAllNotificationsQuery = () => {
 			method: 'get',
 		});
 
-		return res.data.notifications;
+		return res.data.notifications ?? null;
 	});
 
 	return result;

@@ -1,4 +1,5 @@
 import React from 'react';
+import Loader from '../../shared/components/Loader';
 import useLogoutMutation from '../hooks/useLogoutMutation';
 
 interface LogoutPageProps {
@@ -14,7 +15,7 @@ const LogoutPage: React.FC<LogoutPageProps> = ({}) => {
 
 	return (
 		<>
-			<h1>Logout Loading...</h1>
+			<Loader height='70vh' />
 		</>
 	);
 };

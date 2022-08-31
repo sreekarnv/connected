@@ -1,14 +1,16 @@
 import { Box, Spinner } from '@chakra-ui/react';
 import React from 'react';
 
-interface LoaderProps {}
+interface LoaderProps {
+	height?: number | string;
+}
 
-const Loader: React.FC<LoaderProps> = ({}) => {
+const Loader: React.FC<LoaderProps> = ({ height = '100vh' }) => {
 	return (
 		<>
 			<Box
 				as='div'
-				height='100vh'
+				height={height}
 				display='flex'
 				justifyContent='center'
 				alignItems='center'>
