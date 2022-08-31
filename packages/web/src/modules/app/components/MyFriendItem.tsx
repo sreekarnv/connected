@@ -1,4 +1,12 @@
-import { Avatar, Box, Flex, Link, Text, VStack } from '@chakra-ui/react';
+import {
+	Avatar,
+	Box,
+	Flex,
+	Link,
+	Text,
+	useColorMode,
+	VStack,
+} from '@chakra-ui/react';
 import React from 'react';
 import { UserType } from '../../shared/types/api';
 
@@ -7,17 +15,22 @@ interface MyFriendItemProps {
 }
 
 const MyFriendItem: React.FC<MyFriendItemProps> = ({ user }) => {
+	const { colorMode } = useColorMode();
+
 	return (
 		<>
 			<Flex
 				flexDir={'column'}
 				justifyContent='space-between'
-				bg='gray.900'
+				bgColor={colorMode === 'light' ? 'gray.100' : 'gray.900'}
 				p='4'
 				transition={'all 0.2s ease-in-out'}
 				_hover={{
 					// @ts-ignore
-					boxShadow: (theme) => `0 0 10px 5px ${theme.colors.blue[600]}`,
+					boxShadow: (theme) =>
+						`0 0 10px 5px ${
+							theme.colors.blue[colorMode === 'light' ? 400 : 600]
+						}`,
 				}}
 				mb='4'
 				borderRadius='xl'>

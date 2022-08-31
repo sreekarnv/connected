@@ -1,6 +1,3 @@
-// import mongoose from 'mongoose';
-// import { Server } from 'socket.io';
-// import { DefaultEventsMap } from 'socket.io/dist/typed-events';
 import { GroupModel, UserModel } from '../models';
 import { NotifType } from '../models/notification.model';
 import { NotificationModel } from '../models';

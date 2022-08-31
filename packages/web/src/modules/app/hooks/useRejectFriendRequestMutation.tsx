@@ -31,8 +31,10 @@ const useRejectFriendRequestMutation = (notificationId: string) => {
 					[RQ.GET_ALL_NOTIFICATIONS_QUERY],
 					newNotifications
 				);
-
 				queryClient.setQueryData([RQ.LOGGED_IN_USER_QUERY], data);
+			},
+			onSettled: () => {
+				queryClient.invalidateQueries([RQ.GET_ALL_NOTIFICATIONS_QUERY]);
 			},
 		}
 	);

@@ -1,19 +1,25 @@
-import { Box, Flex, Image, Text } from '@chakra-ui/react';
+import { Box, Flex, Image, Text, useColorMode } from '@chakra-ui/react';
 import { Link } from 'gatsby';
 import React from 'react';
 // @ts-ignore
 import SrcImage from './../../../images/home.svg';
 
-const colors = {
+const darkColors = {
 	blue: 'blue.600',
 	purple: 'purple.600',
 	facebook: 'facebook.600',
 };
 
+const lightColors = {
+	blue: 'blue.400',
+	purple: 'purple.400',
+	facebook: 'facebook.300',
+};
+
 interface FeedLinkItemProps {
 	name: string;
 	to: string;
-	color?: keyof typeof colors;
+	color?: keyof typeof lightColors;
 }
 
 const FeedLinkItem: React.FC<FeedLinkItemProps> = ({
@@ -21,6 +27,8 @@ const FeedLinkItem: React.FC<FeedLinkItemProps> = ({
 	to,
 	color = 'blue',
 }) => {
+	const { colorMode } = useColorMode();
+
 	return (
 		<>
 			<Flex
@@ -29,7 +37,7 @@ const FeedLinkItem: React.FC<FeedLinkItemProps> = ({
 				role='link'
 				gap={4}
 				alignItems='center'
-				bgColor={colors[color]}
+				bgColor={colorMode === 'light' ? lightColors[color] : darkColors[color]}
 				cursor='pointer'
 				py='4'
 				px='2'

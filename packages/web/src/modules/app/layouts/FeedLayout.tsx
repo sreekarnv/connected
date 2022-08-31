@@ -1,10 +1,11 @@
-import { Box, Grid, GridItem } from '@chakra-ui/react';
+import { Box, Grid, GridItem, useColorMode } from '@chakra-ui/react';
 import { useQueryClient } from '@tanstack/react-query';
 import React from 'react';
 import AppNavbar from '../../shared/layouts/navigation/AppNavbar';
 import { UserType } from '../../shared/types/api';
 import { RQ } from '../../shared/types/react-query';
 import FeedLinkItem from '../components/FeedLinkItem';
+import useGetAllNotificationsQuery from '../hooks/useGetAllNotificationsQuery';
 
 interface FeedLayoutProps {
 	children: React.ReactNode;
@@ -13,6 +14,7 @@ interface FeedLayoutProps {
 const FeedLayout: React.FC<FeedLayoutProps> = ({ children }) => {
 	const queryClient = useQueryClient();
 	const user = queryClient.getQueryData([RQ.LOGGED_IN_USER_QUERY]) as UserType;
+	const { colorMode } = useColorMode();
 
 	if (!user) return <>{children}</>;
 
@@ -47,7 +49,13 @@ const FeedLayout: React.FC<FeedLayoutProps> = ({ children }) => {
 						mt='4'
 						height='calc(96vh - 72px)'
 						// @ts-ignore
-						boxShadow={(theme) => `0 0 10px 5px ${theme.colors.blue[600]}`}>
+						boxShadow={(theme) =>
+							`0 0 10px 5px ${
+								colorMode === 'light'
+									? theme.colors.blue[300]
+									: theme.colors.blue[600]
+							}`
+						}>
 						{' '}
 						<FeedLinkItem color='purple' name='Public Feed' to='/app/feed' />
 						<FeedLinkItem name='Create Post' to='/app/posts/new' />
@@ -85,8 +93,13 @@ const FeedLayout: React.FC<FeedLayoutProps> = ({ children }) => {
 						zIndex='sticky'
 						borderRadius='50px'
 						// @ts-ignore
-						boxShadow={(theme) => `0 0 10px 5px ${theme.colors.blue[600]}`}>
-						{/* <UserProfileCard /> */}
+						boxShadow={(theme) =>
+							`0 0 10px 5px ${
+								colorMode === 'light'
+									? theme.colors.blue[300]
+									: theme.colors.blue[600]
+							}`
+						}>
 						<FeedLinkItem name='Find Groups' to='/app/groups/find' />
 						<FeedLinkItem
 							color='facebook'

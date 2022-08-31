@@ -10,6 +10,7 @@ import {
 	IconButton,
 	Image,
 	Text,
+	useColorMode,
 	useDisclosure,
 } from '@chakra-ui/react';
 import { useQueryClient } from '@tanstack/react-query';
@@ -28,6 +29,7 @@ interface PostItemProps {
 
 const PostItem: React.FC<PostItemProps> = ({ post, pageParam }) => {
 	const { isOpen, onClose, onOpen } = useDisclosure();
+	const { colorMode } = useColorMode();
 	const queryClient = useQueryClient();
 	const user = queryClient.getQueryData([RQ.LOGGED_IN_USER_QUERY]) as any;
 	const [liked, setLiked] = React.useState(post.likes.includes(user._id));
@@ -72,7 +74,7 @@ const PostItem: React.FC<PostItemProps> = ({ post, pageParam }) => {
 			/>
 			<Box mb='14'>
 				<Flex
-					borderWidth='thin'
+					borderWidth='2px'
 					borderColor='blue.400'
 					borderStyle='solid'
 					alignItems='center'
@@ -97,8 +99,8 @@ const PostItem: React.FC<PostItemProps> = ({ post, pageParam }) => {
 					</Text>
 				</Flex>
 				<Box
-					borderWidth='thin'
-					borderColor='blue.400'
+					borderWidth='2px'
+					borderColor={'blue.400'}
 					borderStyle='solid'
 					alignItems='center'
 					mb='4'
@@ -119,7 +121,7 @@ const PostItem: React.FC<PostItemProps> = ({ post, pageParam }) => {
 							</Button>
 						</>
 					) : (
-						<>{post.content}</>
+						<Text wordBreak={'break-word'}>{post.content}</Text>
 					)}
 					{post.photo && (
 						<Flex justifyContent='center' mt='4'>
@@ -128,7 +130,7 @@ const PostItem: React.FC<PostItemProps> = ({ post, pageParam }) => {
 					)}
 				</Box>
 				<Flex
-					borderWidth='thin'
+					borderWidth='2px'
 					borderColor='blue.400'
 					borderStyle='solid'
 					alignItems='center'

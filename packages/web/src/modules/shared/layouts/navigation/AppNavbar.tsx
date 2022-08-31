@@ -15,6 +15,7 @@ import {
 	MenuDivider,
 	MenuItem,
 	Badge,
+	useColorMode,
 } from '@chakra-ui/react';
 import { useQueryClient } from '@tanstack/react-query';
 import React from 'react';
@@ -25,18 +26,17 @@ import { RQ } from '../../types/react-query';
 import NotificationsDrawer from '../../components/NotificationsDrawer';
 import MobileMenuNav from './MobileMenuNav';
 import { Link } from 'gatsby';
+import useGetAllNotificationsQuery from '../../../app/hooks/useGetAllNotificationsQuery';
 
 interface AppNavbarProps {}
 
 const AppNavbar: React.FC<AppNavbarProps> = ({}) => {
 	const { isOpen, onClose, onOpen } = useDisclosure();
+	const { colorMode } = useColorMode();
+	const { data: notifications } = useGetAllNotificationsQuery();
 
 	const queryClient = useQueryClient();
 	const user = queryClient.getQueryData([RQ.LOGGED_IN_USER_QUERY]) as UserType;
-
-	const notifications = queryClient.getQueryData([
-		RQ.GET_ALL_NOTIFICATIONS_QUERY,
-	]) as NotificationType[];
 
 	return (
 		<>
@@ -44,7 +44,7 @@ const AppNavbar: React.FC<AppNavbarProps> = ({}) => {
 			<Flex
 				position='sticky'
 				top='0'
-				bgColor='gray.800'
+				bgColor={colorMode === 'light' ? 'white' : 'gray.800'}
 				justifyContent='space-between'
 				zIndex='banner'
 				p='4'>

@@ -37,6 +37,9 @@ const useRejectJoinGroupMutation = (notificationId: string) => {
 					newNotifications
 				);
 			},
+			onSettled: () => {
+				queryClient.invalidateQueries([RQ.GET_ALL_NOTIFICATIONS_QUERY]);
+			},
 		}
 	);
 

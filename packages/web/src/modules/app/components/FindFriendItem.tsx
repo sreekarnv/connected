@@ -6,6 +6,7 @@ import {
 	HStack,
 	Link,
 	Text,
+	useColorMode,
 	VStack,
 } from '@chakra-ui/react';
 import { useQueryClient } from '@tanstack/react-query';
@@ -19,6 +20,7 @@ interface FindFriendItemProps {
 }
 
 const FindFriendItem: React.FC<FindFriendItemProps> = ({ user }) => {
+	const { colorMode } = useColorMode();
 	const queryClient = useQueryClient();
 	const loggedInUser = queryClient.getQueryData([
 		RQ.LOGGED_IN_USER_QUERY,
@@ -33,12 +35,15 @@ const FindFriendItem: React.FC<FindFriendItemProps> = ({ user }) => {
 			<Flex
 				flexDir={'column'}
 				justifyContent='space-between'
-				bg='gray.900'
+				bgColor={colorMode === 'light' ? 'gray.100' : 'gray.900'}
 				p='4'
 				transition={'all 0.2s ease-in-out'}
 				_hover={{
 					// @ts-ignore
-					boxShadow: (theme) => `0 0 10px 5px ${theme.colors.blue[600]}`,
+					boxShadow: (theme) =>
+						`0 0 10px 5px ${
+							theme.colors.blue[colorMode === 'light' ? 400 : 600]
+						}`,
 				}}
 				mb='4'
 				borderRadius='xl'>

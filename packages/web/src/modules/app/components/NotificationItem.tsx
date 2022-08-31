@@ -6,6 +6,7 @@ import {
 	Flex,
 	HStack,
 	Text,
+	useColorMode,
 } from '@chakra-ui/react';
 import { useQueryClient } from '@tanstack/react-query';
 import React from 'react';
@@ -59,17 +60,6 @@ const loadUi = (notification: NotificationType) => {
 									user: notification.sender,
 									notificationId: notification._id,
 								});
-
-								const notificationsCached = queryClient.getQueryData([
-									RQ.GET_ALL_NOTIFICATIONS_QUERY,
-								]) as NotificationType[];
-								const newNotifications = notificationsCached.filter(
-									(n) => notification._id !== n._id
-								);
-								queryClient.setQueryData(
-									[RQ.GET_ALL_NOTIFICATIONS_QUERY],
-									newNotifications
-								);
 
 								await queryClient.invalidateQueries([
 									RQ.GET_ALL_NOTIFICATIONS_QUERY,
@@ -137,16 +127,6 @@ const loadUi = (notification: NotificationType) => {
 									sender: notification.sender,
 									notificationId: notification._id,
 								});
-								const notificationsCached = queryClient.getQueryData([
-									RQ.GET_ALL_NOTIFICATIONS_QUERY,
-								]) as NotificationType[];
-								const newNotifications = notificationsCached.filter(
-									(n) => notification._id !== n._id
-								);
-								queryClient.setQueryData(
-									[RQ.GET_ALL_NOTIFICATIONS_QUERY],
-									newNotifications
-								);
 
 								await queryClient.invalidateQueries([
 									RQ.GET_ALL_NOTIFICATIONS_QUERY,
@@ -177,10 +157,10 @@ const loadUi = (notification: NotificationType) => {
 					<HStack mb='3'>
 						<Avatar
 							size='sm'
-							src={notification.sender?.photo?.url}
-							name={notification.sender?.name}
+							src={notification.receiver?.photo?.url}
+							name={notification.receiver?.name}
 						/>
-						<Text fontWeight={'bold'}>{notification.sender?.name}</Text>
+						<Text fontWeight={'bold'}>{notification.receiver?.name}</Text>
 					</HStack>
 					<Text>has accepted your friend request</Text>
 				</>
@@ -191,9 +171,15 @@ const loadUi = (notification: NotificationType) => {
 const NotificationItem: React.FC<NotificationItemProps> = ({
 	notification,
 }) => {
+	const { colorMode } = useColorMode();
+
 	return (
 		<>
-			<Box p='3' bgColor='gray.900' borderRadius={'xl'} mb='4'>
+			<Box
+				p='3'
+				bgColor={colorMode === 'light' ? 'gray.100' : 'gray.900'}
+				borderRadius={'xl'}
+				mb='4'>
 				{loadUi(notification)}
 			</Box>
 		</>

@@ -14,6 +14,7 @@ import {
 	IconButton,
 	Text,
 	Tooltip,
+	useColorMode,
 	useDisclosure,
 } from '@chakra-ui/react';
 import { useQueryClient } from '@tanstack/react-query';
@@ -29,14 +30,18 @@ interface FindGroupItemProps {
 
 const FindGroupItem: React.FC<FindGroupItemProps> = ({ group }) => {
 	const { isOpen, onToggle } = useDisclosure();
+	const { colorMode } = useColorMode();
 	const queryClient = useQueryClient();
 	const user = queryClient.getQueryData([RQ.LOGGED_IN_USER_QUERY]) as UserType;
-
 	const requestSent = group.requests.includes(user._id);
 
 	return (
 		<>
-			<Box bg='gray.900' p='4' mb='4' borderRadius='xl'>
+			<Box
+				bg={colorMode === 'light' ? 'gray.100' : 'gray.900'}
+				p='4'
+				mb='4'
+				borderRadius='xl'>
 				<Flex alignItems='center' justifyContent='space-between'>
 					<Flex alignItems='center' gap='5'>
 						<Avatar src={group.photo?.url} name={group.name} />

@@ -69,7 +69,7 @@ const limiter = rateLimit({
 	try {
 		await mongoose.connect(process.env.MONGO_URI!);
 		console.log('Connected to mongodb');
-		mongoose.set('debug', true);
+		// mongoose.set('debug', true);
 
 		app.use(limiter);
 
@@ -82,38 +82,23 @@ const limiter = rateLimit({
 		});
 
 		io.on('connection', (socket) => {
-			if (!socket.client.request.headers.cookie) {
-				socket.disconnect(true);
-				return;
-			}
-
-			const cookies = cookie.parse(socket.client.request.headers.cookie);
-
-			if (!cookies['auth.token']) {
-				socket.disconnect(true);
-				return;
-			}
-
-			const payload = verifyToken(cookies['auth.token']) as any;
-
-			if (!payload._id) {
-				socket.disconnect(true);
-				return;
-			}
-
 			socket.on(NotifType.JOIN_GROUP_REQUEST_SENT, (data) => {
+				console.log('JOIN_GROUP_REQUEST_SENT');
 				handleGroupJoinRequestSent(io, socket, data);
 			});
 
 			socket.on(NotifType.JOIN_GROUP_REQUEST_ACCEPTED, (data) => {
+				console.log('JOIN_GROUP_REQUEST_ACCEPTED');
 				handleGroupJoinRequestAccepted(io, socket, data);
 			});
 
 			socket.on(NotifType.FRIEND_REQUEST_SENT, (data) => {
+				console.log('FRIEND_REQUEST_SENT');
 				handleFriendRequestSent(io, socket, data);
 			});
 
 			socket.on(NotifType.FRIEND_REQUEST_ACCEPTED, (data) => {
+				console.log('FRIEND_REQUEST_ACCEPTED');
 				handleFriendRequestAccepted(io, socket, data);
 			});
 		});
