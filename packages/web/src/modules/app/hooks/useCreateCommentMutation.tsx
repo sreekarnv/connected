@@ -1,8 +1,6 @@
 import { useMutation } from '@tanstack/react-query';
 import React from 'react';
 import axios from '../../shared/config/axios';
-import { RQ } from '../../shared/types/react-query';
-import { navigate } from 'gatsby';
 
 const useCreateCommentMutation = (
 	postId: string,

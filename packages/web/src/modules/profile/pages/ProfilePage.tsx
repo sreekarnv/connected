@@ -1,4 +1,4 @@
-import React, { Suspense, useContext, useState } from 'react';
+import React from 'react';
 import * as Yup from 'yup';
 import {
 	Box,
@@ -363,15 +363,15 @@ const styles = {
 	},
 	iconbtn: {
 		cursor: 'pointer' as any,
-		bgGradient: 'linear(primary.600, secondary.400)',
+		bgGradient: 'linear(blue.600, purple.400)',
 		pos: 'absolute' as any,
 		borderRadius: '50%',
 		transition: 'all .3s ease-out',
 		_hover: {
-			bgGradient: 'linear(secondary.400, primary.500)',
+			bgGradient: 'linear(purple.400, blue.500)',
 		},
 		_active: {
-			bgGradient: 'linear(secondary.400, primary.500)',
+			bgGradient: 'linear(purple.400, blue.500)',
 		},
 	},
 	iconbtnDel: {

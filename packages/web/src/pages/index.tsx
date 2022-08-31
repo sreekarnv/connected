@@ -14,6 +14,7 @@ import {
 	GridItemProps,
 	HeadingProps,
 	Image,
+	Text,
 } from '@chakra-ui/react';
 import { useQueryClient } from '@tanstack/react-query';
 import { RQ } from '../modules/shared/types/react-query';
@@ -83,6 +84,9 @@ const IndexPage: React.FC<{ data: any }> = ({ data }) => {
 					<Image src={HomeImage} height={{ base: '300px', lg: '600px' }} />
 				</GridItem>
 			</Grid>
+			<Text px='4' textAlign={{ base: 'center', md: 'right' }}>
+				Copyright by &copy; Sreekar Venkata Nutulapati.
+			</Text>
 		</BaseLayout>
 	);
 };
@@ -98,7 +102,7 @@ interface Styles {
 const styles: Styles = {
 	grid: {
 		minH: {
-			lg: '91vh',
+			lg: '88vh',
 			base: '80vh',
 		},
 		templateColumns: {
