@@ -23,6 +23,20 @@ export const Head: HeadFC = () => {
 		<>
 			<title>{title}</title>
 			<meta name='description' content={siteData.description} />
+
+			<meta property='og:title' content={title} />
+			<meta property='og:description' content={siteData.description} />
+			<meta property='og:type' content={'website'} />
+			<meta property='og:url' content={`${siteData.siteUrl}`} />
+			<meta
+				property='og:image'
+				content={`${siteData.siteUrl}${siteData.image}`}
+			/>
+			<meta property='og:image:secure_url' content={siteData.image} />
+
+			<meta name='twitter:card' content='summary' />
+			<meta name='twitter:title' content={title} />
+			<meta name='twitter:description' content={siteData.description} />
 		</>
 	);
 };

@@ -20,7 +20,7 @@ import { useQueryClient } from '@tanstack/react-query';
 import { RQ } from '../modules/shared/types/react-query';
 import { useSiteMetadata } from '../modules/shared/hooks/useSiteMetadata';
 
-export const Head: HeadFC = () => {
+export const Head: HeadFC = ({ location }) => {
 	const siteData = useSiteMetadata();
 	const title = `Home | ${siteData.title}`;
 	const description = siteData.description;
@@ -29,12 +29,25 @@ export const Head: HeadFC = () => {
 		<>
 			<title>{title}</title>
 			<meta name='description' content={description} />
+
+			<meta property='og:title' content={title} />
+			<meta property='og:description' content={description} />
+			<meta property='og:type' content={'website'} />
+			<meta property='og:url' content={`${siteData.siteUrl}`} />
+			<meta
+				property='og:image'
+				content={`${siteData.siteUrl}${siteData.image}`}
+			/>
+			<meta property='og:image:secure_url' content={siteData.image} />
+
+			<meta name='twitter:card' content='summary' />
+			<meta name='twitter:title' content={title} />
+			<meta name='twitter:description' content={description} />
 		</>
 	);
 };
 
-const IndexPage: React.FC<{ data: any }> = ({ data }) => {
-	console.log(data);
+const IndexPage: React.FC = () => {
 	const queryClient = useQueryClient();
 	const user = queryClient.getQueryData([RQ.LOGGED_IN_USER_QUERY]);
 	const { colorMode } = useColorMode();
@@ -81,7 +94,11 @@ const IndexPage: React.FC<{ data: any }> = ({ data }) => {
 					</HStack>
 				</GridItem>
 				<GridItem {...styles.imageGridColumn}>
-					<Image src={HomeImage} height={{ base: '300px', lg: '600px' }} />
+					<Image
+						src={HomeImage}
+						height={{ base: '300px', lg: '600px' }}
+						alt={'home'}
+					/>
 				</GridItem>
 			</Grid>
 			<Text px='4' textAlign={{ base: 'center', md: 'right' }}>

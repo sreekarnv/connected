@@ -8,7 +8,7 @@ dotenv.config({
 const config: GatsbyConfig = {
 	siteMetadata: {
 		title: `Always Stay Connected`,
-		siteUrl: `${process.env.GATSBY_SERVER_URL}`,
+		siteUrl: `${process.env.URL}`,
 		description: `Connected is a platform for connecting people with the same interests.`,
 	},
 	// More easily incorporate content into your pages through automatic TypeScript type generation and better GraphQL IntelliSense.

@@ -1,3 +1,5 @@
+// @ts-ignore
+import OgImage from '../../../images/og-image.png';
 import { graphql, useStaticQuery } from 'gatsby';
 
 export const SITE_METADATA_QUERY = graphql`
@@ -14,5 +16,5 @@ export const SITE_METADATA_QUERY = graphql`
 
 export const useSiteMetadata = () => {
 	const { site } = useStaticQuery(SITE_METADATA_QUERY);
-	return site.siteMetadata;
+	return { image: OgImage, ...site.siteMetadata };
 };
