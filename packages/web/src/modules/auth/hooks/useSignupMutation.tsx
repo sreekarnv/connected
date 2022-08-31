@@ -53,7 +53,6 @@ const useSignupMutation = () => {
 				});
 			},
 			onError: (error) => {
-				console.log(error);
 				toast({
 					position: 'top',
 					title: 'Signup Failed',

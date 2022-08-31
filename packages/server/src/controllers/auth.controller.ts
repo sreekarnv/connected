@@ -98,8 +98,18 @@ export const signup: ExpressResponse = async (req, res, next) => {
 	}
 };
 
-export const logout: ExpressResponse = async (req, res, next) => {
-	res.clearCookie('auth.token');
+export const logout: ExpressResponse = async (req, res) => {
+	let secure = false;
+	if (process.env.NODE_ENV === 'production') {
+		secure =
+			req.secure || (req as any).headers('x-forwarded-proto') === 'https';
+	}
+
+	res.clearCookie('auth.token', {
+		sameSite: process.env.NODE_ENV === 'development' ? 'lax' : 'none',
+		secure,
+		httpOnly: true,
+	});
 
 	res.status(200).json({
 		status: 'success',

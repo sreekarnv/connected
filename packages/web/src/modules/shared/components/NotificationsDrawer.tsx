@@ -32,13 +32,10 @@ const NotificationsDrawer: React.FC<NotificationsDrawerProps> = ({
 
 	React.useEffect(() => {
 		socket.on(`user-${user._id}`, (data) => {
-			console.log(data);
 			const cachedNotifs =
 				(queryClient.getQueryData([
 					RQ.GET_ALL_NOTIFICATIONS_QUERY,
 				]) as NotificationType[]) || [];
-
-			console.log(cachedNotifs);
 
 			const newNotifs = [data, ...cachedNotifs];
 
