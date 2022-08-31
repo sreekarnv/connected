@@ -16,18 +16,13 @@ const config: GatsbyConfig = {
 	// Learn more at: https://gatsby.dev/graphql-typegen
 	graphqlTypegen: true,
 	plugins: [
-		'gatsby-plugin-image',
-		{
-			resolve: 'gatsby-plugin-sitemap',
-		},
+		'gatsby-plugin-sitemap',
 		{
 			resolve: 'gatsby-plugin-manifest',
 			options: {
 				icon: 'src/images/icon.png',
 			},
 		},
-		'gatsby-plugin-sharp',
-		'gatsby-transformer-sharp',
 		{
 			resolve: 'gatsby-source-filesystem',
 			options: {

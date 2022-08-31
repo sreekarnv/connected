@@ -23,8 +23,10 @@ const FindFriendItem: React.FC<FindFriendItemProps> = ({ user }) => {
 	const loggedInUser = queryClient.getQueryData([
 		RQ.LOGGED_IN_USER_QUERY,
 	]) as UserType;
-
-	const friendRequestSent = user.requests?.includes(loggedInUser._id);
+	const [isLoading, setLoading] = React.useState(false);
+	const [friendRequestSent, setFriendRequestSent] = React.useState(
+		!!user?.requests?.find((r) => r === loggedInUser._id)
+	);
 
 	return (
 		<>
@@ -59,8 +61,10 @@ const FindFriendItem: React.FC<FindFriendItemProps> = ({ user }) => {
 				<HStack mt='10'>
 					<Button
 						w='full'
+						isLoading={isLoading}
 						onClick={() => {
 							if (!friendRequestSent) {
+								setLoading(true);
 								socket.emit(NotifType.FRIEND_REQUEST_SENT, {
 									sender: {
 										_id: loggedInUser._id,
@@ -73,6 +77,8 @@ const FindFriendItem: React.FC<FindFriendItemProps> = ({ user }) => {
 										photo: user.photo ?? undefined,
 									},
 								});
+								setLoading(false);
+								setFriendRequestSent(true);
 							}
 						}}
 						disabled={friendRequestSent}

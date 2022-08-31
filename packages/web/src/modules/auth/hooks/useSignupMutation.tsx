@@ -1,11 +1,14 @@
+import { useToast } from '@chakra-ui/react';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { navigate } from 'gatsby';
 import React from 'react';
 import axios from '../../shared/config/axios';
+import { UserType } from '../../shared/types/api';
 import { RQ } from '../../shared/types/react-query';
 
 const useSignupMutation = () => {
 	const queryClient = useQueryClient();
+	const toast = useToast();
 	const { data, mutate, isLoading } = useMutation<
 		any,
 		any,
@@ -31,9 +34,34 @@ const useSignupMutation = () => {
 			return res.data;
 		},
 		{
-			onSuccess(data) {
+			onMutate: () => {
+				toast.closeAll();
+			},
+			onSuccess: (data: { user: UserType }) => {
 				queryClient.setQueryData([RQ.LOGGED_IN_USER_QUERY], data.user);
-				navigate('/app/feed');
+
+				toast({
+					position: 'top',
+					title: 'Account created.',
+					description: "We've created your account for you.",
+					status: 'success',
+					duration: 1500,
+					isClosable: true,
+					onCloseComplete() {
+						navigate('/app/feed', { replace: true });
+					},
+				});
+			},
+			onError: (error) => {
+				console.log(error);
+				toast({
+					position: 'top',
+					title: 'Signup Failed',
+					description: error.response.data.message,
+					status: 'error',
+					duration: 4000,
+					isClosable: true,
+				});
 			},
 		}
 	);

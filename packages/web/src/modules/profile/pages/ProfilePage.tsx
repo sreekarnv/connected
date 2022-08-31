@@ -25,7 +25,6 @@ import {
 
 import { SmallAddIcon, EditIcon, CheckIcon, CloseIcon } from '@chakra-ui/icons';
 import useCroppedImage from '../../shared/hooks/useCropperImage';
-import axios from '../../shared/config/axios';
 import ImageCropper from '../../shared/components/ImageCropper';
 import { useQueryClient } from '@tanstack/react-query';
 import { RQ } from '../../shared/types/react-query';
@@ -34,7 +33,6 @@ import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import useUpdatePasswordMutation from '../hooks/useUpdatePasswordMutation';
 import useUpdateProfileMutation from '../hooks/useUpdateProfileMutation';
-import useLoading from '../../shared/hooks/useLoading';
 
 const detailsSchema = Yup.object().shape({
 	name: Yup.string().required('Please provide your name'),
@@ -115,12 +113,8 @@ const ProfilePage: React.FC = () => {
 		}
 	};
 
-	// const { setAlert, isAlertOpen, alertDetails } = useAlert();
-	// const history = useHistory();
-
 	return (
 		<>
-			{/* {isAlertOpen && <BaseAlert alertDetails={alertDetails} />} */}
 			{image && imageUrl && (
 				<ImageCropper
 					showImageCropper={showImageCropper}
@@ -162,8 +156,7 @@ const ProfilePage: React.FC = () => {
 								borderRadius='lg'
 								overflow='hidden'
 								padding='6'
-								boxShadow='lg'
-								bg='white'>
+								boxShadow='lg'>
 								<SkeletonCircle size='10' />
 								<SkeletonText mt='4' noOfLines={8} spacing='4' />
 							</Box>

@@ -1,5 +1,4 @@
 import React from 'react';
-import AuthLayout from '../layouts/AuthLayout';
 import { FieldValues, useForm } from 'react-hook-form';
 import * as Yup from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
@@ -14,11 +13,14 @@ import {
 	Flex,
 	useDisclosure,
 } from '@chakra-ui/react';
-import useSignupMutation from '../hooks/useSignupMutation';
 import { ArrowUpIcon } from '@chakra-ui/icons';
-import useCroppedImage from '../../shared/hooks/useCropperImage';
-import ImagePreview from '../../shared/components/ImagePreview';
-import ImageCropper from '../../shared/components/ImageCropper';
+import useSignupMutation from '../../modules/auth/hooks/useSignupMutation';
+import AuthLayout from '../../modules/auth/layouts/AuthLayout';
+import ImageCropper from '../../modules/shared/components/ImageCropper';
+import ImagePreview from '../../modules/shared/components/ImagePreview';
+import useCroppedImage from '../../modules/shared/hooks/useCropperImage';
+import { useSiteMetadata } from '../../modules/shared/hooks/useSiteMetadata';
+import { HeadFC } from 'gatsby';
 
 interface SignupPageProps {
 	path?: string;
@@ -45,6 +47,19 @@ const validationSchema = Yup.object()
 			}),
 	})
 	.required();
+
+export const Head: HeadFC = () => {
+	const siteData = useSiteMetadata();
+	const title = `Signup | ${siteData.title}`;
+	const description = siteData.description;
+
+	return (
+		<>
+			<title>{title}</title>
+			<meta name='description' content={description} />
+		</>
+	);
+};
 
 const SignupPage: React.FC<SignupPageProps> = ({}) => {
 	const { isLoading, mutate } = useSignupMutation();

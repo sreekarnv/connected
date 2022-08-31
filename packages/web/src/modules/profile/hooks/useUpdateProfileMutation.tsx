@@ -1,3 +1,4 @@
+import { useToast } from '@chakra-ui/react';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { navigate } from 'gatsby';
 import React from 'react';
@@ -5,6 +6,7 @@ import axios from '../../shared/config/axios';
 import { RQ } from '../../shared/types/react-query';
 
 const useUpdateProfileMutation = () => {
+	const toast = useToast();
 	const queryClient = useQueryClient();
 	const result = useMutation<
 		any,
@@ -29,8 +31,32 @@ const useUpdateProfileMutation = () => {
 			return res.data;
 		},
 		{
-			onSuccess(data) {
+			onMutate: () => {
+				toast.closeAll();
+			},
+			onSuccess: (data) => {
+				toast({
+					position: 'top',
+					title: 'Profile Updated',
+					description: 'You will be redirected to your feed',
+					status: 'success',
+					duration: 1500,
+					isClosable: true,
+					onCloseComplete() {
+						navigate('/app/feed');
+					},
+				});
 				queryClient.setQueryData([RQ.LOGGED_IN_USER_QUERY], data.user);
+			},
+			onError: (error) => {
+				toast({
+					position: 'top',
+					title: 'Profile Update Failed',
+					description: error?.response?.data?.message,
+					status: 'error',
+					duration: 1500,
+					isClosable: true,
+				});
 			},
 		}
 	);

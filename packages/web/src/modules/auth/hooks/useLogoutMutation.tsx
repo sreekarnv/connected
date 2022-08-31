@@ -17,7 +17,7 @@ const useLogoutMutation = () => {
 		{
 			onSuccess() {
 				queryClient.setQueryData([RQ.LOGGED_IN_USER_QUERY], null);
-				navigate('/');
+				navigate('/', { replace: true });
 			},
 		}
 	);

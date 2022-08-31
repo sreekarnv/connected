@@ -1,5 +1,5 @@
 import React from 'react';
-import { graphql, HeadFC, Link } from 'gatsby';
+import { HeadFC, Link } from 'gatsby';
 import BaseLayout from '../modules/shared/layouts/BaseLayout';
 // @ts-ignore
 import HomeImage from '../images/home.svg';
@@ -17,40 +17,23 @@ import {
 } from '@chakra-ui/react';
 import { useQueryClient } from '@tanstack/react-query';
 import { RQ } from '../modules/shared/types/react-query';
+import { useSiteMetadata } from '../modules/shared/hooks/useSiteMetadata';
 
-export const query = graphql`
-	query SiteInfo {
-		site {
-			siteMetadata {
-				title
-				description
-			}
-		}
-	}
-`;
-
-interface SiteMetadata {
-	title: string;
-	description: string;
-}
-
-export const Head: HeadFC = ({ data }) => {
-	const siteData = (data as any).site.siteMetadata as SiteMetadata;
-	const title = `${siteData.title} | Home`;
+export const Head: HeadFC = () => {
+	const siteData = useSiteMetadata();
+	const title = `Home | ${siteData.title}`;
 	const description = siteData.description;
 
-	return <title>{title}</title>;
+	return (
+		<>
+			<title>{title}</title>
+			<meta name='description' content={description} />
+		</>
+	);
 };
 
-interface Styles {
-	grid: GridProps;
-	headingGridItem: GridItemProps;
-	heading1: HeadingProps;
-	heading2: HeadingProps;
-	imageGridColumn: GridItemProps;
-}
-
-const IndexPage = () => {
+const IndexPage: React.FC<{ data: any }> = ({ data }) => {
+	console.log(data);
 	const queryClient = useQueryClient();
 	const user = queryClient.getQueryData([RQ.LOGGED_IN_USER_QUERY]);
 	const { colorMode } = useColorMode();
@@ -103,6 +86,14 @@ const IndexPage = () => {
 		</BaseLayout>
 	);
 };
+
+interface Styles {
+	grid: GridProps;
+	headingGridItem: GridItemProps;
+	heading1: HeadingProps;
+	heading2: HeadingProps;
+	imageGridColumn: GridItemProps;
+}
 
 const styles: Styles = {
 	grid: {

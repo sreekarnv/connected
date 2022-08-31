@@ -1,5 +1,4 @@
 import React from 'react';
-import AuthLayout from '../layouts/AuthLayout';
 import {
 	FormControl,
 	FormLabel,
@@ -10,7 +9,10 @@ import {
 import { FieldValues, useForm } from 'react-hook-form';
 import * as Yup from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
-import useLoginMutation from '../hooks/useLoginMutation';
+import useLoginMutation from '../../modules/auth/hooks/useLoginMutation';
+import AuthLayout from '../../modules/auth/layouts/AuthLayout';
+import { useSiteMetadata } from '../../modules/shared/hooks/useSiteMetadata';
+import { HeadFC } from 'gatsby';
 
 interface LoginPageProps {
 	path?: string;
@@ -27,6 +29,19 @@ const validationSchema = Yup.object()
 			.min(6, 'password must contain atleast 6 characters'),
 	})
 	.required();
+
+export const Head: HeadFC = () => {
+	const siteData = useSiteMetadata();
+	const title = `Login | ${siteData.title}`;
+	const description = siteData.description;
+
+	return (
+		<>
+			<title>{title}</title>
+			<meta name='description' content={description} />
+		</>
+	);
+};
 
 const LoginPage: React.FC<LoginPageProps> = ({}) => {
 	const {

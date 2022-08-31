@@ -16,6 +16,8 @@ const sendDuplicateKeyError = (err: any) => {
 
 	error.errors = errors;
 
+	error.message = `${err.collection} with ${fields[0]} already exists`;
+
 	return error;
 };
 

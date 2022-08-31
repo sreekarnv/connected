@@ -10,8 +10,22 @@ import GroupFeedPage from '../../modules/app/pages/GroupFeedPage';
 import FindFriendsPage from '../../modules/app/pages/FindFriendsPage';
 import MyFriendsPage from '../../modules/app/pages/MyFriendsPage';
 import MyGroupsPage from '../../modules/app/pages/MyGroupsPage';
+import { HeadFC } from 'gatsby';
+import { useSiteMetadata } from '../../modules/shared/hooks/useSiteMetadata';
 
 interface AppProps {}
+
+export const Head: HeadFC = () => {
+	const siteData = useSiteMetadata();
+	const title = `Dashboard | ${siteData.title}`;
+
+	return (
+		<>
+			<title>{title}</title>
+			<meta name='description' content={siteData.description} />
+		</>
+	);
+};
 
 const App: React.FC<AppProps> = ({}) => {
 	return (
