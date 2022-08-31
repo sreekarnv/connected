@@ -1,0 +1,52 @@
+{
+  "name": "@connected/web",
+  "version": "1.0.0",
+  "private": true,
+  "description": "my-gatsby-site",
+  "author": "Sreekar Venkata Nutulapati",
+  "keywords": [
+    "gatsby"
+  ],
+  "scripts": {
+    "develop": "gatsby develop",
+    "dev": "gatsby develop --port 3000",
+    "start": "gatsby develop",
+    "build": "gatsby build",
+    "serve": "gatsby serve --port 3000",
+    "clean": "gatsby clean",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@chakra-ui/icons": "^2.0.8",
+    "@chakra-ui/react": "^2.2.8",
+    "@emotion/react": "^11.10.0",
+    "@emotion/styled": "^11.10.0",
+    "@hookform/resolvers": "^2.9.7",
+    "@tanstack/react-query": "^4.1.3",
+    "@tanstack/react-query-devtools": "^4.0.10",
+    "axios": "^0.27.2",
+    "cropperjs": "^1.5.12",
+    "date-fns": "^2.29.1",
+    "framer-motion": "^7.1.0",
+    "gatsby": "^4.20.0",
+    "gatsby-plugin-manifest": "^4.20.0",
+    "gatsby-plugin-netlify": "^5.0.1",
+    "gatsby-plugin-sitemap": "^5.20.0",
+    "gatsby-source-filesystem": "^4.20.0",
+    "lodash": "^4.17.21",
+    "react": "^18.1.0",
+    "react-cropper": "^2.1.8",
+    "react-dom": "^18.1.0",
+    "react-hook-form": "^7.34.1",
+    "react-intersection-observer": "^9.4.0",
+    "socket.io-client": "^4.5.1",
+    "yup": "^0.32.11"
+  },
+  "devDependencies": {
+    "@types/node": "^17.0.45",
+    "@types/react": "^18.0.16",
+    "@types/react-dom": "^18.0.6",
+    "@types/react-helmet": "^6.1.5",
+    "typescript": "^4.7.4"
+  }
+}

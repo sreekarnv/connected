@@ -1,21 +1,20 @@
 # Connected
 
-Connected is a social media website similar to facebook or instagram.
-Users can post in public forum or create their private groups.
+Connected is a social media website similar to facebook or instagram. Users can post in public forum or create their private groups.
 
-live at: https://always-stay-connected.netlify.app
 
 # App View
 
-![](preview-images/home-1.png)
-![](preview-images/home-2.png)
+![](assets/light.png)
+![](assets/dark.png)
 
 # Tech Used
 
-    1. React
-    2. Chakra-ui
-    3. Express
-    4. MongoDB
+1. [Gatsby JS (React)](https://www.gatsbyjs.com/)
+2. [Chakra ui](https://chakra-ui.com/)
+3. [Express](https://expressjs.com/)
+4. [MongoDB](https://mongodb.com/)
+5. [Typescript](https://www.typescriptlang.org/)
 
 # Credentials
 
