@@ -55,7 +55,9 @@ export const resizeImage = (folderName: string) => {
 			};
 
 			next();
-		} catch (_) {
+		} catch (err) {
+			console.log(err);
+
 			return next(
 				new AppError('error uploading your image. Please try later', 400)
 			);
