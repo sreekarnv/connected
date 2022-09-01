@@ -5,9 +5,10 @@ import { v4 as uuidv4 } from 'uuid';
 import cloudinary from 'cloudinary';
 import path from 'path';
 import sharp from 'sharp';
+import { createReadStream } from 'fs';
 
 export const resizeImage = (folderName: string) => {
-	return async (req: IRequest, _: Response, next: NextFunction) => {
+	return async (req: IRequest, res: Response, next: NextFunction) => {
 		if (!req.file) return next();
 
 		const {
@@ -19,7 +20,7 @@ export const resizeImage = (folderName: string) => {
 		req.file.filename = `${uuidv4()}.jpeg`;
 
 		try {
-			await sharp(req.file.buffer)
+			const image = await sharp(req.file.buffer)
 				.extract({
 					left: parseInt(left),
 					top: parseInt(top),
@@ -29,7 +30,7 @@ export const resizeImage = (folderName: string) => {
 				.resize(1000, 1000)
 				.toFormat('jpeg')
 				.jpeg({ quality: 90 })
-				.toFile(path.join(__dirname, '../../uploads', req.file.filename));
+				.toBuffer();
 
 			cloudinary.v2.config({
 				cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
@@ -37,30 +38,32 @@ export const resizeImage = (folderName: string) => {
 				api_secret: process.env.CLOUDINARY_API_SECRET,
 			});
 
-			const uploadedImg = await cloudinary.v2.uploader.upload(
-				`uploads/${req.file.filename}`,
-				{
-					resource_type: 'image',
-					use_filename: true,
-					folder: `${process.env.CLOUDINARY_FOLDER_NAME}/${folderName}`,
-					allowed_formats: ['jpeg'],
-				}
-			);
+			cloudinary.v2.uploader
+				.upload_stream(
+					{
+						resource_type: 'image',
+						use_filename: true,
+						folder: `${process.env.CLOUDINARY_FOLDER_NAME}/${folderName}`,
+						allowed_formats: ['jpeg'],
+					},
+					(error, result) => {
+						if (error) {
+							return next(new AppError(error.message, 500));
+						}
 
-			req.photo = {
-				publicId: uploadedImg.public_id,
-				url: uploadedImg.secure_url,
-				name: uploadedImg.original_filename,
-				signature: uploadedImg.signature,
-			};
+						if (result) {
+							req.photo = {
+								publicId: result.public_id,
+								url: result.secure_url,
+								name: result.original_filename,
+								signature: result.signature,
+							};
 
-			next();
-		} catch (err) {
-			console.log(err);
-
-			return next(
-				new AppError('error uploading your image. Please try later', 400)
-			);
-		}
+							next();
+						}
+					}
+				)
+				.end(image);
+		} catch (err) {}
 	};
 };

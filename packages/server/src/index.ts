@@ -1,10 +1,10 @@
 import express from 'express';
 import mongoose from 'mongoose';
 import cors from 'cors';
-import cookie from 'cookie';
 import cookieParser from 'cookie-parser';
 import dotenv from 'dotenv';
 import path from 'path';
+import morgan from 'morgan';
 import { createServer } from 'http';
 import { Server } from 'socket.io';
 
@@ -23,7 +23,6 @@ import {
 	handleFriendRequestAccepted,
 } from './sockets';
 import { NotifType } from './models/notification.model';
-import { verifyToken } from './utils/jwt';
 import rateLimit from 'express-rate-limit';
 import xss from 'xss-clean';
 import mongoSanitize from 'express-mongo-sanitize';
@@ -69,9 +68,10 @@ const limiter = rateLimit({
 	try {
 		await mongoose.connect(process.env.MONGO_URI!);
 		console.log('Connected to mongodb');
-		// mongoose.set('debug', true);
+		mongoose.set('debug', process.env.NODE_ENV === 'development');
 
 		app.use(limiter);
+		app.use(morgan('dev'));
 
 		const io = new Server(server, {
 			cors: {
