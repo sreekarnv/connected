@@ -157,10 +157,10 @@ const loadUi = (notification: NotificationType) => {
 					<HStack mb='3'>
 						<Avatar
 							size='sm'
-							src={notification.receiver?.photo?.url}
-							name={notification.receiver?.name}
+							src={notification.sender?.photo?.url}
+							name={notification.sender?.name}
 						/>
-						<Text fontWeight={'bold'}>{notification.receiver?.name}</Text>
+						<Text fontWeight={'bold'}>{notification.sender?.name}</Text>
 					</HStack>
 					<Text>has accepted your friend request</Text>
 				</>

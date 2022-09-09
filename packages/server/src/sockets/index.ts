@@ -44,7 +44,7 @@ export const handleGroupJoinRequestAccepted = async (
 		{ $and: [{ _id: data.group._id }, { requests: { $eq: data.user._id } }] },
 		{ $push: { members: data.user._id }, $pull: { requests: data.user._id } },
 		{ new: true }
-	);
+	).populate('admin', 'name email photo.url');
 
 	if (!group) {
 		return;
@@ -63,6 +63,9 @@ export const handleGroupJoinRequestAccepted = async (
 		...(notification as any)._doc,
 		group: {
 			...data.group,
+		},
+		sender: {
+			...(group as any).admin._doc,
 		},
 	});
 };
@@ -151,10 +154,10 @@ export const handleFriendRequestAccepted = async (
 			...data.group,
 		},
 		sender: {
-			...data.sender,
+			...data.receiver,
 		},
 		receiver: {
-			...data.receiver,
+			...data.sender,
 		},
 	});
 };

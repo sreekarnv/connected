@@ -21,6 +21,10 @@ import {
 	FormErrorMessage,
 	FormLabel,
 	Input,
+	Flex,
+	Text,
+	Switch,
+	HStack,
 } from '@chakra-ui/react';
 
 import { SmallAddIcon, EditIcon, CheckIcon, CloseIcon } from '@chakra-ui/icons';
@@ -33,6 +37,7 @@ import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import useUpdatePasswordMutation from '../hooks/useUpdatePasswordMutation';
 import useUpdateProfileMutation from '../hooks/useUpdateProfileMutation';
+import useDesktopNotifications from '../../shared/hooks/useDesktopNotifications';
 
 const detailsSchema = Yup.object().shape({
 	name: Yup.string().required('Please provide your name'),
@@ -60,7 +65,7 @@ const passwordSchema = Yup.object().shape({
 const ProfilePage: React.FC = () => {
 	const queryClient = useQueryClient();
 	const user = queryClient.getQueryData([RQ.LOGGED_IN_USER_QUERY]) as UserType;
-
+	const { enableNotifications, notifPermission } = useDesktopNotifications();
 	const { colorMode } = useColorMode();
 	const {
 		image,
@@ -130,7 +135,7 @@ const ProfilePage: React.FC = () => {
 				{...styles.outerContainer}
 				className='hide-scrollbar'
 				p={5}>
-				<Box mb={{ lg: 20, sm: 2 }} textAlign='center'>
+				<Box mb={{ lg: 6, sm: 2 }} textAlign='center'>
 					<Heading>My Profile</Heading>
 				</Box>
 				<SimpleGrid {...styles.innerContainer}>
@@ -225,12 +230,20 @@ const ProfilePage: React.FC = () => {
 					</Box>
 					<Box alignSelf='center' w='100%'>
 						<Tabs mt={{ base: '8', sm: '2', md: '0' }}>
-							<TabList>
-								<Tab>Update Settings</Tab>
-								<Tab>Update Password</Tab>
+							<TabList
+								overflowY='hidden'
+								sx={{
+									scrollbarWidth: 'none',
+									'::-webkit-scrollbar': {
+										display: 'none',
+									},
+								}}>
+								<Tab flexShrink={0}>Update Details</Tab>
+								<Tab flexShrink={0}>Update Password</Tab>
+								<Tab flexShrink={0}>Other Settings</Tab>
 							</TabList>
 
-							<TabPanels>
+							<TabPanels minHeight={{ base: '20vh', md: '40vh' }}>
 								<TabPanel>
 									<form
 										noValidate
@@ -327,6 +340,18 @@ const ProfilePage: React.FC = () => {
 											Update Password
 										</Button>
 									</form>
+								</TabPanel>
+
+								<TabPanel>
+									<Flex justifyContent='flex-start' py={{ lg: 4, sm: 2 }}>
+										<HStack>
+											<Text>Enable Desktop Notifications</Text>
+											<Switch
+												isChecked={notifPermission === 'granted'}
+												onChange={() => enableNotifications()}
+											/>
+										</HStack>
+									</Flex>
 								</TabPanel>
 							</TabPanels>
 						</Tabs>
