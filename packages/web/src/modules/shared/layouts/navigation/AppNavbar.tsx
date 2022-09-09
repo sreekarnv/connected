@@ -181,6 +181,25 @@ const AppNavbar: React.FC<AppNavbarProps> = ({}) => {
 							<MenuItem as={Link} to='/profile' fontWeight='semibold'>
 								My Profile
 							</MenuItem>
+							<Box display={{ base: 'none', lg: 'block', xl: 'none' }}>
+								<MenuDivider />
+								<MenuItem as={Link} to='/app/groups/me' fontWeight='semibold'>
+									My Groups
+								</MenuItem>
+								<MenuItem as={Link} to='/app/groups/find' fontWeight='semibold'>
+									Find Groups
+								</MenuItem>
+								<MenuDivider />
+								<MenuItem as={Link} to='/app/friends/me' fontWeight='semibold'>
+									My Friends
+								</MenuItem>
+								<MenuItem
+									as={Link}
+									to='/app/friends/find'
+									fontWeight='semibold'>
+									Find Friends
+								</MenuItem>
+							</Box>
 							<MenuDivider />
 							<MenuItem
 								as={Link}

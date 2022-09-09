@@ -25,14 +25,12 @@ const useCreateGroupMutation = () => {
 					'Content-Type': 'multipart/form-data',
 				},
 			});
-			return res.data.post;
+			return res.data.group;
 		},
 		{
 			onSuccess: (data) => {
-				if (data) {
-					if (data.group) {
-						navigate(`/app/groups/${data._id}`);
-					}
+				if (data?._id) {
+					navigate(`/app/groups/${data._id}`);
 				}
 			},
 		}

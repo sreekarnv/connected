@@ -152,6 +152,9 @@ const MobileMenuNav: React.FC<MobileMenuNavProps> = ({ onOpen }) => {
 						<MenuItem as={Link} to='/app/groups/new' fontWeight='semibold'>
 							Create Group
 						</MenuItem>
+						<MenuItem as={Link} to='/app/groups/me' fontWeight='semibold'>
+							My Groups
+						</MenuItem>
 						<MenuItem as={Link} to='/app/groups/find' fontWeight='semibold'>
 							Find Groups
 						</MenuItem>
