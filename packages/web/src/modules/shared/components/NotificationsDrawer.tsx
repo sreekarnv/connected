@@ -47,13 +47,13 @@ const NotificationsDrawer: React.FC<NotificationsDrawerProps> = ({
 					body = `${data.sender.name} sent you a friend request`;
 				} else if (data.type === NotifType.FRIEND_REQUEST_ACCEPTED) {
 					title = 'Friend request accepted';
-					body = `${data.sender.name} accepted you a friend request`;
+					body = `${data.sender.name} accepted your friend request`;
 				} else if (data.type === NotifType.JOIN_GROUP_REQUEST_SENT) {
 					title = 'Got a join group request';
 					body = `${data.sender.name} sent you a join group request`;
 				} else if (data.type === NotifType.JOIN_GROUP_REQUEST_ACCEPTED) {
 					title = 'Join group request accepted';
-					body = `${data.sender.name} accepted you a join group request`;
+					body = `${data.sender.name} accepted your join group request`;
 				}
 
 				notif = new Notification(title, {
