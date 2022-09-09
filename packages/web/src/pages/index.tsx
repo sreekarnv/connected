@@ -1,7 +1,6 @@
 import React from 'react';
 import { HeadFC, Link } from 'gatsby';
 import BaseLayout from '../modules/shared/layouts/BaseLayout';
-// @ts-ignore
 import HomeImage from '../images/home.svg';
 import {
 	Button,

@@ -9,9 +9,8 @@ import {
 	Text,
 } from '@chakra-ui/react';
 import NotificationItem from '../../app/components/NotificationItem';
-import useGetAllNotificationsQuery from '../../app/hooks/useGetAllNotificationsQuery';
 import { NotificationType, NotifType, UserType } from '../types/api';
-import { socket } from '../providers/AppProvider';
+import { AppContext, socket } from '../providers/AppProvider';
 import { RQ } from '../types/react-query';
 import { useQueryClient } from '@tanstack/react-query';
 
@@ -24,6 +23,7 @@ const NotificationsDrawer: React.FC<NotificationsDrawerProps> = ({
 	isOpen,
 	onClose,
 }) => {
+	const { playSound } = React.useContext(AppContext);
 	const queryClient = useQueryClient();
 	const notifications = queryClient.getQueryData([
 		RQ.GET_ALL_NOTIFICATIONS_QUERY,
@@ -31,8 +31,10 @@ const NotificationsDrawer: React.FC<NotificationsDrawerProps> = ({
 	const user = queryClient.getQueryData([RQ.LOGGED_IN_USER_QUERY]) as UserType;
 
 	React.useEffect(() => {
-		socket.on(`user-${user._id}`, (data) => {
+		socket.on(`user-${user._id}`, async (data) => {
 			let notif: Notification | null = null;
+
+			playSound();
 
 			if (Notification.permission === 'granted') {
 				let body = '';
@@ -75,34 +77,36 @@ const NotificationsDrawer: React.FC<NotificationsDrawerProps> = ({
 	}, []);
 
 	return (
-		<Drawer isOpen={isOpen} placement='left' onClose={onClose}>
-			<DrawerOverlay />
-			<DrawerContent>
-				<DrawerCloseButton />
-				<DrawerHeader>Notifications</DrawerHeader>
+		<>
+			<Drawer isOpen={isOpen} placement='left' onClose={onClose}>
+				<DrawerOverlay />
+				<DrawerContent>
+					<DrawerCloseButton />
+					<DrawerHeader>Notifications</DrawerHeader>
 
-				<DrawerBody px='2'>
-					{notifications?.length === 0 ? (
-						<Text
-							my='5'
-							textAlign='center'
-							fontWeight='semibold'
-							color='red.400'>
-							You don't have any notifications
-						</Text>
-					) : (
-						<>
-							{notifications?.map((notification: NotificationType) => (
-								<NotificationItem
-									notification={notification}
-									key={notification._id}
-								/>
-							))}
-						</>
-					)}
-				</DrawerBody>
-			</DrawerContent>
-		</Drawer>
+					<DrawerBody px='2'>
+						{notifications?.length === 0 ? (
+							<Text
+								my='5'
+								textAlign='center'
+								fontWeight='semibold'
+								color='red.400'>
+								You don't have any notifications
+							</Text>
+						) : (
+							<>
+								{notifications?.map((notification: NotificationType) => (
+									<NotificationItem
+										notification={notification}
+										key={notification._id}
+									/>
+								))}
+							</>
+						)}
+					</DrawerBody>
+				</DrawerContent>
+			</Drawer>
+		</>
 	);
 };
 
