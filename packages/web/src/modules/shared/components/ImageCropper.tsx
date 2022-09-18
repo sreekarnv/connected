@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import Cropper from 'react-cropper';
 import 'cropperjs/dist/cropper.css';
 
@@ -30,7 +30,7 @@ const ImageCropper: React.FC<Props> = ({
 	setCroppedImage,
 	imageSettings,
 }) => {
-	const [imageInstance, setImageInstance] = useState<any>();
+	const [imageInstance, setImageInstance] = React.useState<any>();
 
 	const saveDetails = () => {
 		if (imageInstance) {

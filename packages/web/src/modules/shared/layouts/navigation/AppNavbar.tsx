@@ -16,17 +16,27 @@ import {
 	MenuItem,
 	Badge,
 	useColorMode,
+	MenuGroup,
 } from '@chakra-ui/react';
 import { useQueryClient } from '@tanstack/react-query';
 import React from 'react';
 import Logo from '../../components/Logo';
 import ThemeToggler from '../../components/ThemeToggler';
-import { NotificationType, UserType } from '../../types/api';
+import { UserType } from '../../types/api';
 import { RQ } from '../../types/react-query';
 import NotificationsDrawer from '../../components/NotificationsDrawer';
 import MobileMenuNav from './MobileMenuNav';
 import { Link } from 'gatsby';
 import useGetAllNotificationsQuery from '../../../app/hooks/useGetAllNotificationsQuery';
+import LogoutIcon from '../../icons/LogoutIcon';
+import CreateGroupIcon from '../../icons/CreateGroupIcon';
+import FeedIcon from '../../icons/FeedIcon';
+import CreatePostIcon from '../../icons/CreatePostIcon';
+import UserProfileIcon from '../../icons/UserProfileIcon';
+import FindFriendsIcon from '../../icons/FindFriendsIcon';
+import MyFriendsIcon from '../../icons/MyFriendsIcon';
+import FindGroupIcon from '../../icons/FindGroupIcon';
+import MyGroupsIcon from '../../icons/MyGroupsIcon';
 
 interface AppNavbarProps {}
 
@@ -90,25 +100,7 @@ const AppNavbar: React.FC<AppNavbarProps> = ({}) => {
 								to='/app/posts/new'
 								display={{ base: 'none', lg: 'flex' }}
 								aria-label='Create Post'
-								icon={
-									<>
-										<Box
-											xmlns='http://www.w3.org/2000/svg'
-											fill='none'
-											viewBox='0 0 24 24'
-											strokeWidth={1.5}
-											stroke='currentColor'
-											as='svg'
-											height='6'
-											width='6'>
-											<path
-												strokeLinecap='round'
-												strokeLinejoin='round'
-												d='M15.75 17.25v3.375c0 .621-.504 1.125-1.125 1.125h-9.75a1.125 1.125 0 01-1.125-1.125V7.875c0-.621.504-1.125 1.125-1.125H6.75a9.06 9.06 0 011.5.124m7.5 10.376h3.375c.621 0 1.125-.504 1.125-1.125V11.25c0-4.46-3.243-8.161-7.5-8.876a9.06 9.06 0 00-1.5-.124H9.375c-.621 0-1.125.504-1.125 1.125v3.5m7.5 10.375H9.375a1.125 1.125 0 01-1.125-1.125v-9.25m12 6.625v-1.875a3.375 3.375 0 00-3.375-3.375h-1.5a1.125 1.125 0 01-1.125-1.125v-1.5a3.375 3.375 0 00-3.375-3.375H9.75'
-											/>
-										</Box>
-									</>
-								}
+								icon={<CreatePostIcon />}
 								variant='ghost'
 								colorScheme='teal'
 							/>
@@ -124,25 +116,7 @@ const AppNavbar: React.FC<AppNavbarProps> = ({}) => {
 								as={Link}
 								to='/app/groups/new'
 								aria-label='Create Group'
-								icon={
-									<>
-										<Box
-											xmlns='http://www.w3.org/2000/svg'
-											fill='none'
-											viewBox='0 0 24 24'
-											strokeWidth={1.5}
-											stroke='currentColor'
-											as='svg'
-											height='6'
-											width='6'>
-											<path
-												strokeLinecap='round'
-												strokeLinejoin='round'
-												d='M2.25 7.125C2.25 6.504 2.754 6 3.375 6h6c.621 0 1.125.504 1.125 1.125v3.75c0 .621-.504 1.125-1.125 1.125h-6a1.125 1.125 0 01-1.125-1.125v-3.75zM14.25 8.625c0-.621.504-1.125 1.125-1.125h5.25c.621 0 1.125.504 1.125 1.125v8.25c0 .621-.504 1.125-1.125 1.125h-5.25a1.125 1.125 0 01-1.125-1.125v-8.25zM3.75 16.125c0-.621.504-1.125 1.125-1.125h5.25c.621 0 1.125.504 1.125 1.125v2.25c0 .621-.504 1.125-1.125 1.125h-5.25a1.125 1.125 0 01-1.125-1.125v-2.25z'
-											/>
-										</Box>
-									</>
-								}
+								icon={<CreateGroupIcon />}
 								variant='ghost'
 								colorScheme='purple'
 							/>
@@ -175,33 +149,59 @@ const AppNavbar: React.FC<AppNavbarProps> = ({}) => {
 							</HStack>
 						</MenuButton>
 						<MenuList>
-							<MenuItem as={Link} to='/app/feed' fontWeight='semibold'>
+							<MenuItem
+								icon={<FeedIcon />}
+								as={Link}
+								to='/app/feed'
+								fontWeight='semibold'>
 								Feed
 							</MenuItem>
-							<MenuItem as={Link} to='/profile' fontWeight='semibold'>
+							<MenuItem
+								icon={<UserProfileIcon />}
+								as={Link}
+								to='/profile'
+								fontWeight='semibold'>
 								My Profile
 							</MenuItem>
 							<Box display={{ base: 'none', lg: 'block', xl: 'none' }}>
 								<MenuDivider />
-								<MenuItem as={Link} to='/app/groups/me' fontWeight='semibold'>
-									My Groups
-								</MenuItem>
-								<MenuItem as={Link} to='/app/groups/find' fontWeight='semibold'>
-									Find Groups
-								</MenuItem>
+								<MenuGroup fontWeight={'bold'} title='Group'>
+									<MenuItem
+										icon={<MyGroupsIcon />}
+										as={Link}
+										to='/app/groups/me'
+										fontWeight='semibold'>
+										My Groups
+									</MenuItem>
+									<MenuItem
+										icon={<FindGroupIcon />}
+										as={Link}
+										to='/app/groups/find'
+										fontWeight='semibold'>
+										Find Groups
+									</MenuItem>
+								</MenuGroup>
 								<MenuDivider />
-								<MenuItem as={Link} to='/app/friends/me' fontWeight='semibold'>
-									My Friends
-								</MenuItem>
-								<MenuItem
-									as={Link}
-									to='/app/friends/find'
-									fontWeight='semibold'>
-									Find Friends
-								</MenuItem>
+								<MenuGroup title='Friends' fontWeight={'bold'}>
+									<MenuItem
+										icon={<MyFriendsIcon />}
+										as={Link}
+										to='/app/friends/me'
+										fontWeight='semibold'>
+										My Friends
+									</MenuItem>
+									<MenuItem
+										icon={<FindFriendsIcon />}
+										as={Link}
+										to='/app/friends/find'
+										fontWeight='semibold'>
+										Find Friends
+									</MenuItem>
+								</MenuGroup>
 							</Box>
 							<MenuDivider />
 							<MenuItem
+								icon={<LogoutIcon h={6} w={6} />}
 								as={Link}
 								to='/auth/logout'
 								fontWeight='semibold'

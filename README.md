@@ -14,6 +14,7 @@ Connected is a social media website similar to facebook or instagram. Users can 
 2. [Chakra ui](https://chakra-ui.com/)
 3. [Express](https://expressjs.com/)
 4. [MongoDB](https://mongodb.com/)
+6. [Socket.io](https://socket.io)
 5. [Typescript](https://www.typescriptlang.org/)
 
 # Credentials

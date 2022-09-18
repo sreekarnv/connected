@@ -12,6 +12,7 @@ import {
 	Avatar,
 	Flex,
 	useDisclosure,
+	useColorMode,
 } from '@chakra-ui/react';
 import { ArrowUpIcon } from '@chakra-ui/icons';
 import useSignupMutation from '../../modules/auth/hooks/useSignupMutation';
@@ -100,6 +101,8 @@ const SignupPage: React.FC<SignupPageProps> = ({}) => {
 		resolver: yupResolver(validationSchema),
 	});
 
+	const { colorMode } = useColorMode();
+
 	const onSubmit = (values: FieldValues) => {
 		mutate({
 			name: values.name,
@@ -139,7 +142,10 @@ const SignupPage: React.FC<SignupPageProps> = ({}) => {
 				<form noValidate onSubmit={handleSubmit(onSubmit)}>
 					<FormControl mb='4' isRequired isInvalid={!!errors.name}>
 						<FormLabel>Name</FormLabel>
-						<Input {...register('name')} />
+						<Input
+							borderColor={colorMode === 'light' ? 'gray.300' : 'inherit'}
+							{...register('name')}
+						/>
 						<FormErrorMessage>
 							{errors.name?.message as string}
 						</FormErrorMessage>
@@ -147,7 +153,11 @@ const SignupPage: React.FC<SignupPageProps> = ({}) => {
 
 					<FormControl mb='4' isRequired isInvalid={!!errors.email}>
 						<FormLabel>Email address</FormLabel>
-						<Input type='email' {...register('email')} />
+						<Input
+							borderColor={colorMode === 'light' ? 'gray.300' : 'inherit'}
+							type='email'
+							{...register('email')}
+						/>
 						<FormErrorMessage>
 							{errors.email?.message as string}
 						</FormErrorMessage>
@@ -155,7 +165,11 @@ const SignupPage: React.FC<SignupPageProps> = ({}) => {
 
 					<FormControl mb='4' isRequired isInvalid={!!errors.password}>
 						<FormLabel>Password</FormLabel>
-						<Input type='password' {...register('password')} />
+						<Input
+							borderColor={colorMode === 'light' ? 'gray.300' : 'inherit'}
+							type='password'
+							{...register('password')}
+						/>
 						<FormErrorMessage>
 							{errors.password?.message as string}
 						</FormErrorMessage>
@@ -163,7 +177,11 @@ const SignupPage: React.FC<SignupPageProps> = ({}) => {
 
 					<FormControl mb='4' isRequired isInvalid={!!errors.passwordConfirm}>
 						<FormLabel>Password Confirm</FormLabel>
-						<Input type='password' {...register('passwordConfirm')} />
+						<Input
+							borderColor={colorMode === 'light' ? 'gray.300' : 'inherit'}
+							type='password'
+							{...register('passwordConfirm')}
+						/>
 						<FormErrorMessage>
 							{errors.passwordConfirm?.message as string}
 						</FormErrorMessage>
@@ -171,6 +189,11 @@ const SignupPage: React.FC<SignupPageProps> = ({}) => {
 
 					<Flex justifyContent='space-between' alignItems='center'>
 						<Button
+							backgroundColor={colorMode === 'light' ? 'gray.300' : 'gray.700'}
+							_hover={{
+								backgroundColor:
+									colorMode === 'light' ? 'gray.400' : 'gray.600',
+							}}
 							cursor='pointer'
 							leftIcon={<ArrowUpIcon />}
 							as='label'

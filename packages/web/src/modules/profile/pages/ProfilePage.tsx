@@ -258,7 +258,13 @@ const ProfilePage: React.FC = () => {
 											isRequired
 											isInvalid={!!updateErrors.email}>
 											<FormLabel>Email address</FormLabel>
-											<Input type='email' {...updateDetails('email')} />
+											<Input
+												borderColor={
+													colorMode === 'light' ? 'gray.300' : 'inherit'
+												}
+												type='email'
+												{...updateDetails('email')}
+											/>
 											<FormErrorMessage>
 												{updateErrors.email?.message as string}
 											</FormErrorMessage>
@@ -266,7 +272,13 @@ const ProfilePage: React.FC = () => {
 
 										<FormControl isRequired isInvalid={!!updateErrors.name}>
 											<FormLabel>Name</FormLabel>
-											<Input type='text' {...updateDetails('name')} />
+											<Input
+												borderColor={
+													colorMode === 'light' ? 'gray.300' : 'inherit'
+												}
+												type='text'
+												{...updateDetails('name')}
+											/>
 											<FormErrorMessage>
 												{updateErrors.name?.message as string}
 											</FormErrorMessage>
@@ -298,7 +310,13 @@ const ProfilePage: React.FC = () => {
 											isRequired
 											isInvalid={!!passwordErrors.password}>
 											<FormLabel>Password</FormLabel>
-											<Input type='password' {...updatePassword('password')} />
+											<Input
+												borderColor={
+													colorMode === 'light' ? 'gray.300' : 'inherit'
+												}
+												type='password'
+												{...updatePassword('password')}
+											/>
 											<FormErrorMessage>
 												{passwordErrors.password?.message as string}
 											</FormErrorMessage>
@@ -310,6 +328,9 @@ const ProfilePage: React.FC = () => {
 											isInvalid={!!passwordErrors.newPassword}>
 											<FormLabel>New Password</FormLabel>
 											<Input
+												borderColor={
+													colorMode === 'light' ? 'gray.300' : 'inherit'
+												}
 												type='password'
 												{...updatePassword('newPassword')}
 											/>
@@ -324,6 +345,9 @@ const ProfilePage: React.FC = () => {
 											isInvalid={!!passwordErrors.passwordConfirm}>
 											<FormLabel>Password Confirm</FormLabel>
 											<Input
+												borderColor={
+													colorMode === 'light' ? 'gray.300' : 'inherit'
+												}
 												type='password'
 												{...updatePassword('passwordConfirm')}
 											/>

@@ -1,6 +1,6 @@
 import { SearchIcon } from '@chakra-ui/icons';
 import { Box, Input, InputGroup, InputLeftElement } from '@chakra-ui/react';
-import React, { ChangeEvent } from 'react';
+import React from 'react';
 import debounce from 'lodash/debounce';
 import { GroupType } from '../../shared/types/api';
 import FindGroupItem from '../components/FindGroupItem';

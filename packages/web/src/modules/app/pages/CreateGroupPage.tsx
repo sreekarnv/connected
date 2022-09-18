@@ -11,6 +11,7 @@ import {
 	Input,
 	Select,
 	Textarea,
+	useColorMode,
 	useDisclosure,
 } from '@chakra-ui/react';
 import * as Yup from 'yup';
@@ -56,6 +57,8 @@ const CreateGroupPage: React.FC<CreateGroupPageProps> = ({}) => {
 		resolver: yupResolver(validationSchema),
 	});
 
+	const { colorMode } = useColorMode();
+
 	const onSubmit = (values: FieldValues) => {
 		mutate({
 			name: values.name,
@@ -94,7 +97,10 @@ const CreateGroupPage: React.FC<CreateGroupPageProps> = ({}) => {
 				<form noValidate onSubmit={handleSubmit(onSubmit)}>
 					<FormControl isRequired isInvalid={!!errors.name} mb='5'>
 						<FormLabel>Group Name</FormLabel>
-						<Input {...register('name')} />
+						<Input
+							borderColor={colorMode === 'light' ? 'gray.300' : 'inherit'}
+							{...register('name')}
+						/>
 						<FormErrorMessage>
 							{errors.name?.message as string}
 						</FormErrorMessage>
@@ -102,13 +108,18 @@ const CreateGroupPage: React.FC<CreateGroupPageProps> = ({}) => {
 
 					<FormControl isRequired isInvalid={!!errors.description} mb='5'>
 						<FormLabel>Group Description</FormLabel>
-						<Textarea rows={10} {...register('description')} />
+						<Textarea
+							borderColor={colorMode === 'light' ? 'gray.300' : 'inherit'}
+							rows={10}
+							{...register('description')}
+						/>
 						<FormErrorMessage>
 							{errors.description?.message as string}
 						</FormErrorMessage>
 					</FormControl>
 
 					<Select
+						borderColor={colorMode === 'light' ? 'gray.300' : 'inherit'}
 						defaultValue={'public'}
 						placeholder='Select option'
 						{...register('groupType')}>
@@ -118,6 +129,11 @@ const CreateGroupPage: React.FC<CreateGroupPageProps> = ({}) => {
 
 					<Flex justifyContent='space-between' alignItems='center' mt='4'>
 						<Button
+							backgroundColor={colorMode === 'light' ? 'gray.300' : 'gray.700'}
+							_hover={{
+								backgroundColor:
+									colorMode === 'light' ? 'gray.400' : 'gray.600',
+							}}
 							cursor='pointer'
 							leftIcon={<ArrowUpIcon />}
 							as='label'
