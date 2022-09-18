@@ -5,6 +5,7 @@ import {
 	FormErrorMessage,
 	Input,
 	Button,
+	useColorMode,
 } from '@chakra-ui/react';
 import { FieldValues, useForm } from 'react-hook-form';
 import * as Yup from 'yup';
@@ -67,6 +68,8 @@ const LoginPage: React.FC<LoginPageProps> = ({}) => {
 		resolver: yupResolver(validationSchema),
 	});
 
+	const { colorMode } = useColorMode();
+
 	const { isLoading, mutate } = useLoginMutation();
 
 	const onSubmit = (values: FieldValues) => {
@@ -84,7 +87,11 @@ const LoginPage: React.FC<LoginPageProps> = ({}) => {
 				<form noValidate onSubmit={handleSubmit(onSubmit)}>
 					<FormControl mb='4' isRequired isInvalid={!!errors.email}>
 						<FormLabel>Email address</FormLabel>
-						<Input type='email' {...register('email')} />
+						<Input
+							borderColor={colorMode === 'light' ? 'gray.300' : 'inherit'}
+							type='email'
+							{...register('email')}
+						/>
 						<FormErrorMessage>
 							{errors.email?.message as string}
 						</FormErrorMessage>
@@ -92,7 +99,11 @@ const LoginPage: React.FC<LoginPageProps> = ({}) => {
 
 					<FormControl isRequired isInvalid={!!errors.password}>
 						<FormLabel>Password</FormLabel>
-						<Input type='password' {...register('password')} />
+						<Input
+							borderColor={colorMode === 'light' ? 'gray.300' : 'inherit'}
+							type='password'
+							{...register('password')}
+						/>
 						<FormErrorMessage>
 							{errors.password?.message as string}
 						</FormErrorMessage>

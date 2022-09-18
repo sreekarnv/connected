@@ -5,7 +5,14 @@ import AppNavbar from '../../shared/layouts/navigation/AppNavbar';
 import { UserType } from '../../shared/types/api';
 import { RQ } from '../../shared/types/react-query';
 import FeedLinkItem from '../components/FeedLinkItem';
-import useGetAllNotificationsQuery from '../hooks/useGetAllNotificationsQuery';
+
+import PublicFeedImage from './../../../images/home.svg';
+import CreateGroupImage from './../../../images/create-group.svg';
+import FindGroupsImage from './../../../images/find-groups.svg';
+import FindFriendsImage from './../../../images/find-friends.svg';
+import MyGroupsImage from './../../../images/my-groups.svg';
+import PostsImage from './../../../images/posts.svg';
+import MyFriendsImage from './../../../images/my-friends.svg';
 
 interface FeedLayoutProps {
 	children: React.ReactNode;
@@ -57,9 +64,19 @@ const FeedLayout: React.FC<FeedLayoutProps> = ({ children }) => {
 							}`
 						}>
 						{' '}
-						<FeedLinkItem color='purple' name='Public Feed' to='/app/feed' />
-						<FeedLinkItem name='Create Post' to='/app/posts/new' />
 						<FeedLinkItem
+							src={PublicFeedImage}
+							color='purple'
+							name='Public Feed'
+							to='/app/feed'
+						/>
+						<FeedLinkItem
+							src={PostsImage}
+							name='Create Post'
+							to='/app/posts/new'
+						/>
+						<FeedLinkItem
+							src={CreateGroupImage}
 							color='facebook'
 							name='Create Group'
 							to='/app/groups/new'
@@ -100,20 +117,31 @@ const FeedLayout: React.FC<FeedLayoutProps> = ({ children }) => {
 									: theme.colors.blue[600]
 							}`
 						}>
-						<FeedLinkItem name='Find Groups' to='/app/groups/find' />
 						<FeedLinkItem
+							src={FindGroupsImage}
+							name='Find Groups'
+							to='/app/groups/find'
+						/>
+						<FeedLinkItem
+							src={FindFriendsImage}
 							color='facebook'
 							name='Find Friends'
 							to='/app/friends/find'
 						/>
 
 						<FeedLinkItem
+							src={MyFriendsImage}
 							color='purple'
 							name='My Friends'
 							to='/app/friends/me'
 						/>
 
-						<FeedLinkItem color='blue' name='My Groups' to='/app/groups/me' />
+						<FeedLinkItem
+							src={MyGroupsImage}
+							color='blue'
+							name='My Groups'
+							to='/app/groups/me'
+						/>
 					</Box>
 				</GridItem>
 			</Grid>

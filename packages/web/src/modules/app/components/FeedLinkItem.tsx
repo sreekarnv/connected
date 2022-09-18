@@ -1,8 +1,6 @@
 import { Box, Flex, Image, Text, useColorMode } from '@chakra-ui/react';
 import { Link } from 'gatsby';
 import React from 'react';
-// @ts-ignore
-import SrcImage from './../../../images/home.svg';
 
 const darkColors = {
 	blue: 'blue.600',
@@ -20,12 +18,14 @@ interface FeedLinkItemProps {
 	name: string;
 	to: string;
 	color?: keyof typeof lightColors;
+	src?: string;
 }
 
 const FeedLinkItem: React.FC<FeedLinkItemProps> = ({
 	name,
 	to,
 	color = 'blue',
+	src,
 }) => {
 	const { colorMode } = useColorMode();
 
@@ -53,7 +53,7 @@ const FeedLinkItem: React.FC<FeedLinkItemProps> = ({
 					},
 					transform: 'translateY(-3px)',
 				}}>
-				<Image boxSize='40%' src={SrcImage} />
+				<Image boxSize='40%' src={src} />
 				<Text fontSize={'2xl'} fontWeight='semibold'>
 					{name}
 				</Text>

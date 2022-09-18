@@ -9,6 +9,7 @@ import {
 	Heading,
 	Select,
 	Textarea,
+	useColorMode,
 	useDisclosure,
 } from '@chakra-ui/react';
 import React from 'react';
@@ -58,6 +59,8 @@ const CreatePostPage: React.FC<CreatePostPageProps> = ({}) => {
 		resolver: yupResolver(validationSchema),
 	});
 
+	const { colorMode } = useColorMode();
+
 	const onSubmit = (values: FieldValues) => {
 		mutate({
 			content: values.content,
@@ -95,7 +98,10 @@ const CreatePostPage: React.FC<CreatePostPageProps> = ({}) => {
 				<form noValidate onSubmit={handleSubmit(onSubmit)}>
 					<FormControl isRequired isInvalid={!!errors.content}>
 						<FormLabel>Content</FormLabel>
-						<Textarea rows={10} {...register('content')} />
+						<Textarea 
+							borderColor={colorMode === 'light' ? 'gray.300' : 'inherit'}
+						
+						rows={10} {...register('content')} />
 						<FormErrorMessage>
 							{errors.content?.message as string}
 						</FormErrorMessage>
@@ -103,6 +109,8 @@ const CreatePostPage: React.FC<CreatePostPageProps> = ({}) => {
 
 					<FormControl isRequired isInvalid={!!errors.content}>
 						<Select
+							borderColor={colorMode === 'light' ? 'gray.300' : 'inherit'}
+
 							my='8'
 							defaultValue={''}
 							placeholder='Select option'
@@ -121,6 +129,7 @@ const CreatePostPage: React.FC<CreatePostPageProps> = ({}) => {
 
 					<Flex justifyContent='space-between' alignItems='center' mt='4'>
 						<Button
+							backgroundColor={colorMode === 'light' ? 'gray.300' : 'gray.700'}
 							cursor='pointer'
 							leftIcon={<ArrowUpIcon />}
 							as='label'

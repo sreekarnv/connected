@@ -76,7 +76,12 @@ const IndexPage: React.FC = () => {
 							</>
 						) : (
 							<>
-								<Button as={Link} to='/auth/login' size='lg' variant='outline'>
+								<Button
+									borderColor={'gray.400'}
+									as={Link}
+									to='/auth/login'
+									size='lg'
+									variant='outline'>
 									Log In
 								</Button>
 

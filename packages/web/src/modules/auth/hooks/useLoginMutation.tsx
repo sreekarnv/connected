@@ -1,6 +1,5 @@
 import { useToast } from '@chakra-ui/react';
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { AxiosError } from 'axios';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { navigate } from 'gatsby';
 import React from 'react';
 import axios from '../../shared/config/axios';
