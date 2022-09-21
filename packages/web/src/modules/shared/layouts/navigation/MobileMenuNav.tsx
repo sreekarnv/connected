@@ -65,6 +65,7 @@ const MobileMenuNav: React.FC<MobileMenuNavProps> = ({ onOpen }) => {
 					<MobileMenuNavIconLink
 						onClick={() => onOpen()}
 						label='Notifications'
+						display={'block'}
 						icon={<BellIcon fontSize='xl' />}
 						colorScheme='twitter'
 					/>

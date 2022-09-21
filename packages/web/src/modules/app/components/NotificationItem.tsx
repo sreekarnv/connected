@@ -177,7 +177,7 @@ const NotificationItem: React.FC<NotificationItemProps> = ({
 		<>
 			<Box
 				p='3'
-				bgColor={colorMode === 'light' ? 'gray.300' : 'gray.900'}
+				bgColor={colorMode === 'light' ? 'gray.100' : 'gray.900'}
 				borderRadius={'xl'}
 				mb='4'>
 				{loadUi(notification)}

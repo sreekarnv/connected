@@ -22,7 +22,7 @@ const MyFriendItem: React.FC<MyFriendItemProps> = ({ user }) => {
 			<Flex
 				flexDir={'column'}
 				justifyContent='space-between'
-				bgColor={colorMode === 'light' ? 'gray.300' : 'gray.900'}
+				bgColor={colorMode === 'light' ? 'gray.100' : 'gray.900'}
 				p='4'
 				transition={'all 0.2s ease-in-out'}
 				_hover={{

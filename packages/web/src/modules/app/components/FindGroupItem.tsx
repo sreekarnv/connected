@@ -38,7 +38,7 @@ const FindGroupItem: React.FC<FindGroupItemProps> = ({ group }) => {
 	return (
 		<>
 			<Box
-				bg={colorMode === 'light' ? 'gray.300' : 'gray.900'}
+				bg={colorMode === 'light' ? 'gray.100' : 'gray.900'}
 				p='4'
 				mb='4'
 				borderRadius='xl'>
