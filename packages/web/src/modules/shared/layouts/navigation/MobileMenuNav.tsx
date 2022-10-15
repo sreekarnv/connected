@@ -91,7 +91,7 @@ const MobileMenuNav: React.FC<MobileMenuNavProps> = ({ onOpen }) => {
 						<MenuItem
 							icon={<FeedIcon />}
 							as={Link}
-							to='/feed'
+							to='/app/feed'
 							fontWeight='semibold'>
 							My Feed
 						</MenuItem>

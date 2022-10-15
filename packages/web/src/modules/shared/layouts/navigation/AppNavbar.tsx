@@ -152,7 +152,7 @@ const AppNavbar: React.FC<AppNavbarProps> = ({}) => {
 							<MenuItem
 								icon={<FeedIcon />}
 								as={Link}
-								to='/feed'
+								to='/app/feed'
 								fontWeight='semibold'>
 								Feed
 							</MenuItem>

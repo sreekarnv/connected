@@ -67,7 +67,7 @@ const IndexPage: React.FC = () => {
 							<>
 								<Button
 									as={Link}
-									to='/feed'
+									to='/app/feed'
 									size='lg'
 									variant='solid'
 									colorScheme='blue'>

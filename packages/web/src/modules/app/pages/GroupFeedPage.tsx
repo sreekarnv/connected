@@ -68,7 +68,7 @@ const GroupFeedPage: React.FC<GroupFeedPageProps> = ({ id }) => {
 				<Text color='red.400' mb='5' fontWeight='semibold' fontSize={'lg'}>
 					{(error as any).response.data.message}
 				</Text>
-				<Button as={Link} to='/feed' variant='solid'>
+				<Button as={Link} to='/app/feed' variant='solid'>
 					Back to Feed
 				</Button>
 			</VStack>

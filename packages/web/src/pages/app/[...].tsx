@@ -11,6 +11,7 @@ import MyFriendsPage from '../../modules/app/pages/MyFriendsPage';
 import MyGroupsPage from '../../modules/app/pages/MyGroupsPage';
 import { HeadFC } from 'gatsby';
 import { useSiteMetadata } from '../../modules/shared/hooks/useSiteMetadata';
+import FeedPage from '../../modules/app/pages/FeedPage';
 
 interface AppProps {}
 
@@ -45,6 +46,7 @@ const App: React.FC<AppProps> = ({}) => {
 		<>
 			<FeedLayout>
 				<Router basepath='/app'>
+					<PrivateRoute path='/feed' component={FeedPage} />
 					<PrivateRoute path='/posts/new' component={CreatePostPage} />
 					<PrivateRoute path='/groups/new' component={CreateGroupPage} />
 					<PrivateRoute path='/groups/find' component={FindGroupsPage} />
