@@ -16,7 +16,7 @@ const NotFoundPage: React.FC<NotFoundPageProps> = ({}) => {
 		<BaseLayout>
 			<Box textAlign='center' py='20'>
 				<Heading mb='8'>Page Not Found | 404</Heading>
-				<Button colorScheme='blue' as={Link} to={user ? '/app/feed' : '/'}>
+				<Button colorScheme='blue' as={Link} to={user ? '/feed' : '/'}>
 					Back To Home
 				</Button>
 			</Box>

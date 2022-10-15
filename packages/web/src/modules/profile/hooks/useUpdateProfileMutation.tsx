@@ -43,7 +43,7 @@ const useUpdateProfileMutation = () => {
 					duration: 1500,
 					isClosable: true,
 					onCloseComplete() {
-						navigate('/app/feed');
+						navigate('/feed');
 					},
 				});
 				queryClient.setQueryData([RQ.LOGGED_IN_USER_QUERY], data.user);

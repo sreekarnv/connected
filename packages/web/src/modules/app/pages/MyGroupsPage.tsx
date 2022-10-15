@@ -45,43 +45,43 @@ const MyGroupsPage: React.FC<MyGroupsPageProps> = ({}) => {
 		);
 	}
 
+	if (!isLoading && !data?.pages[0].groups.length) {
+		return (
+			<Box pt='6' textAlign='center'>
+				<Text
+					textAlign='center'
+					fontWeight='semibold'
+					color={colorMode === 'dark' ? 'red.400' : 'red.600'}
+					fontSize='3xl'
+					lineHeight={1}
+					mb='6'>
+					You are not a member of any groups yet.
+				</Text>
+				<Button as={Link} to='/app/groups/find' colorScheme='blue'>
+					Find Groups
+				</Button>
+			</Box>
+		);
+	}
+
 	return (
 		<>
-			{!!data?.pages?.[0]?.page?.groups.length && (
-				<Box>
-					<InputGroup>
-						<InputLeftElement pointerEvents='none' children={<SearchIcon />} />
-						<Input
-							placeholder='Search by name'
-							onChange={handleDebouncedSearch}
-						/>
-					</InputGroup>
-					<Box mt='5'>
-						{data?.pages.map((page) => {
-							return page?.groups.map((group: GroupType) => (
-								<FindGroupItem key={group._id} group={group} />
-							));
-						})}
-					</Box>
+			<Box>
+				<InputGroup>
+					<InputLeftElement pointerEvents='none' children={<SearchIcon />} />
+					<Input
+						placeholder='Search by name'
+						onChange={handleDebouncedSearch}
+					/>
+				</InputGroup>
+				<Box mt='5'>
+					{data?.pages.map((page) => {
+						return page?.groups.map((group: GroupType) => (
+							<FindGroupItem key={group._id} group={group} />
+						));
+					})}
 				</Box>
-			)}
-
-			{!data?.pages?.[0]?.page?.groups.length && (
-				<Box pt='6' textAlign='center'>
-					<Text
-						textAlign='center'
-						fontWeight='semibold'
-						color={colorMode === 'dark' ? 'red.400' : 'red.600'}
-						fontSize='3xl'
-						lineHeight={1}
-						mb='6'>
-						You are not a member of any groups yet.
-					</Text>
-					<Button as={Link} to='/app/groups/find' colorScheme='blue'>
-						Find Groups
-					</Button>
-				</Box>
-			)}
+			</Box>
 		</>
 	);
 };

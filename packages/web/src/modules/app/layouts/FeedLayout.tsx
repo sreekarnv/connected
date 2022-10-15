@@ -68,7 +68,7 @@ const FeedLayout: React.FC<FeedLayoutProps> = ({ children }) => {
 							src={PublicFeedImage}
 							color='purple'
 							name='Public Feed'
-							to='/app/feed'
+							to='/feed'
 						/>
 						<FeedLinkItem
 							src={PostsImage}

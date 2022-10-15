@@ -1,9 +1,17 @@
-import { useInfiniteQuery } from '@tanstack/react-query';
+import {
+	useInfiniteQuery,
+	InfiniteData,
+	InitialDataFunction,
+} from '@tanstack/react-query';
 import React from 'react';
 import axios from '../../shared/config/axios';
 import { RQ } from '../../shared/types/react-query';
 
-const useGetAllPostsQuery = (groupId = '') => {
+type Options = {
+	initialData?: InfiniteData<any> | InitialDataFunction<InfiniteData<any>>;
+};
+
+const useGetAllPostsQuery = (groupId = '', options: Options = {}) => {
 	const result = useInfiniteQuery(
 		[RQ.GET_ALL_POSTS_QUERY, groupId],
 		async ({ pageParam = 1 }) => {
@@ -26,6 +34,7 @@ const useGetAllPostsQuery = (groupId = '') => {
 				return 1;
 			},
 			getNextPageParam: (data) => data.currentPageParam + 1,
+			initialData: options.initialData,
 		}
 	);
 

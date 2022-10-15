@@ -2,7 +2,8 @@
   "name": "connected",
   "private": true,
   "dependencies": {
-    "lerna": "^4.0.0"
+    "lerna": "^5.5.2",
+    "nx": "latest"
   },
   "devDependencies": {
     "kill-port-process": "^3.1.0"

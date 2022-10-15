@@ -32,7 +32,7 @@ const useCreatePostMutation = () => {
 					if (data.group) {
 						navigate(`/app/groups/${data.group}`);
 					} else {
-						navigate('/app/feed');
+						navigate('/feed');
 					}
 				}
 			},

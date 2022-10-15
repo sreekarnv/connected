@@ -38,7 +38,7 @@ const useLoginMutation = () => {
 					duration: 1500,
 					isClosable: true,
 					onCloseComplete() {
-						navigate('/app/feed', { replace: true });
+						navigate('/feed', { replace: true });
 					},
 				});
 			},

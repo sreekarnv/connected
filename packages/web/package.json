@@ -2,11 +2,7 @@
   "name": "@connected/web",
   "version": "1.0.0",
   "private": true,
-  "description": "my-gatsby-site",
   "author": "Sreekar Venkata Nutulapati",
-  "keywords": [
-    "gatsby"
-  ],
   "scripts": {
     "develop": "gatsby develop",
     "dev": "gatsby develop --port 3000",
