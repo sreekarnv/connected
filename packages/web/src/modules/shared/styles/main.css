@@ -5,6 +5,5 @@
 	font-style: normal;
 	font-weight: 400;
 	src: local('Grinched'),
-		url('https://fonts.cdnfonts.com/s/17793/GrinchedRegular.woff')
-			format('woff');
+		url('../../../../static/fonts/GrinchedRegular.woff') format('woff');
 }
