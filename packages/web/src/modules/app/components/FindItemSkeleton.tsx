@@ -1,5 +1,10 @@
 import React from 'react';
-import { Box, SkeletonCircle, SkeletonText } from '@chakra-ui/react';
+import {
+	Box,
+	SkeletonCircle,
+	SkeletonText,
+	useColorMode,
+} from '@chakra-ui/react';
 
 interface FindItemSkeletonProps {
 	noOfLines?: number;
@@ -8,6 +13,8 @@ interface FindItemSkeletonProps {
 const FindItemSkeleton: React.FC<FindItemSkeletonProps> = ({
 	noOfLines = 4,
 }) => {
+	const { colorMode } = useColorMode();
+
 	return (
 		<Box
 			p={{
@@ -15,7 +22,13 @@ const FindItemSkeleton: React.FC<FindItemSkeletonProps> = ({
 			}}>
 			<Box p='5' boxShadow='lg'>
 				<SkeletonCircle size='10' />
-				<SkeletonText mt='4' noOfLines={noOfLines} spacing='4' />
+				<SkeletonText
+					startColor={colorMode === 'dark' ? 'gray.700' : 'gray.300'}
+					endColor={colorMode === 'dark' ? 'gray.800' : 'gray.200'}
+					mt='4'
+					noOfLines={noOfLines}
+					spacing='4'
+				/>
 			</Box>
 		</Box>
 	);

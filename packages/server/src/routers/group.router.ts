@@ -22,4 +22,8 @@ router
 
 router.route('/:_id').get(groupController.getGroup);
 
+router
+	.route('/join-public-group')
+	.patch(groupController.addPublicGroupToMyGroups);
+
 export default router;

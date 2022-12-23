@@ -77,7 +77,7 @@ const MyGroupsPage: React.FC<MyGroupsPageProps> = ({}) => {
 				<Box mt='5'>
 					{data?.pages.map((page) => {
 						return page?.groups.map((group: GroupType) => (
-							<FindGroupItem key={group._id} group={group} />
+							<FindGroupItem isMyGroupsView key={group._id} group={group} />
 						));
 					})}
 				</Box>

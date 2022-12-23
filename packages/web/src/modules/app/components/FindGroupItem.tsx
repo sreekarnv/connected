@@ -3,6 +3,7 @@ import {
 	ExternalLinkIcon,
 	ViewIcon,
 	ViewOffIcon,
+	AddIcon,
 } from '@chakra-ui/icons';
 import {
 	Avatar,
@@ -23,17 +24,23 @@ import React from 'react';
 import { socket } from '../../shared/providers/AppProvider';
 import { GroupType, NotifType, UserType } from '../../shared/types/api';
 import { RQ } from '../../shared/types/react-query';
+import useJoinPublicGroupMutation from '../hooks/useJoinPublicGroupMutation';
 
 interface FindGroupItemProps {
 	group: GroupType;
+	isMyGroupsView?: boolean;
 }
 
-const FindGroupItem: React.FC<FindGroupItemProps> = ({ group }) => {
+const FindGroupItem: React.FC<FindGroupItemProps> = ({
+	group,
+	isMyGroupsView,
+}) => {
 	const { isOpen, onToggle } = useDisclosure();
 	const { colorMode } = useColorMode();
 	const queryClient = useQueryClient();
 	const user = queryClient.getQueryData([RQ.LOGGED_IN_USER_QUERY]) as UserType;
 	const requestSent = group.requests.includes(user._id);
+	const { isLoading, mutate } = useJoinPublicGroupMutation();
 
 	return (
 		<>
@@ -84,18 +91,37 @@ const FindGroupItem: React.FC<FindGroupItemProps> = ({ group }) => {
 							/>
 						</Tooltip>
 
-						{group.groupType === 'public' ||
-							(group.members.includes(user._id) && (
-								<Tooltip placement='top' hasArrow label='View Group Profile'>
+						{(group.groupType === 'public' ||
+							group.members.includes(user._id)) && (
+							<Tooltip placement='top' hasArrow label='View Group Profile'>
+								<IconButton
+									as={Link}
+									to={`/app/groups/${group._id}`}
+									aria-label='view group'
+									icon={<ExternalLinkIcon />}
+									variant='outline'
+								/>
+							</Tooltip>
+						)}
+
+						{!isMyGroupsView && group.groupType === 'public' && (
+							<>
+								<Tooltip
+									aria-label='Add to my groups'
+									placement='top'
+									hasArrow
+									label={'Add to my groups'}>
 									<IconButton
-										as={Link}
-										to={`/app/groups/${group._id}`}
-										aria-label='view group'
-										icon={<ExternalLinkIcon />}
+										isLoading={isLoading}
+										onClick={() => mutate({ _id: group._id })}
+										colorScheme={'green'}
 										variant='outline'
+										aria-label='add to my groups'
+										icon={<AddIcon />}
 									/>
 								</Tooltip>
-							))}
+							</>
+						)}
 
 						{group.groupType === 'private' &&
 							!group.members.includes(user._id) && (

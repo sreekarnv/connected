@@ -96,6 +96,45 @@ export const getGroup: ExpressResponse = async (req, res, next) => {
 	}
 };
 
+export const addPublicGroupToMyGroups: ExpressResponse = async (
+	req,
+	res,
+	next
+) => {
+	try {
+		const { _id } = req.body;
+
+		const query = {
+			_id,
+			groupType: 'public',
+			members: { $nin: req.user?._id },
+		};
+
+		const count = await GroupModel.findOne(query).count();
+
+		if (count === 0) {
+			return next(new AppError('Cannot Join this Group', 400));
+		}
+
+		const group = await GroupModel.findOneAndUpdate(
+			{ $and: [{ _id, user: req.user?._id }] },
+			{ $push: { members: req.user?._id } },
+			{ new: true }
+		).populate('admin', '_id name photo.url');
+
+		if (!group) {
+			return next(new AppError('Group not found', 404));
+		}
+
+		res.status(200).json({
+			status: 'success',
+			group,
+		});
+	} catch (err) {
+		next(err);
+	}
+};
+
 export const rejectGroupJoinRequest: ExpressResponse = async (
 	req,
 	res,
