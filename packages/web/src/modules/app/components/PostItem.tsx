@@ -91,7 +91,7 @@ const PostItem: React.FC<PostItemProps> = ({ post, pageParam }) => {
 					<Text
 						textAlign={{ base: 'right', sm: 'left' }}
 						fontSize={{ base: 'sm', sm: 'md' }}
-						color='gray.400'
+						color={colorMode === 'dark' ? 'gray.400' : 'gray.700'}
 						fontWeight='semibold'>
 						{formatDistance(new Date(post.createdAt), new Date(), {
 							addSuffix: true,

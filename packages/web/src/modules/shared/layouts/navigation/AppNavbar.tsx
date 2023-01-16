@@ -43,7 +43,7 @@ interface AppNavbarProps {}
 const AppNavbar: React.FC<AppNavbarProps> = ({}) => {
 	const { isOpen, onClose, onOpen } = useDisclosure();
 	const { colorMode } = useColorMode();
-	const { data: notifications } = useGetAllNotificationsQuery();
+	const { data: notifications } = useGetAllNotificationsQuery({});
 
 	const queryClient = useQueryClient();
 	const user = queryClient.getQueryData([RQ.LOGGED_IN_USER_QUERY]) as UserType;
