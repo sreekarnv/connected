@@ -1,0 +1,26 @@
+[project]
+name = "connected-identity"
+version = "0.1.0"
+requires-python = ">=3.12"
+dependencies = [
+    "fastapi[standard]>=0.162.0",
+]
+
+[build-system]
+requires = ["uv_build>=0.12.16,<0.13.0"]
+build-backend = "uv_build"
+
+[tool.fastapi]
+entrypoint = "connected_identity.main:app"
+
+[tool.ruff]
+src = ["src"]
+
+[tool.ruff.lint]
+extend-select = ["I"]
+
+[dependency-groups]
+dev = [
+    "ruff>=0.17.3",
+    "ty>=0.0.97",
+]
