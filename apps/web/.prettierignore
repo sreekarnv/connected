@@ -1,0 +1,7 @@
+# Ignore build artifacts and lockfiles
+.next/
+out/
+build/
+node_modules/
+pnpm-lock.yaml
+next-env.d.ts
