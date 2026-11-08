@@ -8,8 +8,8 @@ export const composeConfig = defineConfig({
 	subgraphs: [
 		{
 			sourceHandler: loadOpenAPISubgraph("Identity", {
-				source: "http://localhost:8000/openapi.json",
-				endpoint: "http://localhost:8000",
+				source: "http://localhost:4001/openapi.json",
+				endpoint: "http://localhost:4001",
 				ignoreErrorResponses: true,
 				operationHeaders: {
 					Authorization: "{context.headers.authorization}",

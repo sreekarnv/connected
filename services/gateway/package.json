@@ -4,7 +4,8 @@
   "type": "module",
   "scripts": {
     "compose": "mesh-compose -o supergraph.graphql",
-    "start": "hive-gateway supergraph supergraph.graphql"
+    "dev": "NODE_ENV=development hive-gateway --config-path gateway.ts supergraph supergraph.graphql",
+    "start": "NODE_ENV=production hive-gateway --config-path gateway.ts supergraph supergraph.graphql"
   },
   "packageManager": "pnpm@12.18.0",
   "devEngines": {
@@ -17,6 +18,7 @@
   "dependencies": {
     "@graphql-hive/gateway": "^2.15.6",
     "@graphql-mesh/compose-cli": "^1.8.4",
-    "@omnigraph/openapi": "^0.112.7"
+    "@omnigraph/openapi": "^0.112.7",
+    "graphql": "^16.15.0"
   }
 }

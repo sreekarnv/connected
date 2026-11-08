@@ -175,6 +175,9 @@ importers:
       '@omnigraph/openapi':
         specifier: ^0.112.7
         version: 0.112.7(graphql@16.15.0)(ioredis@5.11.1)
+      graphql:
+        specifier: ^16.15.0
+        version: 16.15.0
 
 packages:
 
