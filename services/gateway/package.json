@@ -5,7 +5,10 @@
   "scripts": {
     "compose": "mesh-compose -o supergraph.graphql",
     "dev": "NODE_ENV=development hive-gateway --config-path gateway.ts supergraph supergraph.graphql",
-    "start": "NODE_ENV=production hive-gateway --config-path gateway.ts supergraph supergraph.graphql"
+    "start": "NODE_ENV=production hive-gateway --config-path gateway.ts supergraph supergraph.graphql",
+    "typecheck": "tsc --noEmit",
+    "format": "prettier --write .",
+    "format:check": "prettier --check ."
   },
   "packageManager": "pnpm@12.18.0",
   "devEngines": {
@@ -20,5 +23,10 @@
     "@graphql-mesh/compose-cli": "^1.8.4",
     "@omnigraph/openapi": "^0.112.7",
     "graphql": "^16.15.0"
+  },
+  "devDependencies": {
+    "@types/node": "^26.6.6",
+    "prettier": "^3.9.10",
+    "typescript": "^5.9.3"
   }
 }

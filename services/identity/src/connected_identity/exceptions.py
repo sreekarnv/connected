@@ -15,6 +15,7 @@ _ERROR_DETAILS: dict[ErrorCode, tuple[int, str]] = {
         status.HTTP_401_UNAUTHORIZED,
         "Could not validate credentials",
     ),
+    ErrorCode.FORBIDDEN: (status.HTTP_403_FORBIDDEN, "Request forbidden"),
     ErrorCode.VALIDATION_ERROR: (
         status.HTTP_422_UNPROCESSABLE_CONTENT,
         "Request validation failed",

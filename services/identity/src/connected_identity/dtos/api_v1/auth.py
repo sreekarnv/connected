@@ -1,5 +1,5 @@
 from datetime import datetime
-from typing import Annotated
+from typing import Annotated, Literal
 from uuid import UUID
 
 from pydantic import (
@@ -49,6 +49,13 @@ class UserDto(BaseModel):
     updated_at: datetime
 
 
-class LoginResponseDto(BaseModel):
-    user: UserDto
+class TokenResponseDto(BaseModel):
     access_token: str
+
+
+class LoginResponseDto(TokenResponseDto):
+    user: UserDto
+
+
+class LogoutResponseDto(BaseModel):
+    status: Literal["success"] = "success"
