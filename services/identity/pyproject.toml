@@ -3,7 +3,14 @@ name = "connected-identity"
 version = "0.1.0"
 requires-python = ">=3.12"
 dependencies = [
+    "asyncpg>=0.32.0",
     "fastapi[standard]>=0.162.0",
+    "sqlalchemy[asyncio]>=2.1.8",
+    "sqlalchemy-declarative-extensions>=0.19.0",
+    "pydantic-settings>=2.16.2",
+    "pyjwt[crypto]>=2.15.1",
+    "argon2-cffi>=25.1.0",
+    "email-normalize>=3.2.0",
 ]
 
 [build-system]
@@ -15,12 +22,15 @@ entrypoint = "connected_identity.main:app"
 
 [tool.ruff]
 src = ["src"]
+extend-exclude = ["src/alembic"]
+force-exclude = true
 
 [tool.ruff.lint]
 extend-select = ["I"]
 
 [dependency-groups]
 dev = [
+    "alembic>=1.20.1",
     "ruff>=0.17.3",
     "ty>=0.0.97",
 ]
