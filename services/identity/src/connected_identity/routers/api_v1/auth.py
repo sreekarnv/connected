@@ -8,16 +8,12 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from connected_identity.config.types import DbSession
 from connected_identity.db.schema import Credential, User
 from connected_identity.dtos.api_v1.auth import (
-    GetUserDataDto,
-    GetUserResponseDto,
-    LoginDataDto,
     LoginRequestDto,
     LoginResponseDto,
     SignupRequestDto,
     UserDto,
-    UserResponseDto,
 )
-from connected_identity.dtos.base import ClientErrorCode, FailResponseDto
+from connected_identity.dtos.base import ErrorCode, ErrorResponseDto
 from connected_identity.exceptions import ApiError
 from connected_identity.middleware.protect_route import protect_route
 from connected_identity.services.password import hash_password, verify_password
@@ -28,13 +24,12 @@ router = APIRouter()
 
 @router.post(
     "/signup",
-    response_model=UserResponseDto,
+    operation_id="signup",
+    response_model=UserDto,
     status_code=status.HTTP_201_CREATED,
-    responses={409: {"model": FailResponseDto}, 422: {"model": FailResponseDto}},
+    responses={409: {"model": ErrorResponseDto}, 422: {"model": ErrorResponseDto}},
 )
-async def signup(
-    input: SignupRequestDto, db: AsyncSession = DbSession
-) -> UserResponseDto:
+async def signup(input: SignupRequestDto, db: AsyncSession = DbSession) -> UserDto:
     password = await hash_password(input.password.get_secret_value())
 
     user = User(
@@ -58,15 +53,16 @@ async def signup(
         if constraint not in {"users_email_key", "ix_users_email_normalized"}:
             raise
 
-        raise ApiError(ClientErrorCode.EMAIL_ALREADY_REGISTERED) from exc
+        raise ApiError(ErrorCode.EMAIL_ALREADY_REGISTERED) from exc
 
-    return UserResponseDto(data=UserDto.model_validate(user))
+    return UserDto.model_validate(user)
 
 
 @router.post(
     "/login",
+    operation_id="login",
     response_model=LoginResponseDto,
-    responses={401: {"model": FailResponseDto}, 422: {"model": FailResponseDto}},
+    responses={401: {"model": ErrorResponseDto}, 422: {"model": ErrorResponseDto}},
 )
 async def login(
     input: LoginRequestDto, db: AsyncSession = DbSession
@@ -84,20 +80,19 @@ async def login(
     )
 
     if account is None or not valid:
-        raise ApiError(ClientErrorCode.INVALID_CREDENTIALS)
+        raise ApiError(ErrorCode.INVALID_CREDENTIALS)
 
     user = account[0]
     return LoginResponseDto(
-        data=LoginDataDto(
-            user=UserDto.model_validate(user), access_token=create_access_token(user.id)
-        )
+        user=UserDto.model_validate(user), access_token=create_access_token(user.id)
     )
 
 
 @router.get(
     "/me",
-    response_model=GetUserResponseDto,
-    responses={401: {"model": FailResponseDto}},
+    operation_id="me",
+    response_model=UserDto,
+    responses={401: {"model": ErrorResponseDto}},
 )
-async def me(user: Annotated[User, Depends(protect_route)]) -> GetUserResponseDto:
-    return GetUserResponseDto(data=GetUserDataDto(user=UserDto.model_validate(user)))
+async def me(user: Annotated[User, Depends(protect_route)]) -> UserDto:
+    return UserDto.model_validate(user)

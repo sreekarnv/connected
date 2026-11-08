@@ -7,7 +7,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from connected_identity.config.types import DbSession
 from connected_identity.db.schema import User
-from connected_identity.dtos.base import ClientErrorCode
+from connected_identity.dtos.base import ErrorCode
 from connected_identity.exceptions import ApiError
 from connected_identity.services.token import decode_access_token
 
@@ -20,7 +20,7 @@ async def protect_route(
     ],
     db: AsyncSession = DbSession,
 ) -> User:
-    unauthorized = ApiError(ClientErrorCode.UNAUTHENTICATED)
+    unauthorized = ApiError(ErrorCode.UNAUTHENTICATED)
     if credentials is None:
         raise unauthorized
 

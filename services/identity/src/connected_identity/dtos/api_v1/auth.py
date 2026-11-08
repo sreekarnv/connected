@@ -13,8 +13,6 @@ from pydantic import (
     field_validator,
 )
 
-from connected_identity.dtos.base import SuccessResponseDto
-
 Email = Annotated[EmailStr, Field(max_length=255)]
 Password = Annotated[SecretStr, Field(min_length=6, max_length=128)]
 
@@ -51,22 +49,6 @@ class UserDto(BaseModel):
     updated_at: datetime
 
 
-class LoginDataDto(BaseModel):
+class LoginResponseDto(BaseModel):
     user: UserDto
     access_token: str
-
-
-class GetUserDataDto(BaseModel):
-    user: UserDto
-
-
-class UserResponseDto(SuccessResponseDto[UserDto]):
-    pass
-
-
-class LoginResponseDto(SuccessResponseDto[LoginDataDto]):
-    pass
-
-
-class GetUserResponseDto(SuccessResponseDto[GetUserDataDto]):
-    pass

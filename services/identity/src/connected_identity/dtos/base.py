@@ -1,5 +1,4 @@
 from enum import Enum, StrEnum
-from typing import Literal
 
 from pydantic import BaseModel, Field
 
@@ -10,15 +9,13 @@ class Status(Enum):
     Error = "error"
 
 
-class ClientErrorCode(StrEnum):
+class ErrorCode(StrEnum):
     EMAIL_ALREADY_REGISTERED = "EMAIL_ALREADY_REGISTERED"
     INVALID_CREDENTIALS = "INVALID_CREDENTIALS"
     UNAUTHENTICATED = "UNAUTHENTICATED"
     VALIDATION_ERROR = "VALIDATION_ERROR"
     HTTP_ERROR = "HTTP_ERROR"
-
-
-type ServerErrorCode = Literal["INTERNAL_SERVER_ERROR"]
+    INTERNAL_SERVER_ERROR = "INTERNAL_SERVER_ERROR"
 
 
 class ValidationIssueDto(BaseModel):
@@ -27,25 +24,7 @@ class ValidationIssueDto(BaseModel):
     message: str
 
 
-class ErrorDto[CodeT](BaseModel):
-    code: CodeT
+class ErrorResponseDto(BaseModel):
+    code: ErrorCode
     message: str
     issues: list[ValidationIssueDto] = Field(default_factory=list)
-
-
-class SuccessResponseDto[DataT](BaseModel):
-    status: Literal["success"] = "success"
-    data: DataT
-    error: None = None
-
-
-class FailResponseDto(BaseModel):
-    status: Literal["fail"] = "fail"
-    data: None = None
-    error: ErrorDto[ClientErrorCode]
-
-
-class ErrorResponseDto(BaseModel):
-    status: Literal["error"] = "error"
-    data: None = None
-    error: ErrorDto[ServerErrorCode]

@@ -13,6 +13,7 @@ class Settings(BaseSettings):
     )
 
     database_url: str
+    cors_origins: list[str] = ["http://localhost:4000", "http://127.0.0.1:4000"]
     jwt_private_key: SecretStr = Field(min_length=1)
     jwt_key_id: str = Field(min_length=1)
     jwt_issuer: str = Field(default="connected-identity", min_length=1)

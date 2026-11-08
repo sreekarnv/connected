@@ -2,5 +2,6 @@
 	"folders": [
 		{ "name": "@apps/web", "path": "apps/web" },
 		{ "name": "@services/identity", "path": "services/identity" },
+		{ "name": "@services/gateway", "path": "services/gateway" }
 	],
 }
