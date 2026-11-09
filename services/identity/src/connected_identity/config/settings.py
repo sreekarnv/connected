@@ -20,6 +20,7 @@ class Settings(BaseSettings):
     jwt_key_id: str = Field(min_length=1)
     jwt_issuer: str = Field(default="connected-identity", min_length=1)
     jwt_audience: str = Field(default="connected-api", min_length=1)
+    rabbitmq_url: str
 
     @field_validator("cors_origins")
     @classmethod
@@ -36,6 +37,7 @@ class Settings(BaseSettings):
                 or any(character.isspace() for character in origin)
             ):
                 raise ValueError("CORS origins must be exact HTTP(S) origins")
+
         return origins
 
 

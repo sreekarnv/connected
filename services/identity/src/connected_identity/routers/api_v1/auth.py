@@ -5,6 +5,7 @@ from sqlalchemy import func, select
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.ext.asyncio import AsyncSession
 
+from connected_identity.config.rabbitmq import broker, identity_events
 from connected_identity.config.types import DbSession
 from connected_identity.db.schema import Credential, User
 from connected_identity.dtos.api_v1.auth import (
@@ -66,6 +67,17 @@ async def signup(input: SignupRequestDto, db: AsyncSession = DbSession) -> UserD
             raise
 
         raise ApiError(ErrorCode.EMAIL_ALREADY_REGISTERED) from exc
+
+    await broker.publish(
+        {
+            "user_id": str(user.id),
+            "email": user.email,
+            "name": user.name,
+        },
+        exchange=identity_events,
+        routing_key="user.signup",
+        persist=True,
+    )
 
     return UserDto.model_validate(user)
 
