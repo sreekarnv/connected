@@ -4,6 +4,6 @@
 		{ "name": "@services/identity", "path": "services/identity" },
 		{ "name": "@services/gateway", "path": "services/gateway" },
 		{ "name": "@services/notifications", "path": "services/notifications" },
-		{ "name": "@connected", "path": "." }
+		{ "name": "@root", "path": "." },
 	],
 }

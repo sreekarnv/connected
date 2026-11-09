@@ -18,7 +18,7 @@ export class RabbitMQConnectionManager {
 	private channel?: amqp.Channel;
 
 	async connect() {
-		this.connection = await amqp.connect(Bun.env.RABBITMQ_URL!);
+		this.connection = await amqp.connect(process.env.RABBITMQ_URL!);
 		this.channel = await this.connection.createChannel();
 	}
 
