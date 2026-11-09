@@ -39,12 +39,21 @@ class LoginRequestDto(BaseModel):
     password: Password
 
 
+class VerifyEmailRequestDto(BaseModel):
+    token: Annotated[SecretStr, Field(min_length=1, max_length=128)]
+
+
+class ResendVerificationResponseDto(BaseModel):
+    status: Literal["success"] = "success"
+
+
 class UserDto(BaseModel):
     model_config = ConfigDict(from_attributes=True)
 
     id: UUID
     name: str
     email: EmailStr
+    email_verified_at: datetime | None
     created_at: datetime
     updated_at: datetime
 

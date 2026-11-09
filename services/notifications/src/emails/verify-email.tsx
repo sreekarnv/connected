@@ -1,5 +1,6 @@
 import {
 	Body,
+	Button,
 	Container,
 	Head,
 	Heading,
@@ -9,11 +10,17 @@ import {
 	Text,
 } from "react-email";
 
-export function WelcomeEmail({ name }: { name: string }) {
+export function VerifyEmail({
+	name,
+	verificationUrl,
+}: {
+	name: string;
+	verificationUrl: string;
+}) {
 	return (
 		<Html lang="en">
 			<Head />
-			<Preview>Your Connected account is ready.</Preview>
+			<Preview>Verify your email to sign in to Connected.</Preview>
 			<Body
 				style={{
 					backgroundColor: "#f4f4f5",
@@ -46,13 +53,28 @@ export function WelcomeEmail({ name }: { name: string }) {
 					<Heading
 						style={{ fontSize: "28px", lineHeight: "36px", margin: "0 0 24px" }}
 					>
-						Welcome to Connected
+						Verify your email
 					</Heading>
 					<Text style={{ fontSize: "16px", lineHeight: "24px" }}>
 						Hi {name},
 					</Text>
 					<Text style={{ fontSize: "16px", lineHeight: "24px" }}>
-						Your account is ready. We&apos;re glad you&apos;re here.
+						Follow this link to confirm your email before signing in.
+					</Text>
+					<Button
+						href={verificationUrl}
+						style={{
+							backgroundColor: "#2563eb",
+							borderRadius: "6px",
+							color: "#ffffff",
+							padding: "12px 20px",
+						}}
+					>
+						Verify email
+					</Button>
+					<Text>
+						This link expires in 24 hours. If you did not create this account,
+						ignore this email.
 					</Text>
 					<Hr
 						style={{ borderTop: "1px solid #e4e4e7", margin: "32px 0 16px" }}

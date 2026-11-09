@@ -6,7 +6,7 @@ from uuid import UUID, uuid4
 from sqlalchemy import select, update
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from connected_identity.db.schema import RefreshToken
+from connected_identity.db.schema import RefreshToken, User
 from connected_identity.dtos.base import ErrorCode
 from connected_identity.exceptions import ApiError
 from connected_identity.services.token import create_access_token
@@ -63,6 +63,12 @@ async def rotate_tokens(db: AsyncSession, token: str) -> tuple[str, str, datetim
         now = datetime.now(UTC)
         if previous is None or previous.revoked_at or previous.expires_at <= now:
             raise ApiError(ErrorCode.UNAUTHENTICATED)
+
+        user = await db.get(User, previous.user_id)
+        if user is None:
+            raise ApiError(ErrorCode.UNAUTHENTICATED)
+        if user.email_verified_at is None:
+            raise ApiError(ErrorCode.EMAIL_NOT_VERIFIED)
 
         if previous.consumed_at is not None:
             await db.execute(

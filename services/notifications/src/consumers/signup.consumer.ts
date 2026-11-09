@@ -4,10 +4,11 @@ import { render, toPlainText } from "react-email";
 import { z } from "zod";
 import { mailTransporter } from "../config/nodemailer";
 import { Exchange, Queue, RoutingKey } from "../config/rabbitmq";
-import { WelcomeEmail } from "../emails/welcome";
+import { VerifyEmail } from "../emails/verify-email";
 
 const signupEventSchema = z.object({
 	email: z.email(),
+	verification_url: z.url({ protocol: /^https?$/ }),
 	name: z.string().refine((value) => value.trim().length > 0),
 });
 
@@ -44,11 +45,14 @@ export async function signupConsumer(channel: amqp.Channel) {
 
 			try {
 				const html = await render(
-					createElement(WelcomeEmail, { name: event.name }),
+					createElement(VerifyEmail, {
+						name: event.name,
+						verificationUrl: event.verification_url,
+					}),
 				);
 				await mailTransporter.sendMail({
 					to: { address: event.email, name: event.name },
-					subject: "Welcome to Connected",
+					subject: "Verify your Connected email",
 					html,
 					text: toPlainText(html),
 				});

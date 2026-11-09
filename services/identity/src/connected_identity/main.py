@@ -8,6 +8,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse, Response
 from fastapi.utils import is_body_allowed_for_status_code
 from faststream_fastapi import FastStreamAPI
+from starlette.middleware.base import RequestResponseEndpoint
 
 from connected_identity.config.rabbitmq import (
     broker,
@@ -55,6 +56,17 @@ fastapi_app.add_middleware(
     allow_methods=["GET", "POST"],
     allow_headers=["Authorization", "Content-Type", "X-CSRF-Protection"],
 )
+
+
+@fastapi_app.middleware("http")
+async def verification_response_headers(
+    request: Request, call_next: RequestResponseEndpoint
+) -> Response:
+    response = await call_next(request)
+    if request.url.path == "/api/v1/auth/verify-email":
+        response.headers["Cache-Control"] = "no-store"
+        response.headers["Referrer-Policy"] = "no-referrer"
+    return response
 
 
 app = FastStreamAPI(
@@ -107,7 +119,11 @@ async def handle_validation_error(
 
 @fastapi_app.exception_handler(Exception)
 async def handle_server_error(_request: Request, _exc: Exception) -> JSONResponse:
-    return error_response(HTTPException(status.HTTP_500_INTERNAL_SERVER_ERROR))
+    response = error_response(HTTPException(status.HTTP_500_INTERNAL_SERVER_ERROR))
+    if _request.url.path == "/api/v1/auth/verify-email":
+        response.headers["Cache-Control"] = "no-store"
+        response.headers["Referrer-Policy"] = "no-referrer"
+    return response
 
 
 fastapi_app.include_router(health.router, prefix="/healthz", tags=["Health"])

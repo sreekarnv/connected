@@ -33,4 +33,7 @@ async def protect_route(
     if user is None:
         raise unauthorized
 
+    if user.email_verified_at is None:
+        raise ApiError(ErrorCode.EMAIL_NOT_VERIFIED)
+
     return user

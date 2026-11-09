@@ -7,6 +7,14 @@ _ERROR_DETAILS: dict[ErrorCode, tuple[int, str]] = {
         status.HTTP_409_CONFLICT,
         "Email is already registered",
     ),
+    ErrorCode.EMAIL_NOT_VERIFIED: (
+        status.HTTP_403_FORBIDDEN,
+        "Verify your email before signing in",
+    ),
+    ErrorCode.INVALID_EMAIL_VERIFICATION_TOKEN: (
+        status.HTTP_400_BAD_REQUEST,
+        "Invalid or expired email verification token",
+    ),
     ErrorCode.INVALID_CREDENTIALS: (
         status.HTTP_401_UNAUTHORIZED,
         "Incorrect email or password",
