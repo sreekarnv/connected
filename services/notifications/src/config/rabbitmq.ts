@@ -1,4 +1,5 @@
 import amqp from "amqplib";
+import { passwordResetConsumer } from "../consumers/password-reset.consumer";
 import { signupConsumer } from "../consumers/signup.consumer";
 
 export enum Exchange {
@@ -7,10 +8,12 @@ export enum Exchange {
 
 export enum Queue {
 	NOTIFICATIONS_SIGNUP = "notifications.signup",
+	NOTIFICATIONS_PASSWORD_RESET = "notifications.password_reset",
 }
 
 export enum RoutingKey {
 	USER_SIGNUP = "user.signup",
+	USER_PASSWORD_RESET_REQUESTED = "user.password_reset_requested",
 }
 
 export class RabbitMQConnectionManager {
@@ -28,6 +31,7 @@ export class RabbitMQConnectionManager {
 		}
 
 		await signupConsumer(this.channel);
+		await passwordResetConsumer(this.channel);
 	}
 }
 

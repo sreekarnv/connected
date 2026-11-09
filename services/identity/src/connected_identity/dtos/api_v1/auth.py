@@ -47,6 +47,31 @@ class ResendVerificationResponseDto(BaseModel):
     status: Literal["success"] = "success"
 
 
+class ForgotPasswordRequestDto(BaseModel):
+    email: Email
+
+
+class VerifyResetTokenRequestDto(BaseModel):
+    token: Annotated[SecretStr, Field(min_length=1, max_length=128)]
+
+
+class ResetPasswordRequestDto(VerifyResetTokenRequestDto):
+    password: Password
+    password_confirm: Password
+
+    @field_validator("password_confirm")
+    @classmethod
+    def passwords_match(cls, value: SecretStr, info: ValidationInfo) -> SecretStr:
+        password = info.data.get("password")
+        if password is not None and password != value:
+            raise ValueError("Passwords do not match")
+        return value
+
+
+class PasswordResetResponseDto(BaseModel):
+    status: Literal["success"] = "success"
+
+
 class UserDto(BaseModel):
     model_config = ConfigDict(from_attributes=True)
 

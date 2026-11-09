@@ -11,7 +11,7 @@ const isDevelopment = process.env.NODE_ENV === "development";
 
 const corsOrigins: unknown = JSON.parse(
   process.env.CORS_ORIGINS ??
-    '["http://localhost:4000","http://127.0.0.1:4000"]',
+    '["http://localhost:3000","http://127.0.0.1:3000","http://localhost:4000","http://127.0.0.1:4000"]',
 );
 if (
   !Array.isArray(corsOrigins) ||
@@ -32,6 +32,7 @@ const IDENTITY_ERRORS = new Map([
   ["INVALID_CREDENTIALS", 401],
   ["EMAIL_NOT_VERIFIED", 403],
   ["INVALID_EMAIL_VERIFICATION_TOKEN", 400],
+  ["INVALID_PASSWORD_RESET_TOKEN", 400],
   ["FORBIDDEN", 403],
   ["EMAIL_ALREADY_REGISTERED", 409],
   ["VALIDATION_ERROR", 422],

@@ -15,7 +15,13 @@ class Settings(BaseSettings):
 
     database_url: str
     public_url: str = "http://localhost:4001"
-    cors_origins: list[str] = ["http://localhost:4000", "http://127.0.0.1:4000"]
+    web_url: str = "http://localhost:3000"
+    cors_origins: list[str] = [
+        "http://localhost:3000",
+        "http://127.0.0.1:3000",
+        "http://localhost:4000",
+        "http://127.0.0.1:4000",
+    ]
     refresh_cookie_secure: bool = True
     jwt_private_key: SecretStr = Field(min_length=1)
     jwt_key_id: str = Field(min_length=1)
@@ -23,12 +29,14 @@ class Settings(BaseSettings):
     jwt_audience: str = Field(default="connected-api", min_length=1)
     rabbitmq_url: str
 
-    @field_validator("public_url")
+    @field_validator("public_url", "web_url")
     @classmethod
     def validate_public_url(cls, origin: str) -> str:
         cls.validate_cors_origins([origin])
+
         if urlsplit(origin).port == 0:
-            raise ValueError("PUBLIC_URL must use a port between 1 and 65535")
+            raise ValueError("Public URLs must use a port between 1 and 65535")
+
         return origin
 
     @field_validator("cors_origins")
@@ -36,6 +44,7 @@ class Settings(BaseSettings):
     def validate_cors_origins(cls, origins: list[str]) -> list[str]:
         for origin in origins:
             parsed = urlsplit(origin)
+
             if (
                 parsed.scheme not in {"http", "https"}
                 or not parsed.hostname

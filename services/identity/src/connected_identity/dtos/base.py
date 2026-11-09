@@ -1,24 +1,14 @@
-from enum import Enum, StrEnum
+from enum import Enum
 
 from pydantic import BaseModel, Field
+
+from connected_identity.errors import ErrorCode
 
 
 class Status(Enum):
     Success = "success"
     Fail = "fail"
     Error = "error"
-
-
-class ErrorCode(StrEnum):
-    EMAIL_ALREADY_REGISTERED = "EMAIL_ALREADY_REGISTERED"
-    EMAIL_NOT_VERIFIED = "EMAIL_NOT_VERIFIED"
-    INVALID_EMAIL_VERIFICATION_TOKEN = "INVALID_EMAIL_VERIFICATION_TOKEN"
-    INVALID_CREDENTIALS = "INVALID_CREDENTIALS"
-    UNAUTHENTICATED = "UNAUTHENTICATED"
-    FORBIDDEN = "FORBIDDEN"
-    VALIDATION_ERROR = "VALIDATION_ERROR"
-    HTTP_ERROR = "HTTP_ERROR"
-    INTERNAL_SERVER_ERROR = "INTERNAL_SERVER_ERROR"
 
 
 class ValidationIssueDto(BaseModel):
