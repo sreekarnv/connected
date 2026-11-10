@@ -12,8 +12,7 @@ async def publish_verification_email(user: User, token: str) -> None:
             "email": user.email,
             "name": user.name,
             "verification_url": (
-                f"{get_settings().public_url}/api/v1/auth/verify-email"
-                f"#{urlencode({'token': token})}"
+                f"{get_settings().web_url}/verify-email#{urlencode({'token': token})}"
             ),
         },
         exchange=identity_events,
