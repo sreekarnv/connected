@@ -14,6 +14,7 @@ _ERROR_DETAILS: dict[ErrorCode, tuple[int, str]] = {
     ErrorCode.PROFILE_NOT_FOUND: (404, "Profile not found"),
     ErrorCode.PROFILE_ALREADY_EXISTS: (409, "Profile already exists"),
     ErrorCode.HANDLE_TAKEN: (409, "Handle is already taken"),
+    ErrorCode.SELF_RELATIONSHIP: (422, "Cannot create a relationship with yourself"),
     ErrorCode.VALIDATION_ERROR: (422, "Request validation failed"),
     ErrorCode.HTTP_ERROR: (400, "Request failed"),
     ErrorCode.INTERNAL_SERVER_ERROR: (500, "Internal server error"),

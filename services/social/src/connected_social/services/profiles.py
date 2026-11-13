@@ -7,6 +7,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from connected_social.db.schema import Profile
 from connected_social.errors import ErrorCode, SocialError
+from connected_social.services.relationships import visible_to
 
 
 async def create_profile(
@@ -82,8 +83,12 @@ async def update_profile(
         raise
 
 
-async def get_profile_by_handle(db: AsyncSession, handle: str) -> Profile:
-    profile = await db.scalar(select(Profile).where(Profile.handle == handle))
+async def get_profile_by_handle(
+    db: AsyncSession, viewer_id: UUID, handle: str
+) -> Profile:
+    profile = await db.scalar(
+        select(Profile).where(Profile.handle == handle, visible_to(viewer_id))
+    )
     
     if profile is None:
         raise SocialError(ErrorCode.PROFILE_NOT_FOUND)
@@ -91,5 +96,11 @@ async def get_profile_by_handle(db: AsyncSession, handle: str) -> Profile:
     return profile
 
 
-async def get_profiles_by_ids(db: AsyncSession, ids: list[UUID]) -> list[Profile]:
-    return list(await db.scalars(select(Profile).where(Profile.id.in_(set(ids)))))
+async def get_profiles_by_ids(
+    db: AsyncSession, viewer_id: UUID, ids: list[UUID]
+) -> list[Profile]:
+    return list(
+        await db.scalars(
+            select(Profile).where(Profile.id.in_(set(ids)), visible_to(viewer_id))
+        )
+    )

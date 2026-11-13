@@ -53,6 +53,7 @@ const DOWNSTREAM_ERRORS = new Map([
       ["PROFILE_NOT_FOUND", 404],
       ["PROFILE_ALREADY_EXISTS", 409],
       ["HANDLE_TAKEN", 409],
+      ["SELF_RELATIONSHIP", 422],
       ["VALIDATION_ERROR", 422],
       ["HTTP_ERROR", 400],
     ]),

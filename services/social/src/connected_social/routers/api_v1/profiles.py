@@ -78,9 +78,12 @@ async def update_my_profile(
 )
 async def profile_by_handle(
     handle: Annotated[str, Query(min_length=1, max_length=30)],
+    actor_id: Actor,
     db: AsyncSession = DbSession,
 ) -> ProfileDto:
-    return ProfileDto.model_validate(await profiles.get_profile_by_handle(db, handle))
+    return ProfileDto.model_validate(
+        await profiles.get_profile_by_handle(db, actor_id, handle)
+    )
 
 
 @router.get(
@@ -88,9 +91,10 @@ async def profile_by_handle(
 )
 async def profiles_by_ids(
     ids: Annotated[list[UUID], Query(min_length=1, max_length=50)],
+    actor_id: Actor,
     db: AsyncSession = DbSession,
 ) -> list[ProfileDto]:
     return [
         ProfileDto.model_validate(profile)
-        for profile in await profiles.get_profiles_by_ids(db, ids)
+        for profile in await profiles.get_profiles_by_ids(db, actor_id, ids)
     ]
