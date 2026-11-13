@@ -1,0 +1,20 @@
+from enum import StrEnum
+
+
+class ErrorCode(StrEnum):
+    UNAUTHENTICATED = "UNAUTHENTICATED"
+    FORBIDDEN = "FORBIDDEN"
+    IDENTITY_UNAVAILABLE = "IDENTITY_UNAVAILABLE"
+    DATABASE_UNAVAILABLE = "DATABASE_UNAVAILABLE"
+    PROFILE_NOT_FOUND = "PROFILE_NOT_FOUND"
+    PROFILE_ALREADY_EXISTS = "PROFILE_ALREADY_EXISTS"
+    HANDLE_TAKEN = "HANDLE_TAKEN"
+    VALIDATION_ERROR = "VALIDATION_ERROR"
+    HTTP_ERROR = "HTTP_ERROR"
+    INTERNAL_SERVER_ERROR = "INTERNAL_SERVER_ERROR"
+
+
+class SocialError(Exception):
+    def __init__(self, code: ErrorCode) -> None:
+        self.code = code
+        super().__init__(code.value)

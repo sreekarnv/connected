@@ -1,14 +1,70 @@
 name: connected
 
 services:
+  social:
+    image: ghcr.io/astral-sh/uv:python3.14-trixie-slim
+    init: true
+    working_dir: /app
+    command:
+      - sh
+      - -c
+      - |
+        uv run --locked alembic upgrade head &&
+        exec uv run --locked fastapi dev --host 0.0.0.0 --port 4003
+    environment:
+      DATABASE_URL: ${SOCIAL_DATABASE_URL:-postgresql+asyncpg://social:${SOCIAL_DATABASE_PASSWORD:-social}@social-postgres:5432/social}
+      IDENTITY_URL: http://identity:4001
+    ports:
+      - "127.0.0.1:4003:4003"
+    volumes:
+      - ./services/social:/app
+      - /app/.venv
+    depends_on:
+      social-postgres:
+        condition: service_healthy
+      identity:
+        condition: service_healthy
+    healthcheck:
+      test:
+        - CMD
+        - python
+        - -c
+        - "import urllib.request; urllib.request.urlopen('http://127.0.0.1:4003/healthz/', timeout=3).close()"
+      interval: 5s
+      timeout: 5s
+      retries: 12
+      start_period: 30s
+
+  social-postgres:
+    image: postgres:18.6-alpine
+    environment:
+      POSTGRES_DB: social
+      POSTGRES_USER: social
+      POSTGRES_PASSWORD: ${SOCIAL_DATABASE_PASSWORD:-social}
+    ports:
+      - "127.0.0.1:5433:5432"
+    volumes:
+      - social_postgres_data:/var/lib/postgresql
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $${POSTGRES_USER} -d $${POSTGRES_DB}"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
   identity:
     image: ghcr.io/astral-sh/uv:python3.14-trixie-slim
+    init: true
     working_dir: /app
-    command: ["uv", "run", "--locked", "fastapi", "dev", "--host", "0.0.0.0", "--port", "4001"]
+    command:
+      - sh
+      - -c
+      - |
+        uv run --locked alembic upgrade head &&
+        exec uv run --locked fastapi dev --host 0.0.0.0 --port 4001
     env_file:
       - ./services/identity/.env
     environment:
-      DATABASE_URL: postgresql+asyncpg://${POSTGRES_USER:-identity}:${POSTGRES_PASSWORD:-identity}@postgres:5432/${POSTGRES_DB:-identity}
+      DATABASE_URL: postgresql+asyncpg://${POSTGRES_USER:-identity}:${POSTGRES_PASSWORD:-identity}@identity-postgres:5432/${POSTGRES_DB:-identity}
       RABBITMQ_URL: amqp://${RABBITMQ_USER:-connected}:${RABBITMQ_PASSWORD:-connected}@rabbitmq:5672/
     ports:
       - "127.0.0.1:4001:4001"
@@ -16,12 +72,22 @@ services:
       - ./services/identity:/app
       - /app/.venv
     depends_on:
-      postgres:
+      identity-postgres:
         condition: service_healthy
       rabbitmq:
         condition: service_healthy
+    healthcheck:
+      test:
+        - CMD
+        - python
+        - -c
+        - "import urllib.request; urllib.request.urlopen('http://127.0.0.1:4001/healthz/', timeout=3).close()"
+      interval: 5s
+      timeout: 5s
+      retries: 12
+      start_period: 30s
 
-  postgres:
+  identity-postgres:
     image: postgres:18.6-alpine
     environment:
       POSTGRES_DB: ${POSTGRES_DB:-identity}
@@ -36,6 +102,33 @@ services:
       interval: 5s
       timeout: 5s
       retries: 5
+
+  notifications:
+    image: node:24-bookworm-slim
+    init: true
+    working_dir: /app
+    command:
+      - sh
+      - -c
+      - |
+        corepack enable &&
+        pnpm install --frozen-lockfile &&
+        exec pnpm dev
+    environment:
+      COREPACK_ENABLE_DOWNLOAD_PROMPT: "0"
+      RABBITMQ_URL: amqp://${RABBITMQ_USER:-connected}:${RABBITMQ_PASSWORD:-connected}@rabbitmq:5672/
+      SMTP_URL: smtp://mailhog:1025
+      MAIL_FROM: ${MAIL_FROM:-Connected <notifications@connected.test>}
+    ports:
+      - "127.0.0.1:4002:4002"
+    volumes:
+      - ./services/notifications:/app
+      - /app/node_modules
+    depends_on:
+      rabbitmq:
+        condition: service_healthy
+      mailhog:
+        condition: service_healthy
 
   rabbitmq:
     image: rabbitmq:4.4.0-management-alpine
@@ -75,6 +168,8 @@ services:
       retries: 5
 
 volumes:
+  social_postgres_data:
+    name: connected_social_postgres_data
   # Keep using the data volumes from the original Compose projects.
   postgres_data:
     name: identity_postgres_data

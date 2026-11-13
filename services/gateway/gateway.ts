@@ -5,7 +5,7 @@ import {
   Logger,
   usePropagateHeaders,
 } from "@graphql-hive/gateway";
-import { GraphQLError } from "graphql";
+import { GraphQLError, Kind } from "graphql";
 
 const isDevelopment = process.env.NODE_ENV === "development";
 
@@ -13,6 +13,7 @@ const corsOrigins: unknown = JSON.parse(
   process.env.CORS_ORIGINS ??
     '["http://localhost:3000","http://127.0.0.1:3000","http://localhost:4000","http://127.0.0.1:4000"]',
 );
+
 if (
   !Array.isArray(corsOrigins) ||
   !corsOrigins.every(
@@ -27,16 +28,35 @@ if (
   throw new Error("CORS_ORIGINS must be a JSON array of exact HTTP(S) origins");
 }
 
-const IDENTITY_ERRORS = new Map([
-  ["UNAUTHENTICATED", 401],
-  ["INVALID_CREDENTIALS", 401],
-  ["EMAIL_NOT_VERIFIED", 403],
-  ["INVALID_EMAIL_VERIFICATION_TOKEN", 400],
-  ["INVALID_PASSWORD_RESET_TOKEN", 400],
-  ["FORBIDDEN", 403],
-  ["EMAIL_ALREADY_REGISTERED", 409],
-  ["VALIDATION_ERROR", 422],
-  ["HTTP_ERROR", 400],
+const DOWNSTREAM_ERRORS = new Map([
+  [
+    "Identity",
+    new Map([
+      ["UNAUTHENTICATED", 401],
+      ["INVALID_CREDENTIALS", 401],
+      ["EMAIL_NOT_VERIFIED", 403],
+      ["INVALID_EMAIL_VERIFICATION_TOKEN", 400],
+      ["INVALID_PASSWORD_RESET_TOKEN", 400],
+      ["FORBIDDEN", 403],
+      ["EMAIL_ALREADY_REGISTERED", 409],
+      ["VALIDATION_ERROR", 422],
+      ["HTTP_ERROR", 400],
+    ]),
+  ],
+  [
+    "Social",
+    new Map([
+      ["UNAUTHENTICATED", 401],
+      ["FORBIDDEN", 403],
+      ["IDENTITY_UNAVAILABLE", 503],
+      ["DATABASE_UNAVAILABLE", 503],
+      ["PROFILE_NOT_FOUND", 404],
+      ["PROFILE_ALREADY_EXISTS", 409],
+      ["HANDLE_TAKEN", 409],
+      ["VALIDATION_ERROR", 422],
+      ["HTTP_ERROR", 400],
+    ]),
+  ],
 ]);
 
 const GRAPHQL_ERRORS = new Set([
@@ -139,8 +159,9 @@ export const gatewayConfig = defineConfig({
       const response = isRecord(extensions.response) ? extensions.response : {};
       const body = isRecord(response.body) ? response.body : {};
       const status =
+        typeof extensions.serviceName === "string" &&
         typeof body.code === "string"
-          ? IDENTITY_ERRORS.get(body.code)
+          ? DOWNSTREAM_ERRORS.get(extensions.serviceName)?.get(body.code)
           : undefined;
       const publicExtensions: Record<string, unknown> = {
         code: "INTERNAL_SERVER_ERROR",
@@ -149,7 +170,6 @@ export const gatewayConfig = defineConfig({
 
       if (
         extensions.code === "DOWNSTREAM_SERVICE_ERROR" &&
-        extensions.serviceName === "Identity" &&
         status !== undefined &&
         status === response.status &&
         typeof body.code === "string" &&
@@ -176,6 +196,16 @@ export const gatewayConfig = defineConfig({
               message,
             }));
         }
+      } else if (
+        extensions.code === "DOWNSTREAM_SERVICE_ERROR" &&
+        original?.originalError instanceof GraphQLError &&
+        original.originalError.path === undefined &&
+        original.originalError.nodes?.some(
+          (node) => node.kind === Kind.VARIABLE_DEFINITION,
+        )
+      ) {
+        publicExtensions.code = "BAD_USER_INPUT";
+        message = "Invalid input value";
       } else if (
         typeof extensions.code === "string" &&
         GRAPHQL_ERRORS.has(extensions.code)

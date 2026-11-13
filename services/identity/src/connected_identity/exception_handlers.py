@@ -52,6 +52,7 @@ def identity_error_response(
     status_code, message = _ERROR_DETAILS[exc.code]
     body = ErrorResponseDto(code=exc.code, message=message, issues=issues or [])
     headers = {"WWW-Authenticate": "Bearer"} if status_code == 401 else None
+
     return JSONResponse(
         body.model_dump(mode="json"), status_code=status_code, headers=headers
     )
@@ -99,4 +100,5 @@ async def handle_server_error(request: Request, _exc: Exception) -> Response:
     response = JSONResponse(
         body.model_dump(mode="json"), status_code=status.HTTP_500_INTERNAL_SERVER_ERROR
     )
+
     return apply_sensitive_auth_headers(request.url.path, response)
