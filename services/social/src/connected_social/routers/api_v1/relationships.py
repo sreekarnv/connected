@@ -27,6 +27,17 @@ Actor = Annotated[UUID, Depends(require_verified_actor)]
 PageLimit = Annotated[int, Query(ge=1, le=50)]
 
 
+@router.get(
+    "/feed-authors", operation_id="socialFeedAuthorIds", response_model=list[UUID]
+)
+async def feed_author_ids(
+    ids: Annotated[list[UUID], Query(min_length=1, max_length=50)],
+    actor_id: Actor,
+    db: AsyncSession = DbSession,
+) -> list[UUID]:
+    return list(await relationships.get_feed_author_ids(db, actor_id, set(ids)))
+
+
 @router.put(
     "/following/{target_id}",
     operation_id="socialFollowProfile",

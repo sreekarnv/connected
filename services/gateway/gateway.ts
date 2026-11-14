@@ -5,7 +5,12 @@ import {
   Logger,
   usePropagateHeaders,
 } from "@graphql-hive/gateway";
-import { GraphQLError, Kind } from "graphql";
+import {
+  defaultFieldResolver,
+  GraphQLError,
+  type GraphQLSchema,
+  Kind,
+} from "graphql";
 
 const isDevelopment = process.env.NODE_ENV === "development";
 
@@ -153,6 +158,26 @@ export const gatewayConfig = defineConfig({
       },
     }),
     {
+      onSchemaChange({ schema }: { schema: GraphQLSchema }) {
+        const field = schema.getQueryType()?.getFields().contentPosts;
+        if (!field) return;
+        const resolve = field.resolve ?? defaultFieldResolver;
+        field.resolve = (source, args, context, info) => {
+          const authorIds = args.author_ids;
+          // The OpenAPI transport omits empty arrays, removing the author filter.
+          if (
+            Array.isArray(authorIds) &&
+            (authorIds.length === 0 ||
+              authorIds.length > 50 ||
+              authorIds.some((id) => id == null))
+          ) {
+            throw new GraphQLError("Author IDs must contain 1 to 50 UUIDs", {
+              extensions: { code: "BAD_USER_INPUT" },
+            });
+          }
+          return resolve(source, args, context, info);
+        };
+      },
       onResponse({ response }) {
         response.headers.set("Cache-Control", "no-store");
       },

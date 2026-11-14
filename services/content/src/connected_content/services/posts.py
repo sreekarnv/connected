@@ -26,9 +26,15 @@ async def get_post(db: AsyncSession, post_id: UUID) -> Post | None:
 
 
 async def list_posts(
-    db: AsyncSession, *, after: tuple[datetime, UUID] | None, limit: int
+    db: AsyncSession,
+    *,
+    after: tuple[datetime, UUID] | None,
+    limit: int,
+    author_ids: set[UUID] | None = None,
 ) -> list[Post]:
     statement = select(Post)
+    if author_ids is not None:
+        statement = statement.where(Post.author_id.in_(author_ids))
     if after is not None:
         statement = statement.where(tuple_(Post.created_at, Post.id) < after)
     posts = list(

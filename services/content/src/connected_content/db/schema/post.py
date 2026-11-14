@@ -14,6 +14,7 @@ class Post(Base):
             "char_length(body) BETWEEN 1 AND 5000", name="ck_posts_body_length"
         ),
         Index("ix_posts_created_at_id", "created_at", "id"),
+        Index("ix_posts_author_id_created_at_id", "author_id", "created_at", "id"),
     )
 
     id: Mapped[UUID] = mapped_column(primary_key=True, default=uuid4)

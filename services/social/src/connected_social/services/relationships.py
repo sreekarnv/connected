@@ -18,6 +18,28 @@ def visible_to(viewer_id: UUID) -> ColumnElement[bool]:
     ).correlate(Profile)
 
 
+async def get_feed_author_ids(
+    db: AsyncSession, viewer_id: UUID, ids: set[UUID]
+) -> set[UUID]:
+    return set(
+        await db.scalars(
+            select(Profile.id).where(
+                Profile.id.in_(ids),
+                visible_to(viewer_id),
+                or_(
+                    Profile.id == viewer_id,
+                    exists()
+                    .where(
+                        Follow.follower_id == viewer_id,
+                        Follow.followed_id == Profile.id,
+                    )
+                    .correlate(Profile),
+                ),
+            )
+        )
+    )
+
+
 async def _lock_profiles(db: AsyncSession, actor_id: UUID, target_id: UUID) -> None:
     if actor_id == target_id:
         raise SocialError(ErrorCode.SELF_RELATIONSHIP)
