@@ -3,6 +3,7 @@
 		{ "name": "@apps/web", "path": "apps/web" },
 		{ "name": "@services/identity", "path": "services/identity" },
 		{ "name": "@services/social", "path": "services/social" },
+		{ "name": "@services/content", "path": "services/content" },
 		{ "name": "@services/gateway", "path": "services/gateway" },
 		{ "name": "@services/notifications", "path": "services/notifications" },
 		{ "name": "@root", "path": "." },

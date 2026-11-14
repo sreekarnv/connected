@@ -30,6 +30,20 @@ if (
 
 const DOWNSTREAM_ERRORS = new Map([
   [
+    "Content",
+    new Map([
+      ["UNAUTHENTICATED", 401],
+      ["FORBIDDEN", 403],
+      ["IDENTITY_UNAVAILABLE", 503],
+      ["SOCIAL_UNAVAILABLE", 503],
+      ["DATABASE_UNAVAILABLE", 503],
+      ["PROFILE_NOT_FOUND", 404],
+      ["POST_NOT_FOUND", 404],
+      ["VALIDATION_ERROR", 422],
+      ["HTTP_ERROR", 400],
+    ]),
+  ],
+  [
     "Identity",
     new Map([
       ["UNAUTHENTICATED", 401],

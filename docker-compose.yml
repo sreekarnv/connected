@@ -1,6 +1,59 @@
 name: connected
 
 services:
+  content:
+    image: ghcr.io/astral-sh/uv:python3.14-trixie-slim
+    init: true
+    working_dir: /app
+    command:
+      - sh
+      - -c
+      - |
+        uv run --locked alembic upgrade head &&
+        exec uv run --locked fastapi dev --host 0.0.0.0 --port 4004
+    environment:
+      DATABASE_URL: ${CONTENT_DATABASE_URL:-postgresql+asyncpg://content:${CONTENT_DATABASE_PASSWORD:-content}@content-postgres:5432/content}
+      IDENTITY_URL: http://identity:4001
+      SOCIAL_URL: http://social:4003
+    ports:
+      - "127.0.0.1:4004:4004"
+    volumes:
+      - ./services/content:/app
+      - /app/.venv
+    depends_on:
+      content-postgres:
+        condition: service_healthy
+      identity:
+        condition: service_healthy
+      social:
+        condition: service_healthy
+    healthcheck:
+      test:
+        - CMD
+        - python
+        - -c
+        - "import urllib.request; urllib.request.urlopen('http://127.0.0.1:4004/healthz/', timeout=3).close()"
+      interval: 5s
+      timeout: 5s
+      retries: 12
+      start_period: 30s
+
+  content-postgres:
+    image: postgres:18.6-alpine
+    environment:
+      POSTGRES_DB: content
+      POSTGRES_USER: content
+      POSTGRES_PASSWORD: ${CONTENT_DATABASE_PASSWORD:-content}
+    ports:
+      - "127.0.0.1:${CONTENT_POSTGRES_PORT:-5434}:5432"
+    volumes:
+      - content_postgres_data:/var/lib/postgresql
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $${POSTGRES_USER} -d $${POSTGRES_DB}"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
   social:
     image: ghcr.io/astral-sh/uv:python3.14-trixie-slim
     init: true
@@ -168,6 +221,8 @@ services:
       retries: 5
 
 volumes:
+  content_postgres_data:
+    name: connected_content_postgres_data
   social_postgres_data:
     name: connected_social_postgres_data
   # Keep using the data volumes from the original Compose projects.
