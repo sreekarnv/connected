@@ -1,0 +1,10 @@
+mutation VerifyEmail($input: VerifyEmailRequestDto_Input!) {
+  verifyEmail(input: $input) {
+    id
+    email
+    name
+    email_verified_at
+    created_at
+    updated_at
+  }
+}

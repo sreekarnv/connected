@@ -1,0 +1,27 @@
+overwrite: true
+schema: "http://localhost:4000/graphql"
+documents: "./src/graphql/**/*.{graphql,gql}"
+config:
+  scalars:
+    EmailAddress: string
+    Name: string
+    Password: string
+    Password_Confirm: string
+    UUID: string
+    DateTime: string
+generates:
+  src/graphql/generated/graphql.tsx:
+    plugins:
+      - "typescript-operations"
+      - "typescript-urql"
+    config:
+      urqlImportFrom: "@urql/next"
+      gqlImport: "urql#gql"
+  src/graphql/generated/server.ts:
+    plugins:
+      - "typescript-operations"
+      - "typescript-urql"
+    config:
+      withHooks: false
+      documentMode: documentNode
+      useTypeImports: true

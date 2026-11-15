@@ -1,0 +1,13 @@
+mutation Login($input: LoginRequestDto_Input!) {
+  login(input: $input) {
+    access_token
+    user {
+      id
+      name
+      email
+      email_verified_at
+      created_at
+      updated_at
+    }
+  }
+}

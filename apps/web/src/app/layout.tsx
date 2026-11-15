@@ -1,13 +1,14 @@
 import type { Metadata } from "next";
 import { Inter, JetBrains_Mono, Griffy } from "next/font/google";
-import {  Provider as ChakraProvider } from "~/components/ui/provider";
+import { Provider as ChakraProvider } from "~/components/ui/provider";
+import UrqlProvider from "~/lib/urql/provider";
 
 const griffy = Griffy({
   weight: ["400"],
   variable: "--font-brand",
   style: "normal",
-  subsets: ["latin"]
-})
+  subsets: ["latin"],
+});
 
 const inter = Inter({
   display: "swap",
@@ -37,7 +38,9 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
         className={`${inter.variable} ${jetbrainsMono.variable} ${griffy.variable}`}
         style={{ fontFamily: "var(--font-inter)" }}
       >
-        <ChakraProvider>{children}</ChakraProvider>
+        <UrqlProvider>
+          <ChakraProvider>{children}</ChakraProvider>
+        </UrqlProvider>
       </body>
     </html>
   );
