@@ -9,6 +9,13 @@ config:
     Password_Confirm: string
     UUID: string
     DateTime: string
+    Body: string
+    PositiveInt: number
+    Display_Name: string
+    Handle: string
+    mutationInput_socialCreateMyProfile_input_handle: string
+    queryInput_contentPosts_after_anyOf_0: string
+    queryInput_contentFollowingPosts_after_anyOf_0: string
 generates:
   src/graphql/generated/graphql.tsx:
     plugins:

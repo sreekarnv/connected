@@ -7,7 +7,7 @@ import { Exchange, Queue, RoutingKey } from "../config/rabbitmq";
 import { ResetPassword } from "../emails/reset-password";
 
 const passwordResetEventSchema = z.object({
-	email: z.email(),
+	email: z.email({ pattern: z.regexes.unicodeEmail }),
 	reset_url: z.url({ protocol: /^https?$/ }),
 	name: z.string().refine((value) => value.trim().length > 0),
 });

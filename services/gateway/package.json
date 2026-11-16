@@ -7,6 +7,7 @@
     "dev": "NODE_ENV=development hive-gateway --config-path gateway.ts supergraph supergraph.graphql",
     "start": "NODE_ENV=production hive-gateway --config-path gateway.ts supergraph supergraph.graphql",
     "typecheck": "tsc --noEmit",
+    "test": "node --test gateway.test.mjs",
     "format": "prettier --write .",
     "format:check": "prettier --check ."
   },

@@ -1,0 +1,5 @@
+mutation UnblockProfile($targetId: UUID!) {
+  relationship: socialUnblockProfile(target_id: $targetId) {
+    status
+  }
+}

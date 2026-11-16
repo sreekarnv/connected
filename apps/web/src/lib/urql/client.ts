@@ -1,13 +1,12 @@
 import {
   createClient,
-  cacheExchange,
   fetchExchange,
   type Exchange,
   type SSRExchange,
 } from "urql/core";
 
 export const makeClient = (ssr?: SSRExchange) => {
-  const exchanges: Exchange[] = [cacheExchange];
+  const exchanges: Exchange[] = [];
   const ssrExists = typeof ssr !== "undefined";
 
   if (ssrExists) {

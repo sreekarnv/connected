@@ -1,0 +1,8 @@
+query SocialPost($postId: UUID!) {
+  contentPost(post_id: $postId) {
+    id
+    author_id
+    body
+    created_at
+  }
+}

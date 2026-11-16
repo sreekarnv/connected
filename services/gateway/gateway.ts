@@ -1,6 +1,7 @@
 import {
   ConsoleLogWriter,
   defineConfig,
+  type GatewayContext,
   type GatewayPlugin,
   Logger,
   usePropagateHeaders,
@@ -9,8 +10,23 @@ import {
   defaultFieldResolver,
   GraphQLError,
   type GraphQLSchema,
+  type GraphQLResolveInfo,
   Kind,
 } from "graphql";
+
+type PostPage = { items: ({ author_id: string } | null)[] };
+type SocialContext = {
+  Social: {
+    Query: {
+      socialProfilesByIds(options: {
+        root: PostPage;
+        args: { ids: string[] };
+        context: GatewayContext & SocialContext;
+        info: GraphQLResolveInfo;
+      }): Promise<unknown>;
+    };
+  };
+};
 
 const isDevelopment = process.env.NODE_ENV === "development";
 
@@ -131,8 +147,39 @@ const logging = new Logger({
   ],
 });
 
-export const gatewayConfig = defineConfig({
+export const gatewayConfig = defineConfig<SocialContext>({
   logging,
+  additionalTypeDefs: /* GraphQL */ `
+    extend type PostPageDto {
+      authors: [ProfileDto]
+    }
+  `,
+  additionalResolvers: {
+    PostPageDto: {
+      authors: {
+        selectionSet: "{ items { author_id } }",
+        resolve(
+          page: PostPage,
+          _args: unknown,
+          context: GatewayContext & SocialContext,
+          info: GraphQLResolveInfo,
+        ) {
+          const ids = [
+            ...new Set(
+              page.items.flatMap((post) => (post ? [post.author_id] : [])),
+            ),
+          ];
+          if (!ids.length) return [];
+          return context.Social.Query.socialProfilesByIds({
+            root: page,
+            args: { ids },
+            context,
+            info,
+          });
+        },
+      },
+    },
+  },
   cors: {
     origin: corsOrigins,
     credentials: true,

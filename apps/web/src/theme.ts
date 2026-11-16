@@ -2,37 +2,45 @@ import { createSystem, defaultConfig, defineConfig } from "@chakra-ui/react";
 
 const config = defineConfig({
   globalCss: {
-    html: { colorPalette: "blue" },
+    html: { colorPalette: "blue", scrollPaddingTop: "24" },
+    "button, a, input, textarea": { WebkitTapHighlightColor: "transparent" },
+    "*, *::before, *::after": {
+      _motionReduce: {
+        animationDuration: "0.01ms !important",
+        transitionDuration: "0.01ms !important",
+        scrollBehavior: "auto !important",
+      },
+    },
     "*::placeholder, *[data-placeholder]": { color: "fg.muted" },
   },
   theme: {
     tokens: {
       colors: {
         blue: {
-          50: { value: "#F0F9FF" },
-          100: { value: "#E0F2FE" },
-          200: { value: "#BDE8FD" },
-          300: { value: "#7DD3FC" },
-          400: { value: "#38BDF8" },
-          500: { value: "#0EA5E9" },
-          600: { value: "#0284C7" },
-          700: { value: "#0369A1" },
-          800: { value: "#16435E" },
-          900: { value: "#102E46" },
-          950: { value: "#082336" },
+          50: { value: "#F1F4FF" },
+          100: { value: "#E4EBFF" },
+          200: { value: "#CAD8FF" },
+          300: { value: "#A8BEFF" },
+          400: { value: "#8BA8FF" },
+          500: { value: "#597EF0" },
+          600: { value: "#4267DC" },
+          700: { value: "#3455BF" },
+          800: { value: "#293D78" },
+          900: { value: "#202F59" },
+          950: { value: "#171F3E" },
         },
         pink: {
-          50: { value: "#FDF2F8" },
-          100: { value: "#FCE7F3" },
-          200: { value: "#FBD9EC" },
-          300: { value: "#FFA3CD" },
-          400: { value: "#FF71B1" },
-          500: { value: "#FF2D8D" },
-          600: { value: "#DB176D" },
-          700: { value: "#C11567" },
-          800: { value: "#641C45" },
-          900: { value: "#3B1730" },
-          950: { value: "#271023" },
+          50: { value: "#FBF5F7" },
+          100: { value: "#F5E8ED" },
+          200: { value: "#ECD1DC" },
+          300: { value: "#E2B8C9" },
+          400: { value: "#DDA1B5" },
+          500: { value: "#C97C98" },
+          600: { value: "#B15B7D" },
+          700: { value: "#A04468" },
+          800: { value: "#653246" },
+          900: { value: "#3B2432" },
+          950: { value: "#271C26" },
         },
       },
       fonts: {
@@ -52,38 +60,38 @@ const config = defineConfig({
         bg: {
           DEFAULT: {
             value: {
-              _light: "#F5F9FC",
-              _dark: "#0B1220",
+              _light: "#F6F7F8",
+              _dark: "#111318",
             },
           },
           subtle: {
             value: {
-              _light: "#F5F9FC",
-              _dark: "#0B1220",
+              _light: "#F6F7F8",
+              _dark: "#111318",
             },
           },
           panel: {
             value: {
               _light: "{colors.white}",
-              _dark: "#121E30",
+              _dark: "#1A1D24",
             },
           },
           muted: {
             value: {
-              _light: "#EEF5FA",
-              _dark: "#1B2B41",
+              _light: "#ECEEF1",
+              _dark: "#242832",
             },
           },
           emphasized: {
             value: {
-              _light: "#DCE6EF",
-              _dark: "#28394F",
+              _light: "#DEE2E7",
+              _dark: "#323844",
             },
           },
           inverted: {
             value: {
-              _light: "#15263B",
-              _dark: "#F2F7FC",
+              _light: "#202329",
+              _dark: "#F1F2F4",
             },
           },
           info: {
@@ -93,14 +101,14 @@ const config = defineConfig({
         fg: {
           DEFAULT: {
             value: {
-              _light: "#15263B",
-              _dark: "#F2F7FC",
+              _light: "#202329",
+              _dark: "#F1F2F4",
             },
           },
           muted: {
             value: {
-              _light: "#53677F",
-              _dark: "#9CAEC4",
+              _light: "#59616E",
+              _dark: "#ADB3BF",
             },
           },
           subtle: {
@@ -108,8 +116,8 @@ const config = defineConfig({
           },
           inverted: {
             value: {
-              _light: "#F2F7FC",
-              _dark: "#15263B",
+              _light: "#F6F7F8",
+              _dark: "#1A1D24",
             },
           },
           info: {
@@ -119,8 +127,8 @@ const config = defineConfig({
         border: {
           DEFAULT: {
             value: {
-              _light: "#DCE6EF",
-              _dark: "#28394F",
+              _light: "#DEE2E7",
+              _dark: "#323844",
             },
           },
           subtle: {
@@ -135,8 +143,8 @@ const config = defineConfig({
           // Controls need stronger boundaries than decorative card dividers.
           emphasized: {
             value: {
-              _light: "#7A8A9E",
-              _dark: "#60758F",
+              _light: "#7D8795",
+              _dark: "#737C8C",
             },
           },
         },
@@ -228,6 +236,9 @@ const config = defineConfig({
       },
     },
     recipes: {
+      button: {
+        base: { borderRadius: "xl", fontWeight: "semibold", minH: "11" },
+      },
       input: {
         variants: {
           variant: {

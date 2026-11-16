@@ -7,7 +7,7 @@ import { Exchange, Queue, RoutingKey } from "../config/rabbitmq";
 import { VerifyEmail } from "../emails/verify-email";
 
 const signupEventSchema = z.object({
-	email: z.email(),
+	email: z.email({ pattern: z.regexes.unicodeEmail }),
 	verification_url: z.url({ protocol: /^https?$/ }),
 	name: z.string().refine((value) => value.trim().length > 0),
 });

@@ -1,0 +1,8 @@
+mutation CreateSocialPost($input: CreatePostRequestDto_Input!) {
+  contentCreatePost(input: $input) {
+    id
+    author_id
+    body
+    created_at
+  }
+}

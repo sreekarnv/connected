@@ -9,7 +9,10 @@
     "lint": "eslint",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
-    "codegen": "gql-gen --config codegen.yml"
+    "codegen": "gql-gen --config codegen.yml",
+    "test:graphql": "node scripts/check-graphql-errors.mjs",
+    "test:social": "node scripts/check-social-links.mjs",
+    "test:session": "node scripts/check-session-request.mjs"
   },
   "dependencies": {
     "@chakra-ui/react": "^3.37.0",

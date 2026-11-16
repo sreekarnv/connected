@@ -120,8 +120,8 @@ export default function ResetPasswordClientPage() {
     <>
       {state.status === "checking" && (
         <HStack gap="3" color="fg.muted" role="status">
-          <Spinner size="sm" />
-          <Text>Checking your reset link...</Text>
+          <Spinner size="sm" aria-hidden="true" />
+          <Text srOnly>Checking your reset link...</Text>
         </HStack>
       )}
       {state.status === "invalid" && (

@@ -1,0 +1,10 @@
+query MyFollowers($after: UUID) {
+  profiles: socialMyFollowers(after: $after, limit: 20) {
+    items {
+      id
+      handle
+      display_name
+    }
+    next_cursor
+  }
+}

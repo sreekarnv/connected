@@ -1,0 +1,5 @@
+mutation FollowProfile($targetId: UUID!) {
+  relationship: socialFollowProfile(target_id: $targetId) {
+    status
+  }
+}

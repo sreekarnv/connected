@@ -1,0 +1,18 @@
+query SocialFollowingPosts(
+  $after: queryInput_contentFollowingPosts_after_anyOf_0
+) {
+  posts: contentFollowingPosts(limit: 20, after: $after) {
+    items {
+      id
+      author_id
+      body
+      created_at
+    }
+    next_cursor
+    authors {
+      id
+      handle
+      display_name
+    }
+  }
+}

@@ -56,7 +56,7 @@ function LoginClientPage() {
           try {
             const result = await login({ input: data });
             if (!result.error && result.data?.login) {
-              router.replace("/dashboard");
+              router.replace("/social");
               return;
             }
             setFeedback({

@@ -1,7 +1,7 @@
 "use client";
 
 import { Button, HStack, Spinner, Stack, Text } from "@chakra-ui/react";
-import { LogInIcon, LogOutIcon } from "lucide-react";
+import { ArrowUpRight } from "lucide-react";
 import Link from "next/link";
 import { useState } from "react";
 import { useLogoutMutation } from "~/graphql/generated/graphql";
@@ -18,32 +18,32 @@ export function HomeAuthActions() {
       const result = await logout({});
 
       if (result.error || result.data?.logout?.status !== "success") {
-        setError("We couldn't log you out. Please try again.");
+        setError("We couldn't sign you out. Please try again.");
         return;
       }
       // Clear cached private data after the server removes the session cookie.
       window.location.replace("/");
     } catch {
-      setError("We couldn't log you out. Please try again.");
+      setError("We couldn't sign you out. Please try again.");
     }
   }
 
   if (session.status === "loading") {
     return (
       <HStack minH="11" gap="2" color="fg.muted" role="status">
-        <Spinner size="sm" />
-        <Text fontSize="sm">Checking session...</Text>
+        <Spinner size="sm" aria-hidden="true" />
+        <Text srOnly>Checking session...</Text>
       </HStack>
     );
   }
 
   if (session.status === "error") {
     return (
-      <Stack gap="2" align="start" maxW="xs">
+      <Stack gap="2" align="center" maxW="xs">
         <Text fontSize="sm" role="alert">
           We couldn&apos;t check your session.
         </Text>
-        <Button size="sm" minH="11" onClick={() => window.location.reload()}>
+        <Button size="sm" minH="11" onClick={session.retry}>
           Try again
         </Button>
       </Stack>
@@ -51,31 +51,43 @@ export function HomeAuthActions() {
   }
 
   return (
-    <Stack gap="2" align="end" maxW="full">
-      <HStack gap={{ base: "2", md: "4" }}>
+    <Stack gap="3" align="center" maxW="full">
+      <HStack gap="3" wrap="wrap" justify="center">
         {session.status === "ready" ? (
-          <Button
-            size="sm"
-            minH="11"
-            rounded="lg"
-            loading={fetching}
-            loadingText="Logging out"
-            disabled={fetching}
-            onClick={signOut}
-          >
-            Log Out
-            <LogOutIcon aria-hidden="true" />
-          </Button>
-        ) : (
           <>
-            <Button asChild size="sm" minH="11" rounded="lg">
-              <Link href="/login">
-                Log In
-                <LogInIcon aria-hidden="true" />
+            <Button asChild size="lg" minH="12" rounded="full">
+              <Link href="/social">
+                Your feed <ArrowUpRight aria-hidden="true" />
               </Link>
             </Button>
-            <Button asChild size="sm" minH="11" rounded="lg">
-              <Link href="/signup">Sign Up</Link>
+            <Button
+              size="lg"
+              minH="12"
+              rounded="full"
+              variant="outline"
+              loading={fetching}
+              loadingText="Signing out"
+              disabled={fetching}
+              onClick={signOut}
+            >
+              Sign out
+            </Button>
+          </>
+        ) : (
+          <>
+            <Button asChild size="lg" minH="12" rounded="full">
+              <Link href="/signup">
+                Create account <ArrowUpRight aria-hidden="true" />
+              </Link>
+            </Button>
+            <Button
+              asChild
+              size="lg"
+              minH="12"
+              rounded="full"
+              variant="outline"
+            >
+              <Link href="/login">Sign in</Link>
             </Button>
           </>
         )}

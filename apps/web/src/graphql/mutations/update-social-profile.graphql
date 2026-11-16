@@ -1,0 +1,8 @@
+mutation UpdateSocialProfile($input: UpdateProfileRequestDto_Input!) {
+  socialUpdateMyProfile(input: $input) {
+    id
+    handle
+    display_name
+    created_at
+  }
+}

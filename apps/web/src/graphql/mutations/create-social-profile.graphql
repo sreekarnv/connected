@@ -1,0 +1,8 @@
+mutation CreateSocialProfile($input: CreateProfileRequestDto_Input!) {
+  socialCreateMyProfile(input: $input) {
+    id
+    handle
+    display_name
+    created_at
+  }
+}

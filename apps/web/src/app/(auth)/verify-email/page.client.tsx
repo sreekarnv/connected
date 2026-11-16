@@ -88,8 +88,8 @@ export default function VerifyEmailClientPage() {
     <Stack gap="5">
       {state.status === "loading" && (
         <HStack gap="3" color="fg.muted" role="status">
-          <Spinner size="sm" />
-          <Text>Reading your verification link...</Text>
+          <Spinner size="sm" aria-hidden="true" />
+          <Text srOnly>Reading your verification link...</Text>
         </HStack>
       )}
       {state.status === "success" && (
