@@ -9,5 +9,6 @@ export default async function ProfilePage({
   params: Promise<{ handle: string }>;
 }) {
   const { handle } = await params;
+
   redirect(profileHref(handle));
 }

@@ -21,12 +21,12 @@ import {
   useSocialPostsQuery,
 } from "~/graphql/generated/graphql";
 import { hasAuthErrorCode } from "~/lib/auth-feedback";
-import { PostCard, type SocialPost } from "./post-card";
+import { PostCard, type SocialPost } from "~/components/social/post-card";
 import {
   useSocialSession,
   type Feed,
   type PaginationState,
-} from "./social-shell";
+} from "~/components/social/social-shell";
 import {
   EmptyState,
   LoadingSkeleton,
@@ -37,7 +37,7 @@ import {
   requestMessage,
   sessionExpired,
   SessionRecovery,
-} from "./social-ui";
+} from "~/components/social/social-ui";
 
 function ProfileSetup({
   name,
@@ -326,7 +326,7 @@ function FeedTimeline({
   );
 }
 
-export function SocialFeed() {
+export default function SocialClientPage() {
   const {
     user,
     context,

@@ -9,29 +9,31 @@ import {
   useSocialPostQuery,
 } from "~/graphql/generated/graphql";
 import { hasAuthErrorCode } from "~/lib/auth-feedback";
-import { PostCard } from "./post-card";
-import { useSocialSession } from "./social-shell";
+import { PostCard } from "~/components/social/post-card";
+import { useSocialSession } from "~/components/social/social-shell";
 import {
   EmptyState,
   LoadingSkeleton,
   PageHeading,
   RequestError,
-} from "./social-ui";
+} from "~/components/social/social-ui";
 
-export function PostScreen({
+export default function PostClientPage({
   postId,
   returnTo,
 }: {
   postId: string;
   returnTo: string;
 }) {
-  const { context } = useSocialSession();
   const router = useRouter();
+
+  const { context } = useSocialSession();
   const [result, refreshPost] = useSocialPostQuery({
     context,
     variables: { postId },
     requestPolicy: "network-only",
   });
+
   const post = result.data?.contentPost;
   const [authors, refreshAuthors] = usePostAuthorsQuery({
     context,
@@ -39,9 +41,11 @@ export function PostScreen({
     pause: !post,
     requestPolicy: "network-only",
   });
+
   const author = authors.data?.socialProfilesByIds?.find(
     (profile) => profile?.id === post?.author_id,
   );
+
   const unavailable =
     hasAuthErrorCode(result.error, "POST_NOT_FOUND") ||
     hasAuthErrorCode(result.error, "BAD_USER_INPUT") ||

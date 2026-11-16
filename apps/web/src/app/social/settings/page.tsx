@@ -1,7 +1,7 @@
-import { SettingsScreen } from "~/components/social/settings-screen";
+import SettingsClientPage from "./page.client";
 
 export const metadata = { title: "Settings | Connected" };
 
 export default function SettingsPage() {
-  return <SettingsScreen />;
+  return <SettingsClientPage />;
 }

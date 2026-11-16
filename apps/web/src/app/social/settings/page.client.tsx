@@ -27,7 +27,7 @@ import {
 import { useColorMode } from "~/components/ui/color-mode";
 import { Tooltip } from "~/components/ui/tooltip";
 import { hasAuthErrorCode } from "~/lib/auth-feedback";
-import { useSocialSession } from "./social-shell";
+import { useSocialSession } from "~/components/social/social-shell";
 import {
   EmptyState,
   PageHeading,
@@ -39,7 +39,7 @@ import {
   requestMessage,
   sessionExpired,
   SessionRecovery,
-} from "./social-ui";
+} from "~/components/social/social-ui";
 
 function DisplayNameForm({
   profile,
@@ -47,11 +47,14 @@ function DisplayNameForm({
   profile: NonNullable<SocialViewerQuery["socialMyProfile"]>;
 }) {
   const { context, refreshProfile } = useSocialSession();
+  const [{ fetching, error }, updateProfile] = useUpdateSocialProfileMutation();
+
   const [draft, setDraft] = useState<string>();
   const [message, setMessage] = useState<string | null>(null);
   const [notice, setNotice] = useState("");
-  const [{ fetching, error }, updateProfile] = useUpdateSocialProfileMutation();
+
   const name = draft ?? profile.display_name;
+
   return (
     <Box
       as="form"
@@ -300,7 +303,7 @@ function SignOut() {
   );
 }
 
-export function SettingsScreen() {
+export default function SettingsClientPage() {
   const { user, profile, profileLoading, profileError, refreshProfile } =
     useSocialSession();
   return (

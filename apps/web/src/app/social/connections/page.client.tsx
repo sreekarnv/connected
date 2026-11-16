@@ -20,7 +20,7 @@ import {
   useProfileByHandleQuery,
 } from "~/graphql/generated/graphql";
 import { hasAuthErrorCode } from "~/lib/auth-feedback";
-import { useSocialSession } from "./social-shell";
+import { useSocialSession } from "~/components/social/social-shell";
 import {
   EmptyState,
   PageHeading,
@@ -29,7 +29,7 @@ import {
   PersonRow,
   ProfileRequired,
   RequestError,
-} from "./social-ui";
+} from "~/components/social/social-ui";
 
 function HandleLookup({ handle }: { handle: string }) {
   const { context } = useSocialSession();
@@ -171,7 +171,7 @@ function RelationshipLists({ onFind }: { onFind: () => void }) {
   );
 }
 
-export function ConnectionsScreen() {
+export default function ConnectionsClientPage() {
   const { profile, profileLoading, profileError, refreshProfile } =
     useSocialSession();
   const [handle, setHandle] = useState("");

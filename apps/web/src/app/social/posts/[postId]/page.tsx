@@ -1,5 +1,5 @@
-import { PostScreen } from "~/components/social/post-screen";
 import { postReturnHref } from "~/lib/social-links";
+import PostClientPage from "./page.client";
 
 export const metadata = { title: "Post | Connected" };
 
@@ -13,7 +13,7 @@ export default async function PostPage({
   const [{ postId }, { returnTo }] = await Promise.all([params, searchParams]);
 
   return (
-    <PostScreen
+    <PostClientPage
       key={postId}
       postId={postId}
       returnTo={postReturnHref(returnTo)}

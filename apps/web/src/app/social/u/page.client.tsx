@@ -28,8 +28,8 @@ import {
 import { fieldError } from "~/lib/graphql-errors";
 import { hasAuthErrorCode } from "~/lib/auth-feedback";
 import { profileHref } from "~/lib/social-links";
-import { PostCard } from "./post-card";
-import { useSocialSession } from "./social-shell";
+import { PostCard } from "~/components/social/post-card";
+import { useSocialSession } from "~/components/social/social-shell";
 import {
   ConfirmDialog,
   PersonAvatar,
@@ -43,7 +43,7 @@ import {
   requestMessage,
   sessionExpired,
   SessionRecovery,
-} from "./social-ui";
+} from "~/components/social/social-ui";
 
 type Profile = NonNullable<ProfileByHandleQuery["socialProfileByHandle"]>;
 
@@ -88,6 +88,7 @@ function ProfileContent({ profile }: { profile: Profile }) {
     },
     requestPolicy: "network-only",
   });
+
   useEffect(() => {
     const previous = previousPage.current;
     previousPage.current = { after, postVersion };
@@ -95,6 +96,7 @@ function ProfileContent({ profile }: { profile: Profile }) {
       refreshPosts({ requestPolicy: "network-only" });
     }
   }, [after, postVersion, refreshPosts]);
+
   const followError = fieldError(postsResult.error, "socialFeedAuthorIds");
   const postsError = fieldError(postsResult.error, "posts");
   const [{ fetching: following }, follow] = useFollowProfileMutation();
@@ -307,8 +309,10 @@ function ProfileContent({ profile }: { profile: Profile }) {
           if (busy) return;
           setMessage(null);
           setMutationError(undefined);
+
           try {
             const result = await block({ targetId: profile.id }, context);
+
             if (
               result.error ||
               result.data?.relationship?.status !== "success"
@@ -399,13 +403,14 @@ function ProfileContent({ profile }: { profile: Profile }) {
   );
 }
 
-export function ProfileScreen({ handle }: { handle: string }) {
+export default function ProfileClientPage({ handle }: { handle: string }) {
   const { context } = useSocialSession();
   const [result, refresh] = useProfileByHandleQuery({
     context,
     variables: { handle },
     requestPolicy: "network-only",
   });
+
   if (result.fetching)
     return (
       <Stack gap="4">
@@ -415,6 +420,7 @@ export function ProfileScreen({ handle }: { handle: string }) {
         <LoadingSkeleton variant="person">Loading profile...</LoadingSkeleton>
       </Stack>
     );
+
   if (hasAuthErrorCode(result.error, "PROFILE_NOT_FOUND"))
     return (
       <Stack gap="4">
@@ -433,6 +439,7 @@ export function ProfileScreen({ handle }: { handle: string }) {
         </EmptyState>
       </Stack>
     );
+
   if (result.error || !result.data?.socialProfileByHandle)
     return (
       <Stack gap="4">
@@ -447,6 +454,7 @@ export function ProfileScreen({ handle }: { handle: string }) {
         />
       </Stack>
     );
+
   return (
     <ProfileContent
       key={result.data.socialProfileByHandle.id}
