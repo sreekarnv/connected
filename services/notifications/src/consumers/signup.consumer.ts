@@ -13,6 +13,10 @@ const signupEventSchema = z.object({
 });
 
 export async function signupConsumer(channel: amqp.Channel) {
+	let active = true;
+	channel.once("close", () => {
+		active = false;
+	});
 	await channel.assertExchange(Exchange.IDENTITY_EVENTS, "direct", {
 		durable: true,
 	});
@@ -39,7 +43,7 @@ export async function signupConsumer(channel: amqp.Channel) {
 				event = signupEventSchema.parse(JSON.parse(message.content.toString()));
 			} catch {
 				console.error("Invalid signup event");
-				channel.nack(message, false, false);
+				if (active) channel.nack(message, false, false);
 				return;
 			}
 
@@ -59,11 +63,11 @@ export async function signupConsumer(channel: amqp.Channel) {
 			} catch (error) {
 				console.error("Signup email failed", error);
 				// shortcut: failures requeue immediately, use a delayed retry queue if SMTP outages cause a retry loop.
-				channel.nack(message, false, true);
+				if (active) channel.nack(message, false, true);
 				return;
 			}
 
-			channel.ack(message);
+			if (active) channel.ack(message);
 		},
 		{
 			noAck: false,

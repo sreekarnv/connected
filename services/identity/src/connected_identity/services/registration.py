@@ -10,19 +10,20 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from connected_identity.db.schema import Credential, EmailVerificationToken, User
 from connected_identity.errors import ErrorCode, IdentityError
-from connected_identity.messaging.email import publish_verification_email
+from connected_identity.messaging.email import encrypt_verification_token
 from connected_identity.services.password import hash_password, verify_password
 
 EMAIL_VERIFICATION_TTL = timedelta(hours=24)
 EMAIL_VERIFICATION_COOLDOWN = timedelta(seconds=60)
 
 
-async def _issue_verification_token(db: AsyncSession, user_id: UUID) -> str:
+async def _issue_verification_token(db: AsyncSession, user_id: UUID) -> None:
     token = secrets.token_urlsafe(32)
     now = datetime.now(UTC)
 
     values = {
         "token_hash": hashlib.sha256(token.encode()).hexdigest(),
+        "pending_token": encrypt_verification_token(token),
         "created_at": now,
         "expires_at": now + EMAIL_VERIFICATION_TTL,
     }
@@ -34,8 +35,6 @@ async def _issue_verification_token(db: AsyncSession, user_id: UUID) -> str:
             index_elements=[EmailVerificationToken.user_id], set_=values
         )
     )
-
-    return token
 
 
 async def verify_email(db: AsyncSession, token: str) -> User:
@@ -98,7 +97,7 @@ async def signup(db: AsyncSession, *, name: str, email: str, password: str) -> U
         db.add(user)
         await db.flush()
         db.add(Credential(password=encoded, user_id=user.id))
-        token = await _issue_verification_token(db, user.id)
+        await _issue_verification_token(db, user.id)
         await db.commit()
     except IntegrityError as exc:
         await db.rollback()
@@ -111,7 +110,6 @@ async def signup(db: AsyncSession, *, name: str, email: str, password: str) -> U
     except Exception:
         await db.rollback()
         raise
-    await publish_verification_email(user, token)
     return user
 
 
@@ -145,9 +143,8 @@ async def resend_verification(db: AsyncSession, *, email: str, password: str) ->
         ):
             await db.rollback()
             return
-        token = await _issue_verification_token(db, user.id)
+        await _issue_verification_token(db, user.id)
         await db.commit()
     except Exception:
         await db.rollback()
         raise
-    await publish_verification_email(user, token)

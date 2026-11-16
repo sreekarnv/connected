@@ -22,7 +22,11 @@ import {
 } from "~/graphql/generated/graphql";
 import { hasAuthErrorCode } from "~/lib/auth-feedback";
 import { PostCard, type SocialPost } from "./post-card";
-import { useSocialSession } from "./social-shell";
+import {
+  useSocialSession,
+  type Feed,
+  type PaginationState,
+} from "./social-shell";
 import {
   EmptyState,
   LoadingSkeleton,
@@ -34,9 +38,6 @@ import {
   sessionExpired,
   SessionRecovery,
 } from "./social-ui";
-
-type Feed = "all" | "following";
-type PaginationState = { after?: string; postVersion: number };
 
 function ProfileSetup({
   name,
@@ -326,7 +327,6 @@ function FeedTimeline({
 }
 
 export function SocialFeed() {
-  const [feed, setFeed] = useState<Feed>("all");
   const {
     user,
     context,
@@ -335,12 +335,12 @@ export function SocialFeed() {
     profileError,
     refreshProfile,
     openComposer,
-    postVersion,
+    feedState,
+    setFeedState,
   } = useSocialSession();
-  const [pages, setPages] = useState<Record<Feed, PaginationState>>({
-    all: { postVersion },
-    following: { postVersion },
-  });
+  const feed = feedState.selected;
+  const setFeed = (selected: Feed) =>
+    setFeedState((previous) => ({ ...previous, selected }));
   const missingProfile = hasAuthErrorCode(profileError, "PROFILE_NOT_FOUND");
   return (
     <Stack gap={{ base: "5", md: "6" }}>
@@ -404,9 +404,12 @@ export function SocialFeed() {
         key={feed}
         feed={feed}
         onFeedChange={setFeed}
-        pagination={pages[feed]}
+        pagination={feedState.pages[feed]}
         onPaginationChange={(page) =>
-          setPages((previous) => ({ ...previous, [feed]: page }))
+          setFeedState((previous) => ({
+            ...previous,
+            pages: { ...previous.pages, [feed]: page },
+          }))
         }
       />
     </Stack>

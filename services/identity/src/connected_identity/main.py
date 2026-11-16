@@ -1,12 +1,13 @@
+import asyncio
 from collections.abc import AsyncGenerator
-from contextlib import asynccontextmanager
+from contextlib import asynccontextmanager, suppress
 
 from fastapi import FastAPI, HTTPException
 from fastapi.exceptions import RequestValidationError
 from fastapi.middleware.cors import CORSMiddleware
 from faststream_fastapi import FastStreamAPI
 
-from connected_identity.config.rabbitmq import start_broker, stop_broker
+from connected_identity.config.rabbitmq import stop_broker
 from connected_identity.config.settings import get_settings
 from connected_identity.dtos.base import ErrorResponseDto
 from connected_identity.errors import IdentityError
@@ -16,6 +17,7 @@ from connected_identity.exception_handlers import (
     handle_server_error,
     handle_validation_error,
 )
+from connected_identity.jobs import run_verification_email_worker
 from connected_identity.middleware.security_headers import (
     sensitive_auth_response_headers,
 )
@@ -28,11 +30,15 @@ settings = get_settings()
 @asynccontextmanager
 async def lifespan(app: FastAPI) -> AsyncGenerator[None, None]:
     get_signing_key()
-    await start_broker()
+    delivery_worker = asyncio.create_task(run_verification_email_worker())
     try:
         yield
     finally:
-        await stop_broker()
+        delivery_worker.cancel()
+        with suppress(asyncio.CancelledError):
+            await delivery_worker
+        async with asyncio.timeout(10):
+            await stop_broker()
 
 
 fastapi_app = FastAPI(

@@ -13,6 +13,10 @@ const passwordResetEventSchema = z.object({
 });
 
 export async function passwordResetConsumer(channel: amqp.Channel) {
+	let active = true;
+	channel.once("close", () => {
+		active = false;
+	});
 	await channel.assertExchange(Exchange.IDENTITY_EVENTS, "direct", {
 		durable: true,
 	});
@@ -39,7 +43,7 @@ export async function passwordResetConsumer(channel: amqp.Channel) {
 				);
 			} catch {
 				console.error("Invalid password reset event");
-				channel.nack(message, false, false);
+				if (active) channel.nack(message, false, false);
 				return;
 			}
 
@@ -59,11 +63,11 @@ export async function passwordResetConsumer(channel: amqp.Channel) {
 			} catch {
 				console.error("Password reset email failed");
 				// shortcut: failures requeue immediately, use a delayed retry queue if SMTP outages cause a retry loop.
-				channel.nack(message, false, true);
+				if (active) channel.nack(message, false, true);
 				return;
 			}
 
-			channel.ack(message);
+			if (active) channel.ack(message);
 		},
 		{ noAck: false },
 	);

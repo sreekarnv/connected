@@ -14,7 +14,7 @@ import {
   Stack,
   Text,
 } from "@chakra-ui/react";
-import { LogOut, Sun, Moon, Palette } from "lucide-react";
+import { BadgeCheck, LogOut, Sun, Moon, Palette } from "lucide-react";
 import { useState } from "react";
 import type { CombinedError } from "urql";
 import {
@@ -25,6 +25,7 @@ import {
   useUpdateSocialProfileMutation,
 } from "~/graphql/generated/graphql";
 import { useColorMode } from "~/components/ui/color-mode";
+import { Tooltip } from "~/components/ui/tooltip";
 import { hasAuthErrorCode } from "~/lib/auth-feedback";
 import { useSocialSession } from "./social-shell";
 import {
@@ -345,7 +346,24 @@ export function SettingsScreen() {
           >
             <DataList.ItemLabel>Email verification</DataList.ItemLabel>
             <DataList.ItemValue>
-              {user.email_verified_at ? "Verified" : "Not verified"}
+              {user.email_verified_at ? (
+                <Tooltip content="Your email address is verified." showArrow>
+                  <HStack
+                    as="span"
+                    gap="1.5"
+                    colorPalette="pink"
+                    color="pink.fg"
+                    tabIndex={0}
+                    rounded="sm"
+                    focusVisibleRing="outside"
+                  >
+                    <BadgeCheck size={16} aria-hidden="true" />
+                    Verified
+                  </HStack>
+                </Tooltip>
+              ) : (
+                "Not verified"
+              )}
             </DataList.ItemValue>
           </DataList.Item>
         </DataList.Root>

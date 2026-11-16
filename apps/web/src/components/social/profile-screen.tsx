@@ -27,6 +27,7 @@ import {
 } from "~/graphql/generated/graphql";
 import { fieldError } from "~/lib/graphql-errors";
 import { hasAuthErrorCode } from "~/lib/auth-feedback";
+import { profileHref } from "~/lib/social-links";
 import { PostCard } from "./post-card";
 import { useSocialSession } from "./social-shell";
 import {
@@ -55,16 +56,20 @@ function ProfileContent({ profile }: { profile: Profile }) {
     profileError,
     refreshProfile,
     postVersion,
+    openComposer,
+    profilePages,
+    setProfilePages,
   } = useSocialSession();
   const router = useRouter();
 
-  const [pagination, setPagination] = useState<{
-    after?: string;
-    postVersion: number;
-  }>({ postVersion });
+  const pagination = profilePages[profile.id];
   const after =
-    pagination.postVersion === postVersion ? pagination.after : undefined;
-  const setAfter = (after?: string) => setPagination({ after, postVersion });
+    pagination?.postVersion === postVersion ? pagination.after : undefined;
+  const setAfter = (after?: string) =>
+    setProfilePages((previous) => ({
+      ...previous,
+      [profile.id]: { after, postVersion },
+    }));
   const previousPage = useRef({ after, postVersion });
   const [confirming, setConfirming] = useState(false);
   const menuTrigger = useRef<HTMLButtonElement>(null);
@@ -349,6 +354,7 @@ function ProfileContent({ profile }: { profile: Profile }) {
                 key={post.id}
                 post={post}
                 author={profile}
+                returnTo={profileHref(profile.handle)}
                 onDeleted={() =>
                   refreshPosts({ requestPolicy: "network-only" })
                 }
@@ -363,11 +369,20 @@ function ProfileContent({ profile }: { profile: Profile }) {
                     ? "Your story starts here."
                     : "No posts yet."
               }
+              action={
+                own &&
+                !after &&
+                !page.next_cursor && (
+                  <Button rounded="full" onClick={openComposer}>
+                    Write your first post
+                  </Button>
+                )
+              }
             >
               {page.next_cursor
                 ? "There may be more posts on the next page."
                 : own && !after
-                  ? "Share a thought from New post. Your updates will appear here."
+                  ? "Share a thought. Your updates will appear here."
                   : "Posts from this profile will appear here."}
             </EmptyState>
           )}

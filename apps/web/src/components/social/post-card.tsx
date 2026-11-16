@@ -35,11 +35,13 @@ export function PostCard({
   author,
   onDeleted,
   detail = false,
+  returnTo = "/social",
 }: {
   post: SocialPost;
   author?: { handle: string; display_name: string };
   onDeleted: () => void;
   detail?: boolean;
+  returnTo?: string;
 }) {
   const { user, context } = useSocialSession();
   const [{ fetching, error: mutationError }, deletePost] =
@@ -83,7 +85,10 @@ export function PostCard({
             )}
             <Text fontSize="xs" color="fg.muted" overflowWrap="anywhere">
               {author && `@${author.handle} · `}
-              <Link href={`/social/posts/${post.id}`} aria-label="Open post">
+              <Link
+                href={`/social/posts/${post.id}?${new URLSearchParams({ returnTo })}`}
+                aria-label="Open post"
+              >
                 <time
                   dateTime={post.created_at}
                   title={new Date(post.created_at).toLocaleString()}

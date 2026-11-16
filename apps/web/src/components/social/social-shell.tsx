@@ -19,7 +19,9 @@ import {
   useMemo,
   useRef,
   useState,
+  type Dispatch,
   type ReactNode,
+  type SetStateAction,
 } from "react";
 import type { CombinedError, OperationContext } from "urql";
 import { ColorModeButton } from "~/components/ui/color-mode";
@@ -39,6 +41,13 @@ import {
   sessionExpired,
 } from "./social-ui";
 
+export type Feed = "all" | "following";
+export type PaginationState = { after?: string; postVersion: number };
+type FeedState = {
+  selected: Feed;
+  pages: Record<Feed, PaginationState>;
+};
+
 type SocialSession = {
   user: NonNullable<SocialViewerQuery["me"]>;
   context: Partial<OperationContext>;
@@ -48,6 +57,12 @@ type SocialSession = {
   refreshProfile: () => void;
   openComposer: () => void;
   postVersion: number;
+  feedState: FeedState;
+  setFeedState: Dispatch<SetStateAction<FeedState>>;
+  profilePages: Record<string, PaginationState | undefined>;
+  setProfilePages: Dispatch<
+    SetStateAction<Record<string, PaginationState | undefined>>
+  >;
 };
 
 const SocialContext = createContext<SocialSession | null>(null);
@@ -91,6 +106,13 @@ function ReadyShell({
   const router = useRouter();
   const [composerOpen, setComposerOpen] = useState(false);
   const [postVersion, setPostVersion] = useState(0);
+  const [feedState, setFeedState] = useState<FeedState>({
+    selected: "all",
+    pages: { all: { postVersion: 0 }, following: { postVersion: 0 } },
+  });
+  const [profilePages, setProfilePages] = useState<
+    Record<string, PaginationState | undefined>
+  >({});
   const [notice, setNotice] = useState("");
   const composerTrigger = useRef<HTMLElement | null>(null);
   const context = useMemo<Partial<OperationContext>>(
@@ -183,6 +205,10 @@ function ReadyShell({
         refreshProfile: () => reexecute({ requestPolicy: "network-only" }),
         openComposer,
         postVersion,
+        feedState,
+        setFeedState,
+        profilePages,
+        setProfilePages,
       }}
     >
       <Box minH="100dvh" bg="bg">
@@ -199,23 +225,6 @@ function ReadyShell({
         >
           <a href="#social-content">Skip to content</a>
         </Box>
-        <HStack
-          as="header"
-          display={{ base: "flex", lg: "none" }}
-          position="sticky"
-          top="0"
-          zIndex="20"
-          bg="bg.panel"
-          borderBottomWidth="1px"
-          borderColor="border"
-          px="4"
-          pt="env(safe-area-inset-top)"
-          minH="16"
-          justify="space-between"
-        >
-          <Brand />
-          <ColorModeButton minH="11" minW="11" color="fg.muted" />
-        </HStack>
         <Container maxW="1120px" px={{ base: "0", md: "6", lg: "8" }}>
           <Flex gap={{ lg: "12" }} align="start">
             <Stack

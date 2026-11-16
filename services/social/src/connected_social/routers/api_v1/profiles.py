@@ -8,6 +8,7 @@ from connected_social.dependencies import DbSession, require_verified_actor
 from connected_social.dtos.api_v1.profiles import (
     CreateProfileRequestDto,
     ProfileDto,
+    ProfileText,
     UpdateProfileRequestDto,
 )
 from connected_social.dtos.base import ErrorResponseDto
@@ -77,7 +78,7 @@ async def update_my_profile(
     responses={404: {"model": ErrorResponseDto}},
 )
 async def profile_by_handle(
-    handle: Annotated[str, Query(min_length=1, max_length=30)],
+    handle: Annotated[ProfileText, Query(min_length=1, max_length=30)],
     actor_id: Actor,
     db: AsyncSession = DbSession,
 ) -> ProfileDto:

@@ -145,11 +145,15 @@ export function PostComposer({
                   {profile && (
                     <HStack gap="3">
                       <PersonAvatar name={profile.display_name} accent="pink" />
-                      <Stack gap="0">
-                        <Text fontWeight="semibold">
+                      <Stack gap="0" minW="0">
+                        <Text fontWeight="semibold" overflowWrap="anywhere">
                           {profile.display_name}
                         </Text>
-                        <Text fontSize="sm" color="fg.muted">
+                        <Text
+                          fontSize="sm"
+                          color="fg.muted"
+                          overflowWrap="anywhere"
+                        >
                           @{profile.handle}
                         </Text>
                       </Stack>

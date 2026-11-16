@@ -18,7 +18,13 @@ import {
   RequestError,
 } from "./social-ui";
 
-export function PostScreen({ postId }: { postId: string }) {
+export function PostScreen({
+  postId,
+  returnTo,
+}: {
+  postId: string;
+  returnTo: string;
+}) {
   const { context } = useSocialSession();
   const router = useRouter();
   const [result, refreshPost] = useSocialPostQuery({
@@ -48,9 +54,9 @@ export function PostScreen({ postId }: { postId: string }) {
   return (
     <Stack gap="5">
       <Button asChild variant="ghost" alignSelf="start" minH="11" px="0">
-        <Link href="/social">
+        <Link href={returnTo}>
           <ArrowLeft size={17} />
-          Your feed
+          {returnTo === "/social" ? "Your feed" : "Back to profile"}
         </Link>
       </Button>
       <PageHeading title="Post">A moment from your community.</PageHeading>
@@ -79,7 +85,8 @@ export function PostScreen({ postId }: { postId: string }) {
           post={post}
           author={author}
           detail
-          onDeleted={() => router.replace("/social")}
+          returnTo={returnTo}
+          onDeleted={() => router.replace(returnTo)}
         />
       )}
     </Stack>
