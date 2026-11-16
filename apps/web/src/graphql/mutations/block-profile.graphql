@@ -1,0 +1,5 @@
+mutation BlockProfile($targetId: UUID!) {
+  relationship: socialBlockProfile(target_id: $targetId) {
+    status
+  }
+}

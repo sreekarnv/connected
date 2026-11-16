@@ -1,0 +1,5 @@
+mutation DeleteSocialPost($postId: UUID!) {
+  contentDeletePost(post_id: $postId) {
+    status
+  }
+}

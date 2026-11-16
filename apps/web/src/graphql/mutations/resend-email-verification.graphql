@@ -1,0 +1,5 @@
+mutation ResendEmailVerification($input: LoginRequestDto_Input!) {
+  resendVerification(input: $input) {
+    status
+  }
+}

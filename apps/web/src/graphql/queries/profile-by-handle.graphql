@@ -1,0 +1,8 @@
+query ProfileByHandle($handle: Handle!) {
+  socialProfileByHandle(handle: $handle) {
+    id
+    handle
+    display_name
+    created_at
+  }
+}

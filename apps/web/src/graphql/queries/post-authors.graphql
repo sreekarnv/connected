@@ -1,0 +1,7 @@
+query PostAuthors($ids: [UUID]!) {
+  socialProfilesByIds(ids: $ids) {
+    id
+    handle
+    display_name
+  }
+}

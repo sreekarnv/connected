@@ -1,0 +1,95 @@
+from datetime import datetime
+from typing import Annotated, Literal
+from uuid import UUID
+
+from pydantic import (
+    BaseModel,
+    ConfigDict,
+    EmailStr,
+    Field,
+    SecretStr,
+    StringConstraints,
+    ValidationInfo,
+    field_validator,
+)
+
+Email = Annotated[EmailStr, Field(max_length=255)]
+Password = Annotated[SecretStr, Field(min_length=6, max_length=128)]
+
+
+class SignupRequestDto(BaseModel):
+    name: Annotated[
+        str, StringConstraints(strip_whitespace=True, min_length=1, max_length=255)
+    ]
+    email: Email
+    password: Password
+    password_confirm: Password
+
+    @field_validator("password_confirm")
+    @classmethod
+    def passwords_match(cls, value: SecretStr, info: ValidationInfo) -> SecretStr:
+        password = info.data.get("password")
+        if password is not None and password != value:
+            raise ValueError("Passwords do not match")
+        return value
+
+
+class LoginRequestDto(BaseModel):
+    email: Email
+    password: Password
+
+
+class VerifyEmailRequestDto(BaseModel):
+    token: Annotated[SecretStr, Field(min_length=1, max_length=128)]
+
+
+class ResendVerificationResponseDto(BaseModel):
+    status: Literal["success"] = "success"
+
+
+class ForgotPasswordRequestDto(BaseModel):
+    email: Email
+
+
+class VerifyResetTokenRequestDto(BaseModel):
+    token: Annotated[SecretStr, Field(min_length=1, max_length=128)]
+
+
+class ResetPasswordRequestDto(VerifyResetTokenRequestDto):
+    password: Password
+    password_confirm: Password
+
+    @field_validator("password_confirm")
+    @classmethod
+    def passwords_match(cls, value: SecretStr, info: ValidationInfo) -> SecretStr:
+        password = info.data.get("password")
+        if password is not None and password != value:
+            raise ValueError("Passwords do not match")
+        return value
+
+
+class PasswordResetResponseDto(BaseModel):
+    status: Literal["success"] = "success"
+
+
+class UserDto(BaseModel):
+    model_config = ConfigDict(from_attributes=True)
+
+    id: UUID
+    name: str
+    email: EmailStr
+    email_verified_at: datetime | None
+    created_at: datetime
+    updated_at: datetime
+
+
+class TokenResponseDto(BaseModel):
+    access_token: str
+
+
+class LoginResponseDto(TokenResponseDto):
+    user: UserDto
+
+
+class LogoutResponseDto(BaseModel):
+    status: Literal["success"] = "success"

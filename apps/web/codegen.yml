@@ -1,0 +1,34 @@
+overwrite: true
+schema: "${GRAPHQL_SCHEMA:http://localhost:4000/graphql}"
+documents: "./src/graphql/**/*.{graphql,gql}"
+config:
+  scalars:
+    EmailAddress: string
+    Name: string
+    Password: string
+    Password_Confirm: string
+    UUID: string
+    DateTime: string
+    Body: string
+    PositiveInt: number
+    Display_Name: string
+    Handle: string
+    mutationInput_socialCreateMyProfile_input_handle: string
+    queryInput_contentPosts_after_anyOf_0: string
+    queryInput_contentFollowingPosts_after_anyOf_0: string
+generates:
+  src/graphql/generated/graphql.tsx:
+    plugins:
+      - "typescript-operations"
+      - "typescript-urql"
+    config:
+      urqlImportFrom: "@urql/next"
+      gqlImport: "urql#gql"
+  src/graphql/generated/server.ts:
+    plugins:
+      - "typescript-operations"
+      - "typescript-urql"
+    config:
+      withHooks: false
+      documentMode: documentNode
+      useTypeImports: true

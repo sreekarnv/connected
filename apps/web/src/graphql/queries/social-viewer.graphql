@@ -1,0 +1,14 @@
+query SocialViewer {
+  me {
+    id
+    name
+    email
+    email_verified_at
+  }
+  socialMyProfile {
+    id
+    handle
+    display_name
+    created_at
+  }
+}

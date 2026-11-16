@@ -1,0 +1,5 @@
+mutation VerifyResetToken($input: VerifyResetTokenRequestDto_Input) {
+  verifyResetToken(input: $input) {
+    status
+  }
+}

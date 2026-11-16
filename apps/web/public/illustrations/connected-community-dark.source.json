@@ -1,0 +1,22 @@
+{
+  "title": "Online Community",
+  "artist": "Katerina Limpitsouni",
+  "source": "https://undraw.co/illustration/online-community_3o0l",
+  "license": "https://undraw.co/license",
+  "originalFilename": "undraw_online-community_3o0l.svg",
+  "downloadedVia": "Official Download SVG for your projects button",
+  "modified": true,
+  "sha256": "a34efa4658f6f3721e729bd9518fe211bedf0d7e90b956a132f9f91ac4545a82",
+  "originalAsset": "connected-community.svg",
+  "modifications": "Dark-mode palette only; geometry and skin tones unchanged.",
+  "palette": {
+    "#cacaca": "#46516b",
+    "#3f3d56": "#9caac9",
+    "#090814": "#a8b8d8",
+    "#e6e6e6": "#46516b",
+    "#f2f2f2": "#3b4358",
+    "#2f2e41": "#191c2b",
+    "#6c63ff": "#9c95ff",
+    "#fff": "#242832"
+  }
+}

@@ -1,0 +1,16 @@
+query ProfilePosts(
+  $authorIds: [UUID]!
+  $after: queryInput_contentPosts_after_anyOf_0
+  $checkFollowing: Boolean!
+) {
+  posts: contentPosts(author_ids: $authorIds, limit: 20, after: $after) {
+    items {
+      id
+      author_id
+      body
+      created_at
+    }
+    next_cursor
+  }
+  socialFeedAuthorIds(ids: $authorIds) @include(if: $checkFollowing)
+}

@@ -1,0 +1,10 @@
+mutation Signup($input: SignupRequestDto_Input!) {
+  signup(input: $input) {
+    id
+    name
+    email
+    email_verified_at
+    created_at
+    updated_at
+  }
+}

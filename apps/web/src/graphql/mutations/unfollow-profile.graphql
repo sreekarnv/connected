@@ -1,0 +1,5 @@
+mutation UnfollowProfile($targetId: UUID!) {
+  relationship: socialUnfollowProfile(target_id: $targetId) {
+    status
+  }
+}
