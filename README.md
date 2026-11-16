@@ -1,5 +1,29 @@
 # Connected
 
+Share updates, follow people, and keep up with your community.
+
+## Screenshots
+
+### Community feed
+
+Browse recent posts or switch to updates from people you follow.
+
+![](.github/screenshots/feed.png)
+
+### Profile
+
+View someone's posts and follow or unfollow them.
+
+![](.github/screenshots/profile.png)
+
+### Connections
+
+Find someone by handle and see your following and followers lists.
+
+![](.github/screenshots/connections.png)
+
+## Run locally
+
 Run the development containers from the repository root:
 
 ```bash
