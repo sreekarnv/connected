@@ -1,2 +1,6 @@
 .env
-docs/
+docs/*
+!docs/PRODUCTION_PLAN.md
+**/__pycache__/
+**/*.pyc
+.ruff_cache/

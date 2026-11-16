@@ -1,6 +1,26 @@
 import type { NextConfig } from "next";
 
+if (process.env.ENVIRONMENT === "production") {
+  const address = process.env.NEXT_PUBLIC_GATEWAY_URL;
+  const gateway =
+    address && URL.canParse(address) ? new URL(address) : undefined;
+  if (
+    !gateway ||
+    gateway.protocol !== "https:" ||
+    gateway.username ||
+    gateway.password ||
+    gateway.pathname !== "/graphql" ||
+    gateway.search ||
+    gateway.hash
+  ) {
+    throw new Error(
+      "Production builds require NEXT_PUBLIC_GATEWAY_URL as an HTTPS /graphql URL without credentials",
+    );
+  }
+}
+
 const nextConfig: NextConfig = {
+  output: "standalone",
   devIndicators: false,
   experimental: {
     optimizePackageImports: ["@chakra-ui/react"],

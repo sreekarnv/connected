@@ -13,6 +13,7 @@ from connected_identity.db.schema import (
     User,
 )
 from connected_identity.errors import ErrorCode, IdentityError
+from connected_identity.messaging.email import encrypt_delivery_token
 from connected_identity.services.password import hash_password
 
 PASSWORD_RESET_TTL = timedelta(minutes=30)
@@ -28,7 +29,7 @@ def _token_hash(token: str) -> str:
 
 async def request_password_reset(
     db: AsyncSession, email: str
-) -> tuple[User, str] | None:
+) -> None:
     try:
         user = await db.scalar(
             select(User)
@@ -44,17 +45,18 @@ async def request_password_reset(
             is None
         ):
             await db.rollback()
-            return None
+            return
 
         now = datetime.now(UTC)
         previous = await db.get(PasswordResetToken, user.id, populate_existing=True)
         if previous is not None and now - previous.created_at < PASSWORD_RESET_COOLDOWN:
             await db.rollback()
-            return None
+            return
 
         token = secrets.token_urlsafe(32)
         values = {
             "token_hash": _token_hash(token),
+            "pending_token": encrypt_delivery_token(token),
             "created_at": now,
             "expires_at": now + PASSWORD_RESET_TTL,
         }
@@ -66,7 +68,6 @@ async def request_password_reset(
             )
         )
         await db.commit()
-        return user, token
     except Exception:
         await db.rollback()
         raise

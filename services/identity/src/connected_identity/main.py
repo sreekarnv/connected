@@ -9,6 +9,7 @@ from faststream_fastapi import FastStreamAPI
 
 from connected_identity.config.rabbitmq import stop_broker
 from connected_identity.config.settings import get_settings
+from connected_identity.db.connection import engine
 from connected_identity.dtos.base import ErrorResponseDto
 from connected_identity.errors import IdentityError
 from connected_identity.exception_handlers import (
@@ -17,7 +18,7 @@ from connected_identity.exception_handlers import (
     handle_server_error,
     handle_validation_error,
 )
-from connected_identity.jobs import run_verification_email_worker
+from connected_identity.jobs import run_email_worker
 from connected_identity.middleware.security_headers import (
     sensitive_auth_response_headers,
 )
@@ -30,15 +31,18 @@ settings = get_settings()
 @asynccontextmanager
 async def lifespan(app: FastAPI) -> AsyncGenerator[None, None]:
     get_signing_key()
-    delivery_worker = asyncio.create_task(run_verification_email_worker())
+    delivery_worker = asyncio.create_task(run_email_worker())
     try:
         yield
     finally:
         delivery_worker.cancel()
         with suppress(asyncio.CancelledError):
             await delivery_worker
-        async with asyncio.timeout(10):
-            await stop_broker()
+        try:
+            async with asyncio.timeout(10):
+                await stop_broker()
+        finally:
+            await engine.dispose()
 
 
 fastapi_app = FastAPI(
@@ -62,6 +66,6 @@ fastapi_app.exception_handler(HTTPException)(handle_http_error)
 fastapi_app.exception_handler(RequestValidationError)(handle_validation_error)
 fastapi_app.exception_handler(Exception)(handle_server_error)
 
-fastapi_app.include_router(health.router, prefix="/healthz", tags=["Health"])
+fastapi_app.include_router(health.router, tags=["Health"])
 fastapi_app.include_router(api_v1.router, prefix="/api/v1")
 fastapi_app.include_router(jwks.router)

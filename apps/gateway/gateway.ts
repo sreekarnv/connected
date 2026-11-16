@@ -13,6 +13,8 @@ import {
   type GraphQLResolveInfo,
   Kind,
 } from "graphql";
+import { getCorsOrigins, isProduction } from "./config.ts";
+import { additionalTypeDefs } from "./schema.ts";
 
 type PostPage = { items: ({ author_id: string } | null)[] };
 type SocialContext = {
@@ -28,26 +30,9 @@ type SocialContext = {
   };
 };
 
-const isDevelopment = process.env.NODE_ENV === "development";
-
-const corsOrigins: unknown = JSON.parse(
-  process.env.CORS_ORIGINS ??
-    '["http://localhost:3000","http://127.0.0.1:3000","http://localhost:4000","http://127.0.0.1:4000"]',
-);
-
-if (
-  !Array.isArray(corsOrigins) ||
-  !corsOrigins.every(
-    (origin: unknown): origin is string =>
-      typeof origin === "string" &&
-      !origin.includes("*") &&
-      URL.canParse(origin) &&
-      ["http:", "https:"].includes(new URL(origin).protocol) &&
-      new URL(origin).origin === origin,
-  )
-) {
-  throw new Error("CORS_ORIGINS must be a JSON array of exact HTTP(S) origins");
-}
+const production = isProduction();
+const isDevelopment = !production && process.env.NODE_ENV === "development";
+const corsOrigins = getCorsOrigins();
 
 const DOWNSTREAM_ERRORS = new Map([
   [
@@ -149,11 +134,20 @@ const logging = new Logger({
 
 export const gatewayConfig = defineConfig<SocialContext>({
   logging,
-  additionalTypeDefs: /* GraphQL */ `
-    extend type PostPageDto {
-      authors: [ProfileDto]
-    }
-  `,
+  healthCheckEndpoint: "/livez",
+  readinessCheckEndpoint: "/readyz",
+  graphiql: !production,
+  disableIntrospection: production ? {} : undefined,
+  maxDepth: 8,
+  maxTokens: 1000,
+  blockFieldSuggestions: production,
+  batching: false,
+  requestTimeout: 10_000,
+  requestDeadline: 15_000,
+  upstreamTimeout: 5_000,
+  gracefulShutdownTimeout: 20_000,
+  disableWebsockets: true,
+  additionalTypeDefs,
   additionalResolvers: {
     PostPageDto: {
       authors: {

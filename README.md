@@ -34,5 +34,7 @@ cp -n services/identity/.env.example services/identity/.env
 For a fresh setup, set `JWT_PRIVATE_KEY` in `services/identity/.env` to an unencrypted RSA private key in PEM format, at least 2048 bits. Keep an existing identity `.env` if one is already configured.
 
 ```bash
-docker compose up -d
+docker compose -f docker-compose.dev.yml up -d
 ```
+
+Use `-f docker-compose.dev.yml` for all development Compose commands, including `logs`, `exec`, and `down`.

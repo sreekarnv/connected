@@ -1,10 +1,10 @@
-import amqp from "amqplib";
+import type amqp from "amqplib";
 import { createElement } from "react";
 import { render, toPlainText } from "react-email";
 import { z } from "zod";
-import { mailTransporter } from "../config/nodemailer";
-import { Exchange, Queue, RoutingKey } from "../config/rabbitmq";
+import type { SendMail } from "../config/nodemailer";
 import { ResetPassword } from "../emails/reset-password";
+import { consumeEmail } from "./email-consumer";
 
 const passwordResetEventSchema = z.object({
 	email: z.email({ pattern: z.regexes.unicodeEmail }),
@@ -12,63 +12,22 @@ const passwordResetEventSchema = z.object({
 	name: z.string().refine((value) => value.trim().length > 0),
 });
 
-export async function passwordResetConsumer(channel: amqp.Channel) {
-	let active = true;
-	channel.once("close", () => {
-		active = false;
-	});
-	await channel.assertExchange(Exchange.IDENTITY_EVENTS, "direct", {
-		durable: true,
-	});
-
-	await channel.assertQueue(Queue.NOTIFICATIONS_PASSWORD_RESET, {
-		durable: true,
-	});
-	await channel.bindQueue(
-		Queue.NOTIFICATIONS_PASSWORD_RESET,
-		Exchange.IDENTITY_EVENTS,
-		RoutingKey.USER_PASSWORD_RESET_REQUESTED,
-	);
-	await channel.prefetch(1);
-
-	await channel.consume(
-		Queue.NOTIFICATIONS_PASSWORD_RESET,
-		async (message) => {
-			if (message === null) return;
-
-			let event: z.infer<typeof passwordResetEventSchema>;
-			try {
-				event = passwordResetEventSchema.parse(
-					JSON.parse(message.content.toString()),
-				);
-			} catch {
-				console.error("Invalid password reset event");
-				if (active) channel.nack(message, false, false);
-				return;
-			}
-
-			try {
-				const html = await render(
-					createElement(ResetPassword, {
-						name: event.name,
-						resetUrl: event.reset_url,
-					}),
-				);
-				await mailTransporter.sendMail({
-					to: { address: event.email, name: event.name },
-					subject: "Reset your Connected password",
-					html,
-					text: toPlainText(html),
-				});
-			} catch {
-				console.error("Password reset email failed");
-				// shortcut: failures requeue immediately, use a delayed retry queue if SMTP outages cause a retry loop.
-				if (active) channel.nack(message, false, true);
-				return;
-			}
-
-			if (active) channel.ack(message);
+export function passwordResetConsumer(channel: amqp.ConfirmChannel, sendMail: SendMail, onFailure: () => void) {
+	return consumeEmail(channel, {
+		queue: "notifications.password_reset",
+		routingKey: "user.password_reset_requested",
+		parse: (value) => passwordResetEventSchema.parse(value),
+		async send(event) {
+			const html = await render(createElement(ResetPassword, {
+				name: event.name,
+				resetUrl: event.reset_url,
+			}));
+			await sendMail({
+				to: { address: event.email, name: event.name },
+				subject: "Reset your Connected password",
+				html,
+				text: toPlainText(html),
+			});
 		},
-		{ noAck: false },
-	);
+	}, onFailure);
 }

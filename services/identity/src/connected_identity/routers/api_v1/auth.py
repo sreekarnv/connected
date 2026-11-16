@@ -1,10 +1,9 @@
 from typing import Annotated
 
-from fastapi import APIRouter, BackgroundTasks, Depends, Request, Response, status
+from fastapi import APIRouter, Depends, Request, Response, status
 from fastapi.responses import JSONResponse
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from connected_identity import jobs
 from connected_identity.cookies import (
     clear_refresh_cookie,
     get_refresh_cookie,
@@ -94,9 +93,9 @@ async def resend_verification(
     responses={403: {"model": ErrorResponseDto}, 422: {"model": ErrorResponseDto}},
 )
 async def forgot_password(
-    input: ForgotPasswordRequestDto, background: BackgroundTasks
+    input: ForgotPasswordRequestDto, db: AsyncSession = DbSession
 ) -> PasswordResetResponseDto:
-    background.add_task(jobs.send_password_reset_email, str(input.email))
+    await password_reset.request_password_reset(db, str(input.email))
     return PasswordResetResponseDto()
 
 

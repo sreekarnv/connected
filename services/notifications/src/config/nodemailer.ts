@@ -1,10 +1,15 @@
-import nodemailer from "nodemailer";
+import nodemailer, { type SendMailOptions } from "nodemailer";
+import type { NotificationsConfig } from "./environment";
 
-const {
-	SMTP_URL = "smtp://127.0.0.1:1025",
-	MAIL_FROM = "Connected <notifications@connected.test>",
-} = process.env;
+export type SendMail = (mail: SendMailOptions) => Promise<unknown>;
 
-export const mailTransporter = nodemailer.createTransport(SMTP_URL, {
-	from: MAIL_FROM,
-});
+export function createMailTransporter(config: NotificationsConfig) {
+	return nodemailer.createTransport({
+		url: config.smtpUrl,
+		connectionTimeout: 10_000,
+		greetingTimeout: 10_000,
+		socketTimeout: 20_000,
+		disableFileAccess: true,
+		disableUrlAccess: true,
+	}, { from: config.mailFrom });
+}

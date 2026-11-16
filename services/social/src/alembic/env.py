@@ -1,6 +1,6 @@
 import asyncio
 
-from sqlalchemy import pool
+from sqlalchemy import pool, text
 from sqlalchemy.engine import Connection
 from sqlalchemy.ext.asyncio import create_async_engine
 
@@ -11,6 +11,8 @@ from connected_social.db.schema import Base
 def run_migrations(connection: Connection) -> None:
     context.configure(connection=connection, target_metadata=Base.metadata)
     with context.begin_transaction():
+        connection.execute(text("SET LOCAL lock_timeout = '30s'"))
+        connection.execute(text("SELECT pg_advisory_xact_lock(638428714)"))
         context.run_migrations()
 
 

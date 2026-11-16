@@ -15,7 +15,7 @@ _verification_padding = OAEP(
 )
 
 
-def encrypt_verification_token(token: str) -> bytes:
+def encrypt_delivery_token(token: str) -> bytes:
     return get_signing_key().public_key().encrypt(token.encode(), _verification_padding)
 
 
@@ -40,8 +40,9 @@ async def publish_verification_email(user: User, pending_token: bytes) -> None:
         raise RuntimeError("Verification email publication was not confirmed")
 
 
-async def publish_password_reset_email(user: User, token: str) -> None:
-    await broker.publish(
+async def publish_password_reset_email(user: User, pending_token: bytes) -> None:
+    token = get_signing_key().decrypt(pending_token, _verification_padding).decode()
+    confirmation = await broker.publish(
         {
             "email": user.email,
             "name": user.name,
@@ -52,4 +53,7 @@ async def publish_password_reset_email(user: User, token: str) -> None:
         exchange=identity_events,
         routing_key="user.password_reset_requested",
         persist=True,
+        timeout=10,
     )
+    if confirmation is None or confirmation.name != "Basic.Ack":
+        raise RuntimeError("Password reset email publication was not confirmed")

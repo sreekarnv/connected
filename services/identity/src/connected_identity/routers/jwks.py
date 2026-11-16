@@ -6,6 +6,6 @@ from connected_identity.services.token import get_jwks
 router = APIRouter()
 
 
-@router.get("/.well-known/jwks.json")
+@router.get("/.well-known/jwks.json", include_in_schema=False)
 async def jwks() -> JSONResponse:
     return JSONResponse(get_jwks(), headers={"Cache-Control": "public, max-age=300"})

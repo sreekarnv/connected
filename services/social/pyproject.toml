@@ -24,8 +24,9 @@ src = ["src"]
 extend-select = ["I"]
 
 [dependency-groups]
+migration = ["alembic>=1.20.1"]
 dev = [
-    "alembic>=1.20.1",
+    {include-group = "migration"},
     "ruff>=0.17.3",
     "ty>=0.0.97",
 ]

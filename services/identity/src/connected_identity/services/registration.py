@@ -10,7 +10,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from connected_identity.db.schema import Credential, EmailVerificationToken, User
 from connected_identity.errors import ErrorCode, IdentityError
-from connected_identity.messaging.email import encrypt_verification_token
+from connected_identity.messaging.email import encrypt_delivery_token
 from connected_identity.services.password import hash_password, verify_password
 
 EMAIL_VERIFICATION_TTL = timedelta(hours=24)
@@ -23,7 +23,7 @@ async def _issue_verification_token(db: AsyncSession, user_id: UUID) -> None:
 
     values = {
         "token_hash": hashlib.sha256(token.encode()).hexdigest(),
-        "pending_token": encrypt_verification_token(token),
+        "pending_token": encrypt_delivery_token(token),
         "created_at": now,
         "expires_at": now + EMAIL_VERIFICATION_TTL,
     }

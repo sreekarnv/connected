@@ -482,6 +482,9 @@ dev = [
     { name = "ruff" },
     { name = "ty" },
 ]
+migration = [
+    { name = "alembic" },
+]
 
 [package.metadata]
 requires-dist = [
@@ -503,6 +506,7 @@ dev = [
     { name = "ruff", specifier = ">=0.17.3" },
     { name = "ty", specifier = ">=0.0.97" },
 ]
+migration = [{ name = "alembic", specifier = ">=1.20.1" }]
 
 [[package]]
 name = "cryptography"

@@ -78,5 +78,7 @@ app.exception_handler(PoolTimeoutError)(handle_database_unavailable)
 app.exception_handler(PostgresConnectionError)(handle_database_unavailable)
 app.exception_handler(Exception)(handle_server_error)
 
+app.add_api_route("/livez", health.liveness, include_in_schema=False)
+app.add_api_route("/readyz", health.health_check, include_in_schema=False)
 app.include_router(health.router, prefix="/healthz", include_in_schema=False)
 app.include_router(api_v1.router, prefix="/api/v1")
