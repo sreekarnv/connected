@@ -13,6 +13,7 @@ dependencies = [
     "email-normalize>=3.2.0",
     "faststream-fastapi>=1.4.0",
     "faststream[rabbit]>=0.7.8",
+    "prometheus-client>=0.26.0",
 ]
 
 [build-system]

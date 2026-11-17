@@ -1,5 +1,4 @@
 import {
-  ConsoleLogWriter,
   defineConfig,
   type GatewayContext,
   type GatewayPlugin,
@@ -90,50 +89,50 @@ function isRecord(value: unknown): value is Record<string, unknown> {
   return value !== null && typeof value === "object" && !Array.isArray(value);
 }
 
-const writer = new ConsoleLogWriter();
-
 const logging = new Logger({
   writers: [
     {
       write(level, attributes, message) {
-        if (
-          level !== "error" ||
-          !isRecord(attributes) ||
-          !(
-            "path" in attributes ||
-            "locations" in attributes ||
-            "extensions" in attributes
-          )
-        ) {
-          return writer.write(level, attributes, message);
-        }
-
-        // Yoga logs original GraphQL errors automatically; omit their payloads.
-        const extensions = isRecord(attributes.extensions)
-          ? attributes.extensions
-          : {};
-
+        const fields = isRecord(attributes) ? attributes : {};
+        const extensions = isRecord(fields.extensions) ? fields.extensions : {};
         const response = isRecord(extensions.response)
           ? extensions.response
           : {};
-
-        return writer.write(
-          level,
-          {
-            code: extensions.code,
-            service: extensions.serviceName,
+        // Error payloads and messages may contain downstream credentials or inputs.
+        console.log(
+          JSON.stringify({
+            timestamp: new Date().toISOString(),
+            level,
+            service: "gateway",
+            event: level === "error" ? "gateway_error" : message,
+            code:
+              typeof extensions.code === "string" ? extensions.code : undefined,
+            upstream_service: extensions.serviceName,
             status: response.status,
-            path: attributes.path,
-          },
-          "GraphQL request failed",
+          }),
         );
       },
     },
   ],
 });
+const requestStarts = new WeakMap<Request, number>();
 
 export const gatewayConfig = defineConfig<SocialContext>({
   logging,
+  prometheus: {
+    metrics: {
+      // This plugin version does not filter operation names from this counter.
+      graphql_gateway_subgraph_execute_errors: false,
+    },
+    labels: {
+      url: false,
+      operationName: false,
+      path: false,
+      fetchRequestHeaders: false,
+      fetchResponseHeaders: false,
+      method: false,
+    },
+  },
   healthCheckEndpoint: "/livez",
   readinessCheckEndpoint: "/readyz",
   graphiql: !production,
@@ -199,6 +198,9 @@ export const gatewayConfig = defineConfig<SocialContext>({
       },
     }),
     {
+      onRequest({ request }) {
+        requestStarts.set(request, performance.now());
+      },
       onSchemaChange({ schema }: { schema: GraphQLSchema }) {
         const field = schema.getQueryType()?.getFields().contentPosts;
         if (!field) return;
@@ -219,8 +221,42 @@ export const gatewayConfig = defineConfig<SocialContext>({
           return resolve(source, args, context, info);
         };
       },
-      onResponse({ response }) {
+      onResponse({ request, response }) {
         response.headers.set("Cache-Control", "no-store");
+        const path = new URL(request.url).pathname;
+        if (path === "/metrics") return;
+
+        const route = ["/graphql", "/livez", "/readyz"].includes(path)
+          ? path
+          : "unmatched";
+
+        const method = [
+          "GET",
+          "HEAD",
+          "POST",
+          "PUT",
+          "PATCH",
+          "DELETE",
+          "OPTIONS",
+        ].includes(request.method)
+          ? request.method
+          : "OTHER";
+
+        console.log(
+          JSON.stringify({
+            timestamp: new Date().toISOString(),
+            service: "gateway",
+            level: response.status >= 500 ? "error" : "info",
+            event: "http_request",
+            method,
+            route,
+            status: response.status,
+            duration_seconds:
+              (performance.now() -
+                (requestStarts.get(request) ?? performance.now())) /
+              1000,
+          }),
+        );
       },
     },
   ],

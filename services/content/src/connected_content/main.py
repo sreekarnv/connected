@@ -23,6 +23,7 @@ from connected_content.exception_handlers import (
     handle_server_error,
     handle_validation_error,
 )
+from connected_content.observability import instrument
 from connected_content.routers import api_v1, health
 
 
@@ -82,3 +83,5 @@ app.add_api_route("/livez", health.liveness, include_in_schema=False)
 app.add_api_route("/readyz", health.health_check, include_in_schema=False)
 app.include_router(health.router, prefix="/healthz", include_in_schema=False)
 app.include_router(api_v1.router, prefix="/api/v1")
+
+instrument(app)

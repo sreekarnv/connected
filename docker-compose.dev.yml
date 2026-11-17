@@ -1,6 +1,21 @@
 name: connected
 
 services:
+  prometheus:
+    image: prom/prometheus:v3.16.0
+    ports:
+      - "127.0.0.1:9090:9090"
+    volumes:
+      - ./monitoring/prometheus.yml:/etc/prometheus/prometheus.yml:ro
+      - prometheus_data:/prometheus
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    healthcheck:
+      test: ["CMD", "wget", "-q", "--spider", "http://127.0.0.1:9090/-/ready"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
   content:
     image: ghcr.io/astral-sh/uv:python3.14-trixie-slim
     init: true
@@ -221,6 +236,7 @@ services:
       retries: 5
 
 volumes:
+  prometheus_data:
   content_postgres_data:
     name: connected_content_postgres_data
   social_postgres_data:

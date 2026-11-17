@@ -116,6 +116,8 @@ docker compose -f docker-compose.dev.yml up -d --wait
 
 The Python services apply Alembic migrations on startup. The first run also downloads images and installs service dependencies.
 
+Prometheus starts with the stack and collects service metrics. Open <http://localhost:9090/targets> to check the scrape targets; the gateway target becomes available after the next step.
+
 ### 3. Start the gateway
 
 In a separate terminal, from the repository root:
@@ -124,7 +126,7 @@ In a separate terminal, from the repository root:
 cd apps/gateway
 pnpm install --frozen-lockfile
 pnpm compose
-pnpm dev
+HOST=0.0.0.0 pnpm dev
 ```
 
 Keep the gateway running. Run `pnpm compose` again after backend API contract changes, then restart the gateway.
@@ -149,6 +151,7 @@ Open [Connected](http://localhost:3000). Create an account, open [MailHog](http:
 | Social API docs   | <http://localhost:4003/docs>    |
 | Content API docs  | <http://localhost:4004/docs>    |
 | Development inbox | <http://localhost:8025>         |
+| Prometheus targets | <http://localhost:9090/targets> |
 
 To inspect backend startup or stop the containers, run these commands from the repository root:
 
@@ -174,7 +177,7 @@ Stop the gateway and web terminals with `Ctrl+C`. Compose keeps database data in
 
 The current app covers text posts and social relationships. Media uploads, likes, comments, direct messages, and an in-app notification inbox are outside the current scope. Notifications handles account email.
 
-Each application has a production Dockerfile and health endpoints. Hosting, HTTPS ingress, managed infrastructure, and staging acceptance remain deployment work. The repository currently has no committed automated test suite.
+Each application has a production Dockerfile and health endpoints. Hosting, HTTPS ingress, managed infrastructure, and staging acceptance remain deployment work. Focused telemetry tests cover request instrumentation and email delivery outcomes. See [logging and metrics](docs/OBSERVABILITY.md) for collection and test commands.
 
 ## License
 

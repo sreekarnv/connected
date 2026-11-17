@@ -1,3 +1,4 @@
+import { log, deliveries } from "../observability";
 import type amqp from "amqplib";
 
 export const IDENTITY_EXCHANGE = "identity.events";
@@ -26,23 +27,34 @@ export async function publishConfirmed(
 ) {
 	// Each consumer has its own channel and prefetch=1, so only one publish is pending.
 	let returned = false;
-	const onReturn = () => { returned = true; };
+	const onReturn = () => {
+		returned = true;
+	};
 	channel.on("return", onReturn);
 	let timeout: NodeJS.Timeout | undefined;
 	try {
 		await new Promise<void>((resolve, reject) => {
-			timeout = setTimeout(() => reject(new Error("Email publication confirmation timed out")), 10_000);
-			channel.sendToQueue(queue, message.content, {
-				persistent: true,
-				mandatory: true,
-				contentType: message.properties.contentType ?? "application/json",
-				messageId: message.properties.messageId,
-				correlationId: message.properties.correlationId,
-				headers,
-			}, (error) => {
-				if (error || returned) reject(new Error("Email destination did not confirm delivery"));
-				else resolve();
-			});
+			timeout = setTimeout(
+				() => reject(new Error("Email publication confirmation timed out")),
+				10_000,
+			);
+			channel.sendToQueue(
+				queue,
+				message.content,
+				{
+					persistent: true,
+					mandatory: true,
+					contentType: message.properties.contentType ?? "application/json",
+					messageId: message.properties.messageId,
+					correlationId: message.properties.correlationId,
+					headers,
+				},
+				(error) => {
+					if (error || returned)
+						reject(new Error("Email destination did not confirm delivery"));
+					else resolve();
+				},
+			);
 		});
 	} finally {
 		clearTimeout(timeout);
@@ -63,7 +75,9 @@ export async function consumeEmail<Event>(
 	let active = true;
 	let stopping = false;
 	const pending = new Set<Promise<void>>();
-	channel.once("close", () => { active = false; });
+	channel.once("close", () => {
+		active = false;
+	});
 	await channel.assertExchange(IDENTITY_EXCHANGE, "direct", { durable: true });
 	// Identity declares these existing queues without arguments; keep them compatible.
 	await channel.assertQueue(options.queue, { durable: true });
@@ -83,65 +97,117 @@ export async function consumeEmail<Event>(
 	}
 	await channel.assertQueue(failedQueue(options.queue), {
 		durable: true,
-		arguments: { "x-queue-type": "quorum", "x-message-ttl": FAILED_RETENTION_MS },
+		arguments: {
+			"x-queue-type": "quorum",
+			"x-message-ttl": FAILED_RETENTION_MS,
+		},
 	});
 	await channel.prefetch(1);
 
 	async function handle(message: amqp.ConsumeMessage) {
 		let event: Event;
 		const attempt: unknown = message.properties.headers?.[RETRY_HEADER] ?? 0;
+
 		let destination = failedQueue(options.queue);
-		let headers: Record<string, string | number> = { "x-notification-failure": "invalid-event" };
+		let headers: Record<string, string | number> = {
+			"x-notification-failure": "invalid-event",
+		};
+
 		try {
-			if (typeof attempt !== "number" || !Number.isInteger(attempt) || attempt < 0 || attempt > RETRY_DELAYS_MS.length) {
+			if (
+				typeof attempt !== "number" ||
+				!Number.isInteger(attempt) ||
+				attempt < 0 ||
+				attempt > RETRY_DELAYS_MS.length
+			) {
 				throw new Error("Invalid retry count");
 			}
+
 			event = options.parse(JSON.parse(message.content.toString()));
 		} catch {
-			console.error(`Invalid event for ${options.queue}`);
+			log("error", "invalid_email_event", { queue: options.queue });
+
 			if (active) {
 				await publishConfirmed(channel, destination, message, headers);
-				if (active) channel.ack(message);
+				if (active) {
+					deliveries.inc({ queue: options.queue, outcome: "invalid" });
+					channel.ack(message);
+				}
 			}
+
 			return;
 		}
+
 		try {
 			await options.send(event);
+			deliveries.inc({ queue: options.queue, outcome: "sent" });
+			log("info", "email_sent", { queue: options.queue });
 		} catch {
-			console.error(`Email delivery failed for ${options.queue}`);
+			log("error", "email_delivery_failed", { queue: options.queue });
+			deliveries.inc({ queue: options.queue, outcome: "send_failed" });
+
 			if (!active) return;
-			if (attempt < RETRY_DELAYS_MS.length) destination = retryQueue(options.queue, attempt + 1);
-			headers = { [RETRY_HEADER]: attempt + 1, "x-notification-failure": "delivery-failed" };
+
+			if (attempt < RETRY_DELAYS_MS.length)
+				destination = retryQueue(options.queue, attempt + 1);
+
+			headers = {
+				[RETRY_HEADER]: attempt + 1,
+				"x-notification-failure": "delivery-failed",
+			};
+
 			await publishConfirmed(channel, destination, message, headers);
+
+			deliveries.inc({
+				queue: options.queue,
+				outcome: attempt < RETRY_DELAYS_MS.length ? "retry" : "failed",
+			});
 		}
 		if (active) channel.ack(message);
 	}
 
-	const { consumerTag } = await channel.consume(options.queue, (message) => {
-		if (message === null) {
-			active = false;
-			onFailure();
-			return;
-		}
-		if (stopping || !active) return;
-		const work = handle(message).catch(() => {
-			// Keep the original unacknowledged; reconnect with backoff to recover it.
-			active = false;
-			console.error(`Email consumer interrupted for ${options.queue}`);
-			onFailure();
-		});
-		pending.add(work);
-		void work.finally(() => { pending.delete(work); });
-	}, { noAck: false });
+	const { consumerTag } = await channel.consume(
+		options.queue,
+		(message) => {
+			if (message === null) {
+				active = false;
+				onFailure();
+				return;
+			}
+
+			if (stopping || !active) return;
+
+			const work = handle(message).catch(() => {
+				// Keep the original unacknowledged; reconnect with backoff to recover it.
+				active = false;
+				log("error", "email_consumer_interrupted", { queue: options.queue });
+				deliveries.inc({ queue: options.queue, outcome: "interrupted" });
+				onFailure();
+			});
+
+			pending.add(work);
+
+			void work.finally(() => {
+				pending.delete(work);
+			});
+		},
+		{ noAck: false },
+	);
 
 	return {
 		async cancel() {
 			stopping = true;
 			if (active) {
-				try { await channel.cancel(consumerTag); }
-				catch { if (active) throw new Error("Email consumer cancellation failed"); }
+				try {
+					await channel.cancel(consumerTag);
+				} catch {
+					if (active) throw new Error("Email consumer cancellation failed");
+				}
 			}
 		},
-		async drain() { await Promise.all(pending); },
+
+		async drain() {
+			await Promise.all(pending);
+		},
 	};
 }
