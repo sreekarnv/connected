@@ -23,6 +23,7 @@ const nextConfig: NextConfig = {
   output: "standalone",
   devIndicators: false,
   experimental: {
+    agentUpgrade: "security",
     optimizePackageImports: ["@chakra-ui/react"],
   },
   async headers() {
