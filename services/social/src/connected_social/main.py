@@ -18,6 +18,7 @@ from connected_social.exception_handlers import (
     handle_social_error,
     handle_validation_error,
 )
+from connected_social.observability import instrument
 from connected_social.routers import api_v1, health
 
 
@@ -61,3 +62,5 @@ app.add_api_route("/livez", health.liveness, include_in_schema=False)
 app.add_api_route("/readyz", health.health_check, include_in_schema=False)
 app.include_router(health.router, prefix="/healthz", include_in_schema=False)
 app.include_router(api_v1.router, prefix="/api/v1")
+
+instrument(app)

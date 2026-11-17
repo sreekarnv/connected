@@ -1,3 +1,4 @@
+import { log } from "../observability";
 import amqp from "amqplib";
 import type { EmailConsumer } from "../consumers/email-consumer";
 import { passwordResetConsumer } from "../consumers/password-reset.consumer";
@@ -55,8 +56,8 @@ export class RabbitMQConnectionManager {
 		this.connection.on("disconnect", () => { this.connected = false; });
 		this.connection.on("blocked", () => { this.blocked = true; });
 		this.connection.on("unblocked", () => { this.blocked = false; });
-		this.connection.on("error", () => console.error("RabbitMQ connection error"));
-		this.connection.on("connect-failed", () => console.error("RabbitMQ connection attempt failed"));
+		this.connection.on("error", () => log("error", "RabbitMQ connection error"));
+		this.connection.on("connect-failed", () => log("error", "RabbitMQ connection attempt failed"));
 		await this.connection.waitForConnect();
 	}
 

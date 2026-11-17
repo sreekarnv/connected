@@ -18,6 +18,7 @@ from connected_identity.messaging.email import (
     publish_password_reset_email,
     publish_verification_email,
 )
+from connected_identity.observability import email_publications
 
 logger = logging.getLogger(__name__)
 
@@ -70,6 +71,9 @@ async def deliver_pending_emails() -> None:
                         await publish(user, token.pending_token)
                     # shortcut: a crash after confirmation may resend; tolerate duplicates.
                     token.pending_token = None
+                email_publications.labels(
+                    "identity", model.__tablename__, "completed"
+                ).inc()
             except (
                 SQLAlchemyError,
                 AMQPException,
@@ -78,7 +82,12 @@ async def deliver_pending_emails() -> None:
                 ValueError,
                 IncorrectState,
             ):
-                logger.error("Email remains queued for retry (%s)", model.__tablename__)
+                email_publications.labels(
+                    "identity", model.__tablename__, "retry"
+                ).inc()
+                logger.error(
+                    "email_publication_retry", extra={"queue": model.__tablename__}
+                )
 
 
 async def run_email_worker() -> None:
@@ -86,5 +95,6 @@ async def run_email_worker() -> None:
         try:
             await deliver_pending_emails()
         except (SQLAlchemyError, AMQPException, OSError, RuntimeError, IncorrectState):
-            logger.error("Email delivery is unavailable; retrying")
+            email_publications.labels("identity", "worker", "unavailable").inc()
+            logger.error("email_worker_unavailable")
         await asyncio.sleep(5)

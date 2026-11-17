@@ -22,6 +22,7 @@ from connected_identity.jobs import run_email_worker
 from connected_identity.middleware.security_headers import (
     sensitive_auth_response_headers,
 )
+from connected_identity.observability import instrument
 from connected_identity.routers import api_v1, health, jwks
 from connected_identity.services.token import get_signing_key
 
@@ -69,3 +70,5 @@ fastapi_app.exception_handler(Exception)(handle_server_error)
 fastapi_app.include_router(health.router, tags=["Health"])
 fastapi_app.include_router(api_v1.router, prefix="/api/v1")
 fastapi_app.include_router(jwks.router)
+
+instrument(fastapi_app)
