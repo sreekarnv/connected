@@ -1,6 +1,23 @@
 name: connected
 
 services:
+  grafana:
+    image: grafana/grafana:13.3.1
+    ports:
+      - "127.0.0.1:3001:3000"
+    volumes:
+      - ./monitoring/grafana/datasources.yml:/etc/grafana/provisioning/datasources/prometheus.yml:ro
+      - grafana_data:/var/lib/grafana
+    depends_on:
+      prometheus:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "wget", "-q", "-O", "/dev/null", "http://127.0.0.1:3000/api/health"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+
   prometheus:
     image: prom/prometheus:v3.16.0
     ports:
@@ -236,6 +253,7 @@ services:
       retries: 5
 
 volumes:
+  grafana_data:
   prometheus_data:
   content_postgres_data:
     name: connected_content_postgres_data

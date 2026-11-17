@@ -4,6 +4,7 @@ if (process.env.ENVIRONMENT === "production") {
   const address = process.env.NEXT_PUBLIC_GATEWAY_URL;
   const gateway =
     address && URL.canParse(address) ? new URL(address) : undefined;
+
   if (
     !gateway ||
     gateway.protocol !== "https:" ||
@@ -23,6 +24,7 @@ const nextConfig: NextConfig = {
   output: "standalone",
   devIndicators: false,
   experimental: {
+    agentUpgrade: "security",
     optimizePackageImports: ["@chakra-ui/react"],
   },
   async headers() {

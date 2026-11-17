@@ -118,6 +118,8 @@ The Python services apply Alembic migrations on startup. The first run also down
 
 Prometheus starts with the stack and collects service metrics. Open <http://localhost:9090/targets> to check the scrape targets; the gateway target becomes available after the next step.
 
+Grafana starts at <http://localhost:3001> with Prometheus configured as the default data source. Log in with `admin` / `admin` and set a new password when prompted. Open **Explore**, select **Prometheus**, and run `up` to check service availability, or create a dashboard from your queries. Grafana settings and dashboards persist in a named volume.
+
 ### 3. Start the gateway
 
 In a separate terminal, from the repository root:
@@ -143,15 +145,16 @@ pnpm dev
 
 Open [Connected](http://localhost:3000). Create an account, open [MailHog](http://localhost:8025), and follow the verification link. Log in and create your profile. Use a second account to try follows and the Following feed.
 
-| Local endpoint    | Address                         |
-| ----------------- | ------------------------------- |
-| Web app           | <http://localhost:3000>         |
-| GraphQL gateway   | <http://localhost:4000/graphql> |
-| Identity API docs | <http://localhost:4001/docs>    |
-| Social API docs   | <http://localhost:4003/docs>    |
-| Content API docs  | <http://localhost:4004/docs>    |
-| Development inbox | <http://localhost:8025>         |
+| Local endpoint     | Address                         |
+| ------------------ | ------------------------------- |
+| Web app            | <http://localhost:3000>         |
+| GraphQL gateway    | <http://localhost:4000/graphql> |
+| Identity API docs  | <http://localhost:4001/docs>    |
+| Social API docs    | <http://localhost:4003/docs>    |
+| Content API docs   | <http://localhost:4004/docs>    |
+| Development inbox  | <http://localhost:8025>         |
 | Prometheus targets | <http://localhost:9090/targets> |
+| Grafana            | <http://localhost:3001>         |
 
 To inspect backend startup or stop the containers, run these commands from the repository root:
 
